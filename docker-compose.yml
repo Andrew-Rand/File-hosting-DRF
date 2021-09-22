@@ -1,0 +1,36 @@
+version: '3.8'
+
+
+services:
+  app_auth:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - 8000:8000
+    expose:
+      - 8000
+    depends_on:
+      - postgresdb
+
+
+  postgresdb:
+    image: postgres:12.8
+    environment:
+        POSTGRES_PASSWORD: "${PASSWORD}"
+        POSTGRES_USER: "${DB_USER}"
+        POSTGRES_DB: "${NAME}"
+    volumes:
+      - data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
+
+
+
+volumes:
+  data:
