@@ -1,15 +1,20 @@
 version: '3.8'
 
 
+networks:
+  main:
+    driver: bridge
+
+
 services:
   app_auth:
     restart: always
     build:
       context: .
       dockerfile: Dockerfile
-    command: gunicorn django_project.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - ./:/usr/src/app
+      - ./static/:/static
     ports:
       - 8000:8000
     expose:
@@ -18,8 +23,7 @@ services:
       - postgresdb
     networks:
       main:
-        aliases:
-          - app_auth
+
 
 
   postgresdb:
@@ -36,8 +40,7 @@ services:
       - 5432
     networks:
       main:
-        aliases:
-          - postgresdb
+
 
   nginx:
     build: ./nginx
@@ -45,15 +48,14 @@ services:
       - 1337:80
     depends_on:
       - app_auth
+      - postgresdb
+    volumes:
+      - ./static/:/static
     networks:
       main:
-        aliases:
-          - nginx
+
 
 
 
 volumes:
   data:
-
-networks:
-  main:
