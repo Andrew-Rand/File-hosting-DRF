@@ -3,13 +3,17 @@ from re import match
 
 
 def validate_age(value: int) -> None:
-    if not (5 <= value <= 110):
-        raise ValidationError(f'{value} must be between 5 or 110')
+    MIN_AGE = 5
+    MAX_AGE = 110
+    if value < MIN_AGE:
+        raise ValidationError(f'Min age is {MIN_AGE}, sorry, you are too yong')
+    if value > MAX_AGE:
+        raise ValidationError(f'Max age is {MAX_AGE}, but you have a great health!')
 
 
 def validate_name(value: str) -> None:
     reg_ex = r'^[a-zA-z]+$'
-    if match(reg_ex, value):
+    if not match(reg_ex, value):
         raise ValidationError(f'{value} is not a name')
 
 
@@ -21,6 +25,6 @@ def validate_password(value: str) -> None:
         (?=.*[A-Z]) - contains at least one uppercase Latin letter;
         [0-9a-zA-Z!@#$%^&*]{8,} - contains at least 8 of all this symbols.
     """
-    if match(reg_ex, value):
+    if not match(reg_ex, value):
         raise ValidationError(f'{value} must be 8 and contains at least'
                               f' number, lowercase and upper case, spec char')
