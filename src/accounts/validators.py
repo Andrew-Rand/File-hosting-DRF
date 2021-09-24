@@ -1,7 +1,9 @@
 from django.core.exceptions import ValidationError
 from re import match
 
-from src.basecore.constants import MIN_AGE, MAX_AGE
+
+MIN_AGE = 5
+MAX_AGE = 110
 
 
 def validate_age(value: int) -> None:

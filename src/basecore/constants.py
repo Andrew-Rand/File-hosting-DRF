@@ -1,2 +1,0 @@
-MIN_AGE = 5
-MAX_AGE = 110
