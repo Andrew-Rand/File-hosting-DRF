@@ -20,13 +20,13 @@ services:
     expose:
       - 8000
     depends_on:
-      - postgresdb
+      - db
     networks:
       - main
 
 
 
-  postgresdb:
+  db:
     image: postgres:12.8
     environment:
         POSTGRES_PASSWORD: "${PASSWORD}"
@@ -42,13 +42,13 @@ services:
       - main
 
 
-  nginx:
+  webserver:
     build: ./nginx
     ports:
       - 1337:80
     depends_on:
       - app_auth
-      - postgresdb
+      - db
     volumes:
       - ./static/:/static
     networks:
