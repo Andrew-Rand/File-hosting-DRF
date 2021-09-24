@@ -19,5 +19,7 @@ RUN pipenv install --system --deploy --ignore-pipfile
 #copy important into container
 COPY ./src .
 COPY ./manage.py .
+COPY ./nginx .
+COPY ./static .
 
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
