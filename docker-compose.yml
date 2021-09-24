@@ -1,6 +1,11 @@
 version: '3.8'
 
 
+networks:
+  main:
+    driver: bridge
+
+
 services:
   app_auth:
     restart: always
@@ -9,28 +14,45 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./:/usr/src/app
+      - ./static/:/static
     ports:
       - 8000:8000
     expose:
       - 8000
     depends_on:
-      - postgresdb
+      - db
+    networks:
+      - main
 
 
-  postgresdb:
+
+  db:
     image: postgres:12.8
     environment:
         POSTGRES_PASSWORD: "${PASSWORD}"
         POSTGRES_USER: "${DB_USER}"
-        POSTGRES_DB: "${NAME}"
+        POSTGRES_DB: "${DB_NAME}"
     volumes:
       - data:/var/lib/postgresql/data
     ports:
       - 5432:5432
     expose:
       - 5432
+    networks:
+      - main
 
 
+  webserver:
+    build: ./nginx
+    ports:
+      - 1337:80
+    depends_on:
+      - app_auth
+      - db
+    volumes:
+      - ./static/:/static
+    networks:
+      - main
 
 volumes:
   data:
