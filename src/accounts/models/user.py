@@ -32,5 +32,7 @@ class User(BaseModel):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
+    is_anonymous = models.BooleanField(default=False)
+    is_authenticated = models.BooleanField(default=False)
 
     objects = MyUserManager()
