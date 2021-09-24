@@ -1,12 +1,12 @@
 from django.core.exceptions import ValidationError
 from re import match
 
+from src.basecore.constants import MIN_AGE, MAX_AGE
+
 
 def validate_age(value: int) -> None:
-    MIN_AGE = 5
-    MAX_AGE = 110
     if value < MIN_AGE:
-        raise ValidationError(f'Min age is {MIN_AGE}, sorry, you are too yong')
+        raise ValidationError(f'Min age is {MIN_AGE}, sorry, you are too young')
     if value > MAX_AGE:
         raise ValidationError(f'Max age is {MAX_AGE}, but you have a great health!')
 
@@ -14,7 +14,7 @@ def validate_age(value: int) -> None:
 def validate_name(value: str) -> None:
     reg_ex = r'^[a-zA-z]+$'
     if not match(reg_ex, value):
-        raise ValidationError(f'{value} is not a name')
+        raise ValidationError(f'{value} is not a name, please use only A-z letters')
 
 
 def validate_password(value: str) -> None:

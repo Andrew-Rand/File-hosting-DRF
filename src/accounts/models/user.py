@@ -10,20 +10,11 @@ class User(BaseModel):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-    first_name = models.CharField(max_length=50,
-                                  validators=[validate_name],
-                                  )
-    last_name = models.CharField(max_length=50,
-                                 validators=[validate_name],
-                                 )
-    email = models.EmailField(unique=True,
-                              max_length=100)
-    age = models.PositiveIntegerField(null=True,
-                                      validators=[validate_age],
-                                      )
-    password = models.CharField(max_length=100,
-                                validators=[validate_password],
-                                )
+    first_name = models.CharField(max_length=50, validators=[validate_name])
+    last_name = models.CharField(max_length=50, validators=[validate_name])
+    email = models.EmailField(unique=True, max_length=100)
+    age = models.PositiveIntegerField(null=True, validators=[validate_age])
+    password = models.CharField(max_length=100, validators=[validate_password])
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
