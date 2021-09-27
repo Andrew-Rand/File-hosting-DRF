@@ -1,6 +1,9 @@
+import datetime
+
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.exceptions import AuthenticationFailed
+import jwt
 
 from src.accounts.models import User
 
@@ -18,4 +21,18 @@ class LoginView(generics.GenericAPIView):
         if not user.password == password:
             raise AuthenticationFailed("Incorrect password. Police will be soon!")
 
-        return Response({"message": "success"})
+        # user authenticated and needs token!
+
+        payload = {
+            'id': str(user.id),
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=120),
+            'iat': datetime.datetime.utcnow()
+        }
+
+        token = jwt.encode(payload, 'secret', algorithm='HS256')
+        response = Response()
+        response.set_cookie(key='JWT', value=token, httponly=True)
+        response.data = {
+            'JWT': token
+        }
+        return response

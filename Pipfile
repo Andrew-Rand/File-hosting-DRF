@@ -9,6 +9,7 @@ djangorestframework = "==3.12.4"
 psycopg2-binary = "==2.9.1"
 python-decouple = "==3.4"
 gunicorn = "==20.1.0"
+pyjwt = "*"
 
 [dev-packages]
 pytest = "==6.2.5"
