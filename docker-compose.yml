@@ -33,7 +33,7 @@ services:
         POSTGRES_USER: "${DB_USER}"
         POSTGRES_DB: "${DB_NAME}"
     volumes:
-      - data:/var/lib/postgresql/data
+      - data_ps:/var/lib/postgresql/data_ps/
     ports:
       - 5432:5432
     expose:
@@ -55,4 +55,4 @@ services:
       - main
 
 volumes:
-  data:
+  data_ps:
