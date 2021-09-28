@@ -7,7 +7,7 @@ from django.conf import settings
 from .models.user import User
 
 
-class SafeJWTAuthentication(BaseAuthentication):
+class JWTAuthentication(BaseAuthentication):
 
     def authenticate(self, request):
 
