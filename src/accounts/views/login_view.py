@@ -6,6 +6,7 @@ from rest_framework.exceptions import AuthenticationFailed
 import jwt
 
 from src.accounts.models import User
+from src.config.settings import SECRET_KEY
 
 
 class LoginView(generics.GenericAPIView):
@@ -21,18 +22,29 @@ class LoginView(generics.GenericAPIView):
         if not user.password == password:
             raise AuthenticationFailed("Incorrect password. Police will be soon!")
 
-        # user authenticated and needs token!
+        # user authenticated and needs tokens!
 
-        payload = {
+        # create access token
+        access_token_payload = {
             'id': str(user.id),
             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=120),
             'iat': datetime.datetime.utcnow()
         }
+        access_token = jwt.encode(access_token_payload, SECRET_KEY, algorithm='HS256')
 
-        token = jwt.encode(payload, 'secret', algorithm='HS256')
+        # create refresh token
+        refresh_token_payload = {
+            'id': str(user.id),
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7),
+            'iat': datetime.datetime.utcnow()
+        }
+        refresh_token = jwt.encode(refresh_token_payload, SECRET_KEY, algorithm='HS256')
+
+        #  add tokens to response
         response = Response()
-        response.set_cookie(key='JWT', value=token, httponly=True)
+        response.set_cookie(key='refresh-token', value=refresh_token, httponly=True)
         response.data = {
-            'JWT': token
+            'access-token': access_token,
+            'user': user.email
         }
         return response
