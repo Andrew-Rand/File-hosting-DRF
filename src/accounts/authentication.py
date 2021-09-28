@@ -7,12 +7,6 @@ from django.conf import settings
 from .models.user import User
 
 
-class CSRFCheck(CsrfViewMiddleware):
-    def _reject(self, request, reason):
-        # Return the failure reason instead of an HttpResponse
-        return reason
-
-
 class SafeJWTAuthentication(BaseAuthentication):
 
     def authenticate(self, request):
@@ -38,13 +32,4 @@ class SafeJWTAuthentication(BaseAuthentication):
         if not user.is_active:
             raise exceptions.AuthenticationFailed('user is inactive')
 
-        self.enforce_csrf(request)
         return (user, None)
-
-    def enforce_csrf(self, request):
-        check = CSRFCheck()
-        check.process_request(request)
-        reason = check.process_view(request, None, (), {})
-        print(reason)
-        if reason:
-            raise exceptions.PermissionDenied(f"CSRF Failed: {reason}")
