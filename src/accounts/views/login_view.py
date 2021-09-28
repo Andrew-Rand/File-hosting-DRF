@@ -1,5 +1,6 @@
 import datetime
 
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.exceptions import AuthenticationFailed
@@ -10,7 +11,11 @@ from src.config.settings import SECRET_KEY
 
 
 class LoginView(generics.GenericAPIView):
+
+    permission_classes = [AllowAny, ]
+
     def post(self, request):
+
         email = request.data['email']
         password = request.data['password']
 

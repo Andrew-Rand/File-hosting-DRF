@@ -2,8 +2,6 @@ import datetime
 
 import jwt
 from django.conf import settings
-from django.contrib.auth import get_user_model
-from django.views.decorators.csrf import csrf_protect
 from rest_framework import exceptions, generics
 from rest_framework.response import Response
 
