@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 
 from .views.login_view import LoginView
 from .views.profile_view import ProfileView
