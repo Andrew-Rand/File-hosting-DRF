@@ -6,7 +6,7 @@ from ..serializers import UserSerializer
 
 
 class ProfileView(generics.GenericAPIView):
-    #permission_classes = [IsAuthenticated, ]
+    permission_classes = [IsAuthenticated, ]
 
     def get(self, request):
         user = request.user
