@@ -29,10 +29,10 @@ class UserLoginSerializer(serializers.ModelSerializer):
         print(user, email, password)
         if user is None:
             raise serializers.ValidationError(f"User with {email} and {password} not found")
-        # try:
-        #     update_last_login(None, user)
-        # except Exception as ex:
-        #     raise serializers.ValidationError(f"User does not exist {ex}")
+        try:
+            update_last_login(None, user)
+        except Exception as ex:
+            raise serializers.ValidationError(f"User does not exist {ex}")
         return {
             "id": user.id,
             "email": user.email

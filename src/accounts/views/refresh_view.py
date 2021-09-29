@@ -1,7 +1,6 @@
 import datetime
 
 import jwt
-from django.conf import settings
 from rest_framework import exceptions, generics
 from rest_framework.response import Response
 
@@ -11,13 +10,13 @@ from src.config.settings import SECRET_KEY
 
 class RefreshView(generics.GenericAPIView):
     def post(self, request):
-        refresh_token = request.COOKIES.get('refreshtoken')
+        refresh_token = request.COOKIES.get('refresh-token')
         if refresh_token is None:
             raise exceptions.AuthenticationFailed(
                 'Authentication credentials were not provided.')
         try:
             payload = jwt.decode(
-                refresh_token, settings.REFRESH_TOKEN_SECRET, algorithms=['HS256'])
+                refresh_token, SECRET_KEY, algorithms=['HS256'])
         except jwt.ExpiredSignatureError:
             raise exceptions.AuthenticationFailed(
                 'expired refresh token, please login again.')

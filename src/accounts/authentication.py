@@ -1,22 +1,22 @@
 import jwt
+from django.contrib.auth import get_user_model
 from rest_framework.authentication import BaseAuthentication
 from rest_framework import exceptions
-from django.conf import settings
 
-from .models.user import User
+from src.config.settings import SECRET_KEY
 
 
-class JWTAuthentication(BaseAuthentication):
+class CustomJWTAuthentication(BaseAuthentication):
 
     def authenticate(self, request):
-
+        User = get_user_model()
         authorization_header = request.headers.get('Authorization')
         if not authorization_header:
             return None
         try:
             access_token = authorization_header.split(' ')[1]
             payload = jwt.decode(
-                access_token, settings.SECRET_KEY, algorithms=['HS256'])
+                access_token, SECRET_KEY, algorithms=['HS256'])
 
         except jwt.ExpiredSignatureError:
             raise exceptions.AuthenticationFailed('access_token expired')

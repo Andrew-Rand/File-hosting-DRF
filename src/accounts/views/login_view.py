@@ -3,10 +3,8 @@ import datetime
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import generics
-from rest_framework.exceptions import AuthenticationFailed
 import jwt
 
-from src.accounts.models import User
 from src.accounts.serializers import UserLoginSerializer
 from src.config.settings import SECRET_KEY
 
@@ -18,19 +16,6 @@ class LoginView(generics.GenericAPIView):
     def post(self, request):
         serializer = UserLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
-        # email = serializer.data['email']
-        # password = serializer.data['password']
-        #
-        # user = User.objects.filter(email=email).first()
-        #
-        # if user is None:
-        #     raise AuthenticationFailed("User not found!Please check your data and try again. We believe in you!")
-        #
-        # if not user.password == password:
-        #     raise AuthenticationFailed("Incorrect password. Police will be soon!")
-
-        # user authenticated and needs tokens!
 
         # create access token
         access_token_payload = {
