@@ -1,21 +1,16 @@
 import jwt
 from rest_framework.authentication import BaseAuthentication
-from django.middleware.csrf import CsrfViewMiddleware
 from rest_framework import exceptions
 from django.conf import settings
-from rest_framework.permissions import AllowAny
 
 from .models.user import User
 
 
 class JWTAuthentication(BaseAuthentication):
 
-    permission_classes = [AllowAny, ]
-
     def authenticate(self, request):
 
         authorization_header = request.headers.get('Authorization')
-
         if not authorization_header:
             return None
         try:
@@ -34,5 +29,4 @@ class JWTAuthentication(BaseAuthentication):
 
         if not user.is_active:
             raise exceptions.AuthenticationFailed('user is inactive')
-
-        return (user, None)
+        return user, None
