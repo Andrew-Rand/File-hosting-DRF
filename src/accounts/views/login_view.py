@@ -53,6 +53,7 @@ class LoginView(generics.GenericAPIView):
         response.set_cookie(key='refresh-token', value=refresh_token, httponly=True)
         response.data = {
             'access-token': access_token,
-            'user': serializer.data.get('id')
+            'user_id': serializer.data.get('id'),
+            'user_email': serializer.data.get('email')
         }
         return response
