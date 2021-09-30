@@ -3,6 +3,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+# from src.fileservice.models.File import File
 from src.fileservice.models.File import File
 from src.fileservice.serializers import FileSerializer
 
@@ -19,3 +20,10 @@ class FileView(generics.GenericAPIView):
             return Response(file_serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+        # queryset = File.objects.filter(title="some_file_4")
+        queryset = File.objects.filter(title=request.data.get("title"))
+        # serialize this data
+        serialized_queryset = FileSerializer(instance=queryset, many=True)
+        return Response(serialized_queryset.data)
