@@ -25,7 +25,7 @@ def validate_password(value: str) -> None:
         (?=.*[!@#$%^&*]) - contains at least one spec char;
         (?=.*[a-z]) - contains at least one lowercase Latin letter;
         (?=.*[A-Z]) - contains at least one uppercase Latin letter;
-        [0-9a-zA-Z!@#$%^&*]{8,} - contains at least 8 of all this symbols.
+        [0-9a-zA-Z!@#$%^&*]{10,} - contains at least 10 of all this symbols.
     """
     if not match(reg_ex, value):
         raise ValidationError(f'{value} must be 8 and contains at least'

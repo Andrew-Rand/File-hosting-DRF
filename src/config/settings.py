@@ -23,9 +23,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'rest_framework',
 
     'src.accounts',
+    'src.fileservice',
 ]
 
 MIDDLEWARE = [
@@ -115,6 +117,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     )
+
 }
 
 AUTHENTICATION_BACKENDS = ['src.accounts.backends.EmailBackend']
