@@ -1,18 +1,18 @@
 import jwt
 from django.contrib.auth import get_user_model
-from rest_framework.authentication import BaseAuthentication
+from django.http import HttpResponse
 from rest_framework import exceptions
+from rest_framework.request import Request
 
 from src.config.settings import SECRET_KEY
 
 
-class CustomJWTAuthentication(BaseAuthentication):
-
-    def authenticate(self, request):
+def jwt_auth(func):
+    def wrapper(request_object, request: Request, *args, **kwargs):
         User = get_user_model()
         authorization_header = request.headers.get('Authorization')
         if not authorization_header:
-            return None
+            return HttpResponse('No token')
         try:
             access_token = authorization_header.split(' ')[1]
             payload = jwt.decode(
@@ -29,4 +29,5 @@ class CustomJWTAuthentication(BaseAuthentication):
 
         if not user.is_active:
             raise exceptions.AuthenticationFailed('user is inactive')
-        return user, None
+        return func(request_object, request, *args, **kwargs)
+    return wrapper
