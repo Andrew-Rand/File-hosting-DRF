@@ -1,9 +1,12 @@
+from typing import Any
+
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import ugettext_lazy as _
+from django.db import models
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, password, **extra_fields):
+    def create_user(self, email: models.EmailField, password: models.CharField, **extra_fields: Any) -> object:
         if not email:
             raise ValueError(_('The Email must be set'))
         email = self.normalize_email(email)
@@ -12,7 +15,7 @@ class MyUserManager(BaseUserManager):
         user.save()
         return user
 
-    def create_superuser(self, email, password, **extra_fields):
+    def create_superuser(self, email: models.EmailField, password: models.CharField, **extra_fields: Any) -> object:
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)

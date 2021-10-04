@@ -1,3 +1,5 @@
+from typing import Any
+
 from rest_framework import serializers
 
 from src.fileservice.models.File import File
@@ -9,5 +11,5 @@ class FileSerializer(serializers.ModelSerializer):
         model = File
         fields = ('id', 'owner', 'title', 'file', 'date_created')
 
-    def create(self, validated_data):
+    def create(self, validated_data: Any) -> object:
         return File.objects.create(**validated_data)

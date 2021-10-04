@@ -1,6 +1,7 @@
 from rest_framework import generics
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import AllowAny
+from rest_framework.request import Request
 from rest_framework.response import Response
 
 from src.fileservice.models.File import File
@@ -11,7 +12,7 @@ class AllFilesView(generics.GenericAPIView):
     parser_classes = (MultiPartParser, FormParser)
     permission_classes = [AllowAny, ]
 
-    def get(self, request):
+    def get(self, request: Request) -> Response:
         # get all the data from table Files
         queryset = File.objects.all()
         # serialize this data

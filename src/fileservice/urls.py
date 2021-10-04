@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 
 from src.fileservice.views.all_files_view import AllFilesView
 from src.fileservice.views.download_file import DownloadFile
