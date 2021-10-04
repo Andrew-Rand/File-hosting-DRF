@@ -20,6 +20,9 @@ class DownloadFile(generics.GenericAPIView):
         dir_path = pathlib.Path.cwd()
         file_path = serialized_queryset.data.get("file")
         path = str(dir_path) + str(file_path)
+        print(dir_path)
+        print(file_path)
+        print(path)
 
         if os.path.exists(path):
             with open(path, "rb") as file_to_download:
