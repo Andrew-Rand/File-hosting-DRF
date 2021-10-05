@@ -5,7 +5,6 @@ import jwt
 from django.http import HttpResponse
 from rest_framework import exceptions
 from rest_framework.request import Request
-
 from src.accounts.models import User
 from src.config.settings import SECRET_KEY
 
@@ -24,7 +23,7 @@ def login_required(func: Callable[..., Any]) -> Callable[..., Any]:
     def wrapper(request_object: object, request: Request, *args: Any, **kwargs: Any) -> Any:
         authorization_header = request.headers.get('Authorization')
         if not authorization_header:
-            return HttpResponse('No token')
+            raise exceptions.AuthenticationFailed('No token')
         try:
             access_token = authorization_header.split(' ')[1]
             payload = jwt.decode(
