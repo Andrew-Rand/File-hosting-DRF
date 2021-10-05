@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Dict
 
 from rest_framework import serializers
 
@@ -11,5 +11,5 @@ class FileSerializer(serializers.ModelSerializer):
         model = File
         fields = ('id', 'owner', 'title', 'file', 'date_created')
 
-    def create(self, validated_data: Any) -> object:
+    def create(self, validated_data: Dict[str, Any]) -> File:
         return File.objects.create(**validated_data)

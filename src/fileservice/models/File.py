@@ -9,5 +9,5 @@ class File(BaseModel):
     title = models.CharField(max_length=250)
     file = models.FileField(upload_to='files', max_length=100, blank=True)
 
-    def __unicode__(self) -> models.CharField:
+    def __unicode__(self) -> str:
         return self.title

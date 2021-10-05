@@ -1,3 +1,5 @@
+from typing import Dict, Any
+
 from rest_framework import serializers
 from .models.user import User
 
@@ -17,7 +19,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'email', 'username', 'password')
 
-    def validate(self, data: dict) -> dict:
+    def validate(self, data: Dict[str, Any]) -> Dict[str, Any]:
         username = data.get('username')
         password = data.get('password')
         user = User.objects.filter(username=username).first()

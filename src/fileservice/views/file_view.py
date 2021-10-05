@@ -24,7 +24,7 @@ class FileView(generics.GenericAPIView):
         else:
             return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request: Request) -> Response:
+    def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         # queryset = File.objects.filter(title="some_file_4")
         queryset = File.objects.filter(title=request.data.get("title"))
         # serialize this data
