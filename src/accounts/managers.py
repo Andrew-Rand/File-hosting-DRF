@@ -2,7 +2,6 @@ from typing import Any
 
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import ugettext_lazy as _
-from django.db import models
 
 from src.accounts.models import User
 
