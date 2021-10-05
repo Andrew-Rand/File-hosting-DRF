@@ -4,7 +4,6 @@ from typing import Any, Callable
 import jwt
 from rest_framework import exceptions
 from rest_framework.request import Request
-
 from src.accounts.models import User
 from src.config.settings import SECRET_KEY
 
