@@ -2,7 +2,6 @@ import datetime
 from typing import Any, Callable
 
 import jwt
-from django.http import HttpResponse
 from rest_framework import exceptions
 from rest_framework.request import Request
 
@@ -24,7 +23,7 @@ def login_required(func: Callable[..., Any]) -> Callable[..., Any]:
     def wrapper(request_object: object, request: Request, *args: Any, **kwargs: Any) -> Any:
         authorization_header = request.headers.get('Authorization')
         if not authorization_header:
-            return HttpResponse('No token')
+            raise exceptions.AuthenticationFailed('No token')
         try:
             access_token = authorization_header
             payload = jwt.decode(

@@ -7,6 +7,7 @@ from rest_framework.response import Response
 
 from src.accounts.authentication import create_token
 from src.accounts.models import User
+from src.basecore.std_response import create_std_response
 from src.config.settings import SECRET_KEY
 from src.accounts.constants import ACCESS_TOKEN_LIFETIME, REFRESH_TOKEN_LIFETIME
 
@@ -34,9 +35,9 @@ class RefreshView(generics.GenericAPIView):
         refresh_token = create_token(str(user.id), time_delta_seconds=REFRESH_TOKEN_LIFETIME)
 
         #  add tokens to response
-        response = Response()
-        response.data = {
-                'access_token': access_token,
-                'refresh_token': refresh_token
-            }
-        return response
+        result_to_response = {
+            'access-token': access_token,
+            'refresh-token': refresh_token
+        }
+        #  add tokens to response
+        return Response(create_std_response(result=result_to_response))
