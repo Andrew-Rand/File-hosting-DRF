@@ -1,4 +1,4 @@
-from rest_framework import status, exceptions
+from rest_framework import status, exceptions, serializers
 from rest_framework.response import Response
 
 from src.basecore.std_response import create_std_response
@@ -16,3 +16,6 @@ def error_handler(exc: Exception, context) -> Response:
 
     elif isinstance(exc, exceptions.AuthenticationFailed):
         return Response(create_std_response(error_code=status.HTTP_401_UNAUTHORIZED))
+
+    elif isinstance(exc, serializers.ValidationError):
+        return Response(create_std_response(error_code=status.HTTP_400_BAD_REQUEST))
