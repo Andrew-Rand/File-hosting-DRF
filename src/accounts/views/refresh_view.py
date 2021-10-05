@@ -5,6 +5,7 @@ from rest_framework.response import Response
 
 from src.accounts.authentication import create_token
 from src.accounts.models import User
+from src.basecore.std_response import create_std_response
 from src.config.settings import SECRET_KEY
 
 
@@ -32,9 +33,9 @@ class RefreshView(generics.GenericAPIView):
         refresh_token = create_token(str(user.id), 30)
 
         #  add tokens to response
-        response = Response()
-        response.data = {
+        result_to_response = {
             'access-token': access_token,
             'refresh-token': refresh_token
         }
-        return response
+        #  add tokens to response
+        return Response(create_std_response(result=result_to_response))

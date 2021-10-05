@@ -25,7 +25,7 @@ def jwt_auth(func: Callable[..., Any]) -> Callable[..., Any]:
         User = get_user_model()
         authorization_header = request.headers.get('Authorization')
         if not authorization_header:
-            return HttpResponse('No token')
+            raise exceptions.AuthenticationFailed('No token')
         try:
             access_token = authorization_header.split(' ')[1]
             payload = jwt.decode(
