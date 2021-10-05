@@ -5,7 +5,7 @@ from .models.user import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'password']
+        fields = ['id', 'first_name', 'last_name', 'email', 'password', 'username']
         extra_kwargs = {
             'password': {'write_only': True}  # hide password in response
         }
@@ -13,19 +13,16 @@ class UserSerializer(serializers.ModelSerializer):
 
 class UserLoginSerializer(serializers.ModelSerializer):
 
-    email = serializers.CharField(max_length=100)
-    password = serializers.CharField(max_length=100, write_only=True)
-
     class Meta:
         model = User
-        fields = ('id', 'email', 'password')
+        fields = ('id', 'email', 'username', 'password')
 
     def validate(self, data: dict) -> dict:
-        email = data.get('email')
+        username = data.get('username')
         password = data.get('password')
-        user = User.objects.filter(email=email).first()
+        user = User.objects.filter(username=username).first()
         if user is None:
-            raise serializers.ValidationError(f"User with {email} and {password} not found")
+            raise serializers.ValidationError(f"User with username: {username} and password: {password} not found")
         print(user.password, password)
         if user.password == password:
             return {

@@ -6,11 +6,11 @@ from django.db import models
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email: models.EmailField, password: models.CharField, **extra_fields: Any) -> object:
-        if not email:
-            raise ValueError(_('The Email must be set'))
+    def create_user(self, username: str, email: models.EmailField, password: models.CharField, **extra_fields: Any) -> object:
+        if not email and username:
+            raise ValueError(_('The Email and username must be set'))
         email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+        user = self.model(email=email, username=username, **extra_fields)
         user.set_password(password)
         user.save()
         return user

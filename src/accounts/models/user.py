@@ -1,3 +1,4 @@
+from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from src.accounts.managers import MyUserManager
@@ -7,10 +8,11 @@ from django.contrib.auth.hashers import check_password, make_password
 
 
 class User(BaseModel):
-    username = None
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
 
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email', 'password']
+
+    username = models.CharField(max_length=50, validators=[validate_name], unique=True, default="default_username")
     first_name = models.CharField(max_length=50, validators=[validate_name])
     last_name = models.CharField(max_length=50, validators=[validate_name])
     email = models.EmailField(unique=True, max_length=100)
