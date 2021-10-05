@@ -1,4 +1,3 @@
-from django.contrib.auth import authenticate
 from rest_framework import serializers
 from .models.user import User
 
@@ -24,13 +23,17 @@ class UserLoginSerializer(serializers.ModelSerializer):
     def validate(self, data: dict) -> dict:
         email = data.get('email')
         password = data.get('password')
-        user = authenticate(username=email, password=password)
+        user = User.objects.filter(email=email).first()
         if user is None:
             raise serializers.ValidationError(f"User with {email} and {password} not found")
-        return {
-            "id": user.id,
-            "email": user.email
-        }
+        print(user.password, password)
+        if user.password == password:
+            return {
+                "id": user.id,
+                "email": user.email
+            }
+        else:
+            raise serializers.ValidationError("Incorrect password")
 
 
 class ProfileSerializer(serializers.ModelSerializer):
