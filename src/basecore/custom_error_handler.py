@@ -18,4 +18,4 @@ def error_handler(exc: Exception, context) -> Response:
         return Response(create_std_response(error_code=status.HTTP_401_UNAUTHORIZED))
 
     elif isinstance(exc, serializers.ValidationError):
-        return Response(create_std_response(error_code=status.HTTP_400_BAD_REQUEST))
+        return Response(create_std_response(error_code=status.HTTP_400_BAD_REQUEST, info=str(exc)))
