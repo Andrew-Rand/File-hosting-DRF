@@ -25,6 +25,15 @@ class UserLoginSerializer(serializers.ModelSerializer):
     def validate(self, data: Dict[str, Any]) -> Dict[str, Any]:
         username = data.get('username', None)
         password = data.get('password', None)
+        if username is None:
+            raise serializers.ValidationError(
+                'An email address is required to log in.'
+            )
+
+        if password is None:
+            raise serializers.ValidationError(
+                'A password is required to log in.'
+            )
         user = authenticate(username=username, password=password)
         if user is None:
             raise serializers.ValidationError(f"User not found")

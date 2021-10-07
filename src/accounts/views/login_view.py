@@ -13,7 +13,7 @@ class LoginView(generics.GenericAPIView):
 
     def post(self, request: Request) -> Response:
         serializer = UserLoginSerializer(data=request.data)
-        if not serializer.is_valid(raise_exception=True):
+        if not serializer.is_valid(raise_exception=False):
             raise serializers.ValidationError('Auth f**k')
         user_id = serializer.data.get('id')
         access_token = create_token(user_id, time_delta_days=1)
