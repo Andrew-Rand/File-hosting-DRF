@@ -34,4 +34,4 @@ flake8 $PY_FILES
 
 
 echo "-----------start pylint_django-----------------"
-pylint --max-line-length=120  --disable=E1101,C0116,C0114,R0903,R0401,R0801,C0413 --load-plugins pylint_django $PY_FILES src
+pylint --max-line-length=120  --disable=E1101,C0116,C0114,C0115,R0903,R0401,R0801,C0413 --load-plugins pylint_django $PY_FILES src
