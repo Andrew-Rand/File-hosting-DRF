@@ -1,3 +1,4 @@
+# from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from src.accounts.managers import MyUserManager
@@ -8,8 +9,10 @@ from django.contrib.auth.hashers import check_password, make_password
 
 class User(BaseModel):
 
+    objects = MyUserManager()
+
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email', 'password']
+    REQUIRED_FIELDS = []
 
     username = models.CharField(max_length=50, validators=[validate_name], unique=True, default="default_username")
     first_name = models.CharField(max_length=50, validators=[validate_name])
@@ -22,7 +25,7 @@ class User(BaseModel):
     is_superuser = models.BooleanField(default=False)
     is_anonymous = models.BooleanField(default=False)
 
-    objects = MyUserManager()
+
 
     def set_password(self, raw_password: str) -> None:
         self.password = make_password(raw_password)
@@ -49,3 +52,4 @@ class User(BaseModel):
         authenticated in templates.
         """
         return True
+
