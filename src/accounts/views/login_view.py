@@ -5,6 +5,7 @@ from rest_framework import generics
 
 from src.accounts.authentication import create_token
 from src.accounts.serializers import UserLoginSerializer
+from src.basecore.responses import OkResponse
 from src.basecore.std_response import create_std_response
 
 
@@ -25,4 +26,5 @@ class LoginView(generics.GenericAPIView):
             'refresh-token': refresh_token
         }
         #  add tokens to response
-        return Response(create_std_response(result=result_to_response))
+        return OkResponse(data=result_to_response)
+
