@@ -4,7 +4,7 @@ from rest_framework import generics, serializers
 
 from src.accounts.authentication import create_token
 from src.accounts.serializers.user_login_serializer import UserLoginSerializer
-from src.basecore.std_response import create_std_response
+from src.basecore.responses import OkResponse
 
 
 ACCESS_TOKEN_LIFETIME = 1200  # 20 minutes for access token
@@ -26,4 +26,5 @@ class LoginView(generics.GenericAPIView):
             'refresh-token': refresh_token
         }
         #  add tokens to response
-        return Response(create_std_response(result=result_to_response))
+        return OkResponse(data=result_to_response)
+
