@@ -2,11 +2,11 @@ import datetime
 from typing import Any, Callable
 
 import jwt
-from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from rest_framework import exceptions
 from rest_framework.request import Request
 
+from src.accounts.models import User
 from src.config.settings import SECRET_KEY
 
 
@@ -20,9 +20,8 @@ def create_token(user_id: str, time_delta_days: int = 1) -> str:
     return token
 
 
-def jwt_auth(func: Callable[..., Any]) -> Callable[..., Any]:
+def login_required(func: Callable[..., Any]) -> Callable[..., Any]:
     def wrapper(request_object: object, request: Request, *args: Any, **kwargs: Any) -> Any:
-        User = get_user_model()
         authorization_header = request.headers.get('Authorization')
         if not authorization_header:
             return HttpResponse('No token')

@@ -2,21 +2,7 @@ from typing import Dict, Any
 
 from django.contrib.auth import authenticate
 from rest_framework import serializers
-from .models.user import User
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'password', 'username']
-        extra_kwargs = {
-            'password': {'write_only': True}  # hide password in response
-        }
-
-    def create(self, validated_data:Dict[str, Any]) -> User:
-        user = User.objects.create_user(**validated_data)
-
-        return user
+from ..models.user import User
 
 
 class UserLoginSerializer(serializers.ModelSerializer):
@@ -42,15 +28,9 @@ class UserLoginSerializer(serializers.ModelSerializer):
             )
         user = authenticate(username=username, password=password)
         if user is None:
-            raise serializers.ValidationError(f"User with this username not found or password was incorrect")
+            raise serializers.ValidationError("User with this username not found or password was incorrect")
         return {
             "id": user.id,
             "username": user.username,
             "email": user.email
-            }
-
-
-class ProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'is_active', 'is_staff', 'is_superuser']
+        }

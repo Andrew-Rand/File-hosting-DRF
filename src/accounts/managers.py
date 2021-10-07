@@ -1,11 +1,11 @@
 from typing import Any
 
 from django.contrib.auth.base_user import BaseUserManager
-# from src.accounts.models import User
+from django.contrib.auth.models import User
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, username: str, email: str, password: str = None, **extra_fields: Any) -> Any:
+    def create_user(self, username: str, email: str, password: str = None, **extra_fields: Any) -> User:
         if not email:
             raise ValueError("User must have an email")
         if not password:
@@ -13,9 +13,7 @@ class MyUserManager(BaseUserManager):
         if not username:
             raise ValueError("User must have a username")
 
-        user = self.model(
-            email=self.normalize_email(email)
-        )
+        user = self.model(email=self.normalize_email(email))
         user.username = username
         user.set_password(password)  # change password to hash
         user.is_admin = False
@@ -23,7 +21,7 @@ class MyUserManager(BaseUserManager):
         user.save()
         return user
 
-    def create_superuser(self, email: str, password: str, **extra_fields: Any) -> Any:
+    def create_superuser(self, email: str, password: str, **extra_fields: Any) -> User:
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)

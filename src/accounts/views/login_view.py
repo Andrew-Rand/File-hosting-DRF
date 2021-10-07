@@ -1,15 +1,12 @@
-from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import generics, serializers
 
 from src.accounts.authentication import create_token
-from src.accounts.serializers import UserLoginSerializer
+from src.accounts.serializers.user_login_serializer import UserLoginSerializer
 
 
 class LoginView(generics.GenericAPIView):
-
-    permission_classes = [AllowAny, ]
 
     def post(self, request: Request) -> Response:
         serializer = UserLoginSerializer(data=request.data)
@@ -22,7 +19,7 @@ class LoginView(generics.GenericAPIView):
         #  add tokens to response
         response = Response()
         response.data = {
-            'access-token': access_token,
-            'refresh-token': refresh_token
+            'access_token': access_token,
+            'refresh_token': refresh_token
         }
         return response

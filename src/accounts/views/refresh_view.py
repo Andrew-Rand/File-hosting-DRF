@@ -28,13 +28,13 @@ class RefreshView(generics.GenericAPIView):
         if not user.is_active:
             raise exceptions.AuthenticationFailed('user is inactive')
 
-        access_token = create_token(str(user.id), 1)
-        refresh_token = create_token(str(user.id), 30)
+        access_token = create_token(str(user.id), time_delta_days=1)
+        refresh_token = create_token(str(user.id), time_delta_days=30)
 
         #  add tokens to response
         response = Response()
         response.data = {
-            'access-token': access_token,
-            'refresh-token': refresh_token
+            'access_token': access_token,
+            'refresh_token': refresh_token
         }
         return response

@@ -6,8 +6,8 @@ from .views.refresh_view import RefreshView
 from .views.register_view import RegisterView
 
 urlpatterns = [
-    path('/', AuthView.as_view()),
-    path('register/', RegisterView.as_view()),
-    path('login/', LoginView.as_view()),
-    path('refresh/', RefreshView.as_view()),
+    path('/', AuthView.as_view(), name="test_login"),
+    path('register/', RegisterView.as_view(), name="register"),
+    path('login/', LoginView.as_view(), name="login"),
+    path('refresh/', RefreshView.as_view(), name="refresh"),
 ]
