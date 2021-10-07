@@ -23,5 +23,6 @@ class LoginView(generics.GenericAPIView):
         result_to_response = {
             'access-token': access_token,
             'refresh-token': refresh_token
+        }
         #  add tokens to response
         return Response(create_std_response(result=result_to_response))
