@@ -16,37 +16,31 @@ REFRESH_TOKEN_LIFETIME = 432000  # 5 days for refresh token
 
 class RefreshView(generics.GenericAPIView):
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        refresh_token = request.data.get("refresh")
+        if refresh_token is None:
+            raise exceptions.AuthenticationFailed(
+                'Authentication credentials were not provided.')
         try:
-            authorization_header = request.headers.get('Authorization')
-            access_token = authorization_header.split(' ')[1]
-            payload = jwt.decode(access_token, SECRET_KEY, algorithms=['HS256'])
-            raise exceptions.AuthenticationFailed('Access token is still alive, you don`t need refresh')
+            payload = jwt.decode(
+                refresh_token, SECRET_KEY, algorithms=['HS256'])
         except jwt.ExpiredSignatureError:
-            refresh_token = request.headers.get('refresh_token')
-            if refresh_token is None:
-                raise exceptions.AuthenticationFailed(
-                    'Authentication credentials were not provided.')
-            try:
-                payload = jwt.decode(
-                    refresh_token, SECRET_KEY, algorithms=['HS256'])
-            except jwt.ExpiredSignatureError:
-                raise exceptions.AuthenticationFailed(
+            raise exceptions.AuthenticationFailed(
                     'expired refresh token, please login again.')
 
-            user = User.objects.filter(id=payload['id']).first()
-            if user is None:
-                raise exceptions.AuthenticationFailed('User not found')
+        user = User.objects.filter(id=payload['id']).first()
+        if user is None:
+            raise exceptions.AuthenticationFailed('User not found')
 
-            if not user.is_active:
-                raise exceptions.AuthenticationFailed('user is inactive')
+        if not user.is_active:
+            raise exceptions.AuthenticationFailed('user is inactive')
 
-            access_token = create_token(str(user.id), time_delta_seconds=ACCESS_TOKEN_LIFETIME)
-            refresh_token = create_token(str(user.id), time_delta_seconds=REFRESH_TOKEN_LIFETIME)
+        access_token = create_token(str(user.id), time_delta_seconds=ACCESS_TOKEN_LIFETIME)
+        refresh_token = create_token(str(user.id), time_delta_seconds=REFRESH_TOKEN_LIFETIME)
 
-            #  add tokens to response
-            response = Response()
-            response.data = {
+        #  add tokens to response
+        response = Response()
+        response.data = {
                 'access_token': access_token,
                 'refresh_token': refresh_token
             }
-            return response
+        return response

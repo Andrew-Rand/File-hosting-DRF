@@ -26,7 +26,7 @@ def login_required(func: Callable[..., Any]) -> Callable[..., Any]:
         if not authorization_header:
             return HttpResponse('No token')
         try:
-            access_token = authorization_header.split(' ')[1]
+            access_token = authorization_header
             payload = jwt.decode(
                 access_token, SECRET_KEY, algorithms=['HS256'])
 
@@ -36,6 +36,7 @@ def login_required(func: Callable[..., Any]) -> Callable[..., Any]:
             raise exceptions.AuthenticationFailed('Token prefix missing')
 
         user = User.objects.filter(id=payload['id']).first()
+        print(payload)
         if user is None:
             raise exceptions.AuthenticationFailed('User not found')
 

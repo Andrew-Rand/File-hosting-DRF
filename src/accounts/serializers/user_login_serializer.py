@@ -9,11 +9,10 @@ class UserLoginSerializer(serializers.ModelSerializer):
 
     username = serializers.CharField(max_length=50)
     password = serializers.CharField(max_length=100, write_only=True)
-    email = serializers.EmailField(max_length=100)
 
     class Meta:
         model = User
-        fields = ('id', 'email', 'username', 'password')
+        fields = ('id', 'username', 'password')
 
     def validate(self, data: Dict[str, Any]) -> Dict[str, Any]:
         username = data.get('username')
@@ -31,6 +30,5 @@ class UserLoginSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("User with this username not found or password was incorrect")
         return {
             "id": user.id,
-            "username": user.username,
-            "email": user.email
+            "username": user.username
         }
