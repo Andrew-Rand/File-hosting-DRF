@@ -16,11 +16,11 @@ class UserLoginSerializer(serializers.ModelSerializer):
         fields = ('id', 'email', 'username', 'password')
 
     def validate(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        username = data.get('username', None)
-        password = data.get('password', None)
+        username = data.get('username')
+        password = data.get('password')
         if username is None:
             raise serializers.ValidationError(
-                'An email address is required to log in.'
+                'An username is required to log in.'
             )
         if password is None:
             raise serializers.ValidationError(

@@ -10,10 +10,10 @@ from src.accounts.models import User
 from src.config.settings import SECRET_KEY
 
 
-def create_token(user_id: str, time_delta_days: int = 1) -> str:
+def create_token(user_id: str, time_delta_seconds: int = 1) -> str:
     token_payload = {
         'id': user_id,
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=time_delta_days),
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=time_delta_seconds),
         'iat': datetime.datetime.utcnow()
     }
     token = jwt.encode(token_payload, SECRET_KEY, algorithm='HS256')
