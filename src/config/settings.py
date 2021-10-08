@@ -27,7 +27,6 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'src.accounts',
-    'src.fileservice',
 ]
 
 MIDDLEWARE = [

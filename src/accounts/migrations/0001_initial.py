@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies: List[str] = [
+    dependencies = [
     ]
 
     operations = [
