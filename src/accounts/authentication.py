@@ -10,7 +10,7 @@ from src.accounts.models import User
 from src.config.settings import SECRET_KEY
 
 
-def create_token(user_id: str, time_delta_seconds: int = 1) -> str:
+def create_token(user_id: str, time_delta_seconds: int) -> str:
     token_payload = {
         'id': user_id,
         'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=time_delta_seconds),
@@ -36,7 +36,6 @@ def login_required(func: Callable[..., Any]) -> Callable[..., Any]:
             raise exceptions.AuthenticationFailed('Token prefix missing')
 
         user = User.objects.filter(id=payload['id']).first()
-        print(payload)
         if user is None:
             raise exceptions.AuthenticationFailed('User not found')
 
