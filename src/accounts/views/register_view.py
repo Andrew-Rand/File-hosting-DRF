@@ -8,7 +8,6 @@ from src.accounts.serializers.user_serializer import UserSerializer
 from src.basecore.responses import CreatedResponse
 
 
-
 class RegisterView(generics.GenericAPIView):
 
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
