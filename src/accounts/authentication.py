@@ -34,6 +34,8 @@ def login_required(func: Callable[..., Any]) -> Callable[..., Any]:
             raise exceptions.AuthenticationFailed('access_token expired')
         except IndexError:
             raise exceptions.AuthenticationFailed('Token prefix missing')
+        except jwt.DecodeError:
+            raise exceptions.AuthenticationFailed('token data is incorrect')
 
         user = User.objects.filter(id=payload['id']).first()
         if user is None:

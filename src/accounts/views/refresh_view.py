@@ -15,14 +15,13 @@ class RefreshView(generics.GenericAPIView):
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         refresh_token = request.data.get("refresh")
         if refresh_token is None:
-            raise exceptions.AuthenticationFailed(
-                'Authentication credentials were not provided.')
+            raise exceptions.AuthenticationFailed('Authentication credentials were not provided.')
         try:
-            payload = jwt.decode(
-                refresh_token, SECRET_KEY, algorithms=['HS256'])
+            payload = jwt.decode(refresh_token, SECRET_KEY, algorithms=['HS256'])
         except jwt.ExpiredSignatureError:
-            raise exceptions.AuthenticationFailed(
-                    'expired refresh token, please login again.')
+            raise exceptions.AuthenticationFailed('expired refresh token, please login again.')
+        except jwt.DecodeError:
+            raise exceptions.AuthenticationFailed('token data is incorrect')
 
         user = User.objects.filter(id=payload['id']).first()
         if user is None:
