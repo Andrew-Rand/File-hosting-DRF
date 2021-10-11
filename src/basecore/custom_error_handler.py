@@ -1,3 +1,5 @@
+from typing import Any
+
 from rest_framework import status, serializers
 from rest_framework.response import Response
 
@@ -5,16 +7,16 @@ from src.basecore.std_response import create_std_response
 
 
 class BadRequestError(Exception):
-    def __init__(self, *args):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(args)
 
 
 class BadAuthenticationError(Exception):
-    def __init__(self, *args):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(args)
 
 
-def error_handler(exc: Exception, context) -> Response:
+def error_handler(exc: Exception, context: Any) -> Response:
 
     if isinstance(exc, BadRequestError):
         return Response(create_std_response(status_code=status.HTTP_400_BAD_REQUEST, info=exc.args))
