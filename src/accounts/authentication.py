@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from rest_framework import exceptions
 from rest_framework.request import Request
 from src.accounts.models import User
+from src.basecore.custom_error_handler import BadAuthenticationError
 from src.config.settings import SECRET_KEY
 
 
@@ -23,22 +24,22 @@ def login_required(func: Callable[..., Any]) -> Callable[..., Any]:
     def wrapper(request_object: object, request: Request, *args: Any, **kwargs: Any) -> Any:
         authorization_header = request.headers.get('Authorization')
         if not authorization_header:
-            raise exceptions.AuthenticationFailed('No token')
+            raise BadAuthenticationError('No token')
         try:
             access_token = authorization_header.split(' ')[1]
             payload = jwt.decode(
                 access_token, SECRET_KEY, algorithms=['HS256'])
 
         except jwt.ExpiredSignatureError:
-            raise exceptions.AuthenticationFailed('access_token expired')
+            raise BadAuthenticationError('access_token expired')
         except IndexError:
-            raise exceptions.AuthenticationFailed('Token prefix missing')
+            raise BadAuthenticationError('Token prefix missing')
 
         user = User.objects.filter(id=payload['id']).first()
         if user is None:
-            raise exceptions.AuthenticationFailed('User not found')
+            raise BadAuthenticationError('User not found')
 
         if not user.is_active:
-            raise exceptions.AuthenticationFailed('user is inactive')
+            raise BadAuthenticationError('user is inactive')
         return func(request_object, request, *args, **kwargs)
     return wrapper
