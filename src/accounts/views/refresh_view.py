@@ -8,10 +8,7 @@ from rest_framework.response import Response
 from src.accounts.authentication import create_token
 from src.accounts.models import User
 from src.config.settings import SECRET_KEY
-
-
-ACCESS_TOKEN_LIFETIME = 1200  # 20 minutes for access token
-REFRESH_TOKEN_LIFETIME = 432000  # 5 days for refresh token
+from src.accounts.constants import ACCESS_TOKEN_LIFETIME, REFRESH_TOKEN_LIFETIME
 
 
 class RefreshView(generics.GenericAPIView):
