@@ -8,10 +8,7 @@ from rest_framework.response import Response
 from src.accounts.authentication import create_token
 from src.accounts.models import User
 from src.config.settings import SECRET_KEY
-
-
-ACCESS_TOKEN_LIFETIME = 1200  # 20 minutes for access token
-REFRESH_TOKEN_LIFETIME = 432000  # 5 days for refresh token
+from src.accounts.constants import TokenConstants
 
 
 class RefreshView(generics.GenericAPIView):
@@ -34,8 +31,8 @@ class RefreshView(generics.GenericAPIView):
         if not user.is_active:
             raise exceptions.AuthenticationFailed('user is inactive')
 
-        access_token = create_token(str(user.id), time_delta_seconds=ACCESS_TOKEN_LIFETIME)
-        refresh_token = create_token(str(user.id), time_delta_seconds=REFRESH_TOKEN_LIFETIME)
+        access_token = create_token(str(user.id), time_delta_seconds=TokenConstants.ACCESS_TOKEN_LIFETIME)
+        refresh_token = create_token(str(user.id), time_delta_seconds=TokenConstants.REFRESH_TOKEN_LIFETIME)
 
         #  add tokens to response
         response = Response()

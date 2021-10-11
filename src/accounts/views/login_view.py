@@ -5,10 +5,7 @@ from rest_framework import generics
 
 from src.accounts.authentication import create_token
 from src.accounts.serializers.user_login_serializer import UserLoginSerializer
-
-
-ACCESS_TOKEN_LIFETIME = 1200  # 20 minutes for access token
-REFRESH_TOKEN_LIFETIME = 432000  # 5 days for refresh token
+from src.accounts.constants import TokenConstants
 
 
 class LoginView(generics.GenericAPIView):
@@ -18,8 +15,8 @@ class LoginView(generics.GenericAPIView):
         if not serializer.is_valid():
             raise ValidationError(serializer.errors)
         user_id = serializer.data.get('id')
-        access_token = create_token(user_id, time_delta_seconds=ACCESS_TOKEN_LIFETIME)
-        refresh_token = create_token(user_id, time_delta_seconds=REFRESH_TOKEN_LIFETIME)
+        access_token = create_token(user_id, time_delta_seconds=TokenConstants.ACCESS_TOKEN_LIFETIME)
+        refresh_token = create_token(user_id, time_delta_seconds=TokenConstants.REFRESH_TOKEN_LIFETIME)
 
         #  add tokens to response
         response = Response()
