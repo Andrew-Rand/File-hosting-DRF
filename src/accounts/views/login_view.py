@@ -25,5 +25,4 @@ class LoginView(generics.GenericAPIView):
             'access_token': access_token,
             'refresh_token': refresh_token
         }
-        #  add tokens to response
         return OkResponse(data=response_data)

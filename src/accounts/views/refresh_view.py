@@ -32,10 +32,8 @@ class RefreshView(generics.GenericAPIView):
         access_token = create_token(str(user.id), time_delta_seconds=ACCESS_TOKEN_LIFETIME)
         refresh_token = create_token(str(user.id), time_delta_seconds=REFRESH_TOKEN_LIFETIME)
 
-        #  add tokens to response
         response_data = {
             'access_token': access_token,
             'refresh_token': refresh_token
         }
-        #  add tokens to response
         return OkResponse(data=response_data)

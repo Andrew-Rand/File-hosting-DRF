@@ -5,7 +5,7 @@ def create_std_response(result: Dict[str, Any] = None, status_code: int = None, 
     return {
         'data': {
             'status_code': status_code,
-            'info': info,
+            'error_detail': info,
             'result': result,
             'total_count': total_count
         }
