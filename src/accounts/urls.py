@@ -1,13 +1,13 @@
-from django.urls import path
+from django.urls import re_path
 
+from .views.auth_view import AuthView
 from .views.login_view import LoginView
-from .views.profile_view import ProfileView
 from .views.refresh_view import RefreshView
 from .views.register_view import RegisterView
 
 urlpatterns = [
-    path('users', ProfileView.as_view()),
-    path('users/register', RegisterView.as_view()),
-    path('users/login', LoginView.as_view()),
-    path('users/refresh', RefreshView.as_view()),
+    re_path(r'^/$', AuthView.as_view(), name="test_login"),
+    re_path(r'^register/$', RegisterView.as_view(), name="register"),
+    re_path(r'^login/$', LoginView.as_view(), name="login"),
+    re_path(r'^refresh/$', RefreshView.as_view(), name="refresh"),
 ]
