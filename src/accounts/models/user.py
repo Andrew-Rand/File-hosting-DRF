@@ -16,7 +16,7 @@ class User(BaseModel):
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS: List[str] = []
 
-    username = models.CharField(max_length=50, validators=[validate_name], unique=True, default="default_username")
+    username = models.CharField(max_length=50, validators=[validate_name], unique=True)
     first_name = models.CharField(max_length=50, validators=[validate_name])
     last_name = models.CharField(max_length=50, validators=[validate_name])
     email = models.EmailField(unique=True, max_length=100)

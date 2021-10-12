@@ -1,3 +1,5 @@
+from typing import Any
+
 from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -11,7 +13,7 @@ from src.accounts.constants import ACCESS_TOKEN_LIFETIME, REFRESH_TOKEN_LIFETIME
 
 class LoginView(generics.GenericAPIView):
 
-    def post(self, request: Request) -> Response:
+    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = UserLoginSerializer(data=request.data)
         if not serializer.is_valid():
             raise ValidationError(serializer.errors)
