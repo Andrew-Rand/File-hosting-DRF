@@ -1,0 +1,22 @@
+[MASTER]
+
+ignore= migrations
+
+[FORMAT]
+
+max-line-length=120
+
+[MESSAGES CONTROL]
+
+disable =
+    C0301,
+    C0114,
+    C0115,
+    C0116,
+    R0903,
+    W0105,
+    W0201,
+    W0237,
+    W0613,
+    W0707
+
