@@ -1,6 +1,6 @@
-from django.core.exceptions import ValidationError
 from re import match
 
+from django.core.exceptions import ValidationError
 
 MIN_AGE = 5
 MAX_AGE = 110
