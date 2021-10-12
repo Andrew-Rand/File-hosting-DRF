@@ -6,7 +6,7 @@ def create_std_response(
         status_code: int = None,
         error_detail: Tuple[Any, ...] = None,
         total_count: int = 0,
-        ) -> Dict[str, Any]:
+            ) -> Dict[str, Any]:
     return {
         'data': {
             'status_code': status_code,
