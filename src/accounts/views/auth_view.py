@@ -12,5 +12,5 @@ class AuthView(generics.GenericAPIView):
 
     @login_required
     def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        result_to_response = {"is login?": "yes"}
-        return OkResponse(data=result_to_response)
+        response_data = {"is login?": "yes"}
+        return OkResponse(data=response_data)

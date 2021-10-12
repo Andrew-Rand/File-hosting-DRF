@@ -21,9 +21,9 @@ class LoginView(generics.GenericAPIView):
         access_token = create_token(user_id, time_delta_seconds=ACCESS_TOKEN_LIFETIME)
         refresh_token = create_token(user_id, time_delta_seconds=REFRESH_TOKEN_LIFETIME)
 
-        result_to_response = {
-            'access-token': access_token,
-            'refresh-token': refresh_token
+        response_data = {
+            'access_token': access_token,
+            'refresh_token': refresh_token
         }
         #  add tokens to response
-        return OkResponse(data=result_to_response)
+        return OkResponse(data=response_data)

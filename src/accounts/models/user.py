@@ -1,8 +1,6 @@
-# from django.contrib.auth.models import AbstractUser
 from typing import List
 
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 from src.accounts.managers import MyUserManager
 from src.basecore.base_model import BaseModel
 from ..validators import validate_age, validate_name
@@ -26,6 +24,7 @@ class User(BaseModel):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_anonymous = models.BooleanField(default=False)
+    last_login = models.DateTimeField(blank=True, null=True)
 
     def set_password(self, raw_password: str) -> None:
         self.password = make_password(raw_password)
@@ -42,8 +41,6 @@ class User(BaseModel):
             self._password = None
             self.save(update_fields=["password"])
         return check_password(raw_password, self.password, setter)
-
-    last_login = models.DateTimeField(_('last login'), blank=True, null=True)
 
     @property
     def is_authenticated(self) -> bool:
