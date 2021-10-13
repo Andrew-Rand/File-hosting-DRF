@@ -27,7 +27,7 @@ class FileUploadView(generics.GenericAPIView):
         temp_dir = os.path.join(FileUploadView.TempBase, resumable_identifier)
 
         chunk_file = os.path.join(temp_dir, get_chunk_name(resumable_filename, resumable_chunk_number))
-        print(f'Getchunk: {chunk_file}')
+        print(f'Get chunk: {chunk_file}')
 
         if os.path.isfile(chunk_file):
             # Let resumable.js know this chunk already exists
