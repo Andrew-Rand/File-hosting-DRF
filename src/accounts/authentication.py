@@ -2,11 +2,9 @@ import datetime
 from typing import Any, Callable
 
 import jwt
-from django.http import HttpResponse
-from rest_framework import exceptions
 from rest_framework.request import Request
-
 from src.accounts.models import User
+from src.basecore.custom_error_handler import ForbiddenError, NotFoundError, NotAuthorizedError
 from src.config.settings import SECRET_KEY
 
 
@@ -24,24 +22,22 @@ def login_required(func: Callable[..., Any]) -> Callable[..., Any]:
     def wrapper(request_object: object, request: Request, *args: Any, **kwargs: Any) -> Any:
         authorization_header = request.headers.get('Authorization')
         if not authorization_header:
-            return HttpResponse('No token')
+            raise ForbiddenError('No token')
         try:
             access_token = authorization_header
             payload = jwt.decode(
                 access_token, SECRET_KEY, algorithms=['HS256'])
 
         except jwt.ExpiredSignatureError:
-            raise exceptions.AuthenticationFailed('access_token expired')
+            raise NotAuthorizedError('access_token expired')
         except IndexError:
-            raise exceptions.AuthenticationFailed('Token prefix missing')
+            raise NotAuthorizedError('Token prefix missing')
         except jwt.DecodeError:
-            raise exceptions.AuthenticationFailed('token data is incorrect')
+            raise NotAuthorizedError('token data is incorrect')
 
         user = User.objects.filter(id=payload['id']).first()
         if user is None:
-            raise exceptions.AuthenticationFailed('User not found')
+            raise NotFoundError('User not found')
 
-        if not user.is_active:
-            raise exceptions.AuthenticationFailed('user is inactive')
         return func(request_object, request, *args, **kwargs)
     return wrapper

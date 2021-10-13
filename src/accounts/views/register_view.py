@@ -5,6 +5,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from src.accounts.serializers.user_serializer import UserSerializer
+from src.basecore.responses import CreatedResponse
 
 
 class RegisterView(generics.GenericAPIView):
@@ -14,4 +15,4 @@ class RegisterView(generics.GenericAPIView):
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data)
+        return CreatedResponse(data=serializer.data)
