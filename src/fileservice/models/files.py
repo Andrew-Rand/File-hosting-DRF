@@ -5,5 +5,5 @@ from src.basecore.base_model import BaseModel
 
 
 class File(BaseModel):
-    owner = models.ForeignKey(User, related_name="files", null=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="files", null=True)
     file = models.FileField(upload_to="home/tmp/uploads")
