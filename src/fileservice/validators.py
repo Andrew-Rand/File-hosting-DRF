@@ -1,12 +1,12 @@
 from typing import Any
 
-from django.core.exceptions import ValidationError
 
-
-class JpgSignature:
-    jpg_format = "jpg"
-    jpg_signature = ("FF D8 FF E0", "FF D8 FF E1", "FF D8 FF E2", "FF D8 FF E8")
-    jpg_offset_signature = 0  # смещение сигнатуры относительно начала файла
+CORRECT_SIGNATURE = {
+    "jpg": {
+        "signature": ("FF D8 FF E0", "FF D8 FF E1", "FF D8 FF E2", "FF D8 FF E8"),
+        "offset_signature": 0  # смещение сигнатуры относительно начала файла
+    }
+}
 
 
 def validate_typefile(value: Any) -> bool:
@@ -14,9 +14,9 @@ def validate_typefile(value: Any) -> bool:
     hex_file = " ".join(['{:02X}'.format(byte) for byte in file_to_validate])
 
     validation_res = []
-
-    for signature in JpgSignature.jpg_signature:
-        offset = JpgSignature.jpg_offset_signature * 2 + JpgSignature.jpg_offset_signature  # 2chars for bytes + number of whitespaces between bytes
-        if signature == hex_file[offset:len(signature) + offset].upper():
-            validation_res.append(JpgSignature.jpg_format)
+    for key, value in CORRECT_SIGNATURE.items():
+        for signature in value.get('signature'):
+            offset = value.get('offset_signature') * 2 + value.get('offset_signature')  # 2chars for bytes + number of whitespaces between bytes
+            if signature == hex_file[offset:len(signature) + offset].upper():
+                validation_res.append(key)
     return not validation_res == []
