@@ -65,7 +65,7 @@ class FileUploadView(generics.GenericAPIView):
                        range(1, resumable_total_chunks + 1)]
         upload_complete = all([os.path.exists(p) for p in chunk_paths])
 
-        # combine all the chunks to create the final file
+        # create final file from all chunks
         if upload_complete:
             target_file_name = os.path.join(FileUploadView.TempBase, resumable_filename)
             with open(target_file_name, "ab") as target_file:
