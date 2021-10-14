@@ -1,5 +1,4 @@
 import os
-from copy import deepcopy
 from typing import Any
 
 from django.http import HttpResponse
@@ -49,9 +48,9 @@ class FileUploadView(generics.GenericAPIView):
         chunk_data = request.FILES.get('file')
 
         # validate filetype
-        file_to_validate = deepcopy(chunk_data)
-        if not validate_typefile(value=file_to_validate):
-            return HttpResponse(400, "incorrect filetype")
+        if not validate_typefile(value=chunk_data):
+            raise TypeError("Incorrect type of file")
+            # return HttpResponse(400, "incorrect filetype")
 
         # make temp directory
         temp_dir = os.path.join(FileUploadView.TempBase, resumable_identifier)
