@@ -5,6 +5,9 @@ from django.http import HttpResponse
 from rest_framework import generics
 from rest_framework.request import Request
 
+from src.basecore.custom_error_handler import BadRequestError, NotFoundError
+from src.basecore.responses import OkResponse
+
 
 def get_chunk_name(uploaded_filename: str, chunk_number: int) -> str:
     return uploaded_filename + f"_part_{chunk_number}"
@@ -30,11 +33,11 @@ class FileUploadView(generics.GenericAPIView):
         print(f'Get chunk: {chunk_file}')
 
         if os.path.isfile(chunk_file):
-            # Let resumable.js know this chunk already exists
-            return HttpResponse(200, "OK")
+            return OkResponse({"ok":"Ok"})
         else:
             # Let resumable.js know this chunk does not exists and needs to be uploaded
-            return HttpResponse(204, "No Content")
+            return NotFoundError()
+
 
     def post(self, request: Request, *args: Any, **kwargs: Any) -> HttpResponse:
         resumable_total_chunks = int(request.data.get('resumableTotalChunks'))
