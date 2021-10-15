@@ -1,6 +1,5 @@
 from django.db import models
 
-from src.accounts.models import User
 from src.basecore.base_model import BaseModel
 
 
