@@ -3,12 +3,15 @@ from django.db import models
 from src.basecore.base_model import BaseModel
 
 
+TEMP_DIR = 'temp'
+PERMANENT_DIR = 'permanent'
+
 STORAGE_TYPE_CHOICES = (
-    (0, 'temp'),
-    (1, 'permanent'),
+    ("tmp", 'temp_storage'),
+    ("prm", 'permanent'),
 )
 
 
 class FileStorage(BaseModel):
-    storage_type = models.PositiveSmallIntegerField(choices=STORAGE_TYPE_CHOICES, default=1)
-    destination = models.FilePathField()
+    type = models.CharField(choices=STORAGE_TYPE_CHOICES, default="tmp")
+    destination = models.CharField(max_length=256)
