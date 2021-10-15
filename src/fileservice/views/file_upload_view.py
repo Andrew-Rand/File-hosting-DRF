@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from rest_framework import generics
 from rest_framework.request import Request
 
-from src.fileservice.validators import validate_typefile
+from src.fileservice.validators import is_file_type_supported
 
 
 def get_chunk_name(uploaded_filename: str, chunk_number: int) -> str:
@@ -48,7 +48,7 @@ class FileUploadView(generics.GenericAPIView):
         chunk_data = request.FILES.get('file')
 
         # validate filetype
-        if not validate_typefile(value=chunk_data):
+        if not is_file_type_supported(file=chunk_data):
             raise TypeError("Incorrect type of file")
             # return HttpResponse(400, "incorrect filetype")
 
