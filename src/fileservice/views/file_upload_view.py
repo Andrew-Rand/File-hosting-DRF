@@ -4,6 +4,7 @@ from typing import Any
 from django.http import HttpResponse
 from rest_framework import generics
 from rest_framework.request import Request
+from rest_framework.response import Response
 
 from src.basecore.custom_error_handler import BadRequestError, NotFoundError
 from src.basecore.responses import OkResponse
@@ -17,29 +18,27 @@ class FileUploadView(generics.GenericAPIView):
 
     TempBase = os.path.expanduser("home/tmp/uploads")
 
-    def get(self, request: Request, *args: Any, **kwargs: Any) -> HttpResponse:
+    def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         resumable_identifier = request.query_params.get('resumableIdentifier')
         resumable_filename = request.query_params.get('resumableFilename')
         resumable_chunk_number = int(request.query_params.get('resumableChunkNumber'))
 
         if not resumable_identifier or not resumable_filename or not resumable_chunk_number:
             # Parameters are missing or invalid
-            # BadRequestError('Parameter error')
-            return HttpResponse(400, "parameter error")
+            raise BadRequestError()
 
         temp_dir = os.path.join(FileUploadView.TempBase, resumable_identifier)
 
         chunk_file = os.path.join(temp_dir, get_chunk_name(resumable_filename, resumable_chunk_number))
-        print(f'Get chunk: {chunk_file}')
 
         if os.path.isfile(chunk_file):
-            return OkResponse({"ok":"Ok"})
+            return OkResponse(data={"ok?": "ok"})
         else:
             # Let resumable.js know this chunk does not exists and needs to be uploaded
-            return NotFoundError()
+            raise NotFoundError()
 
 
-    def post(self, request: Request, *args: Any, **kwargs: Any) -> HttpResponse:
+    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         resumable_total_chunks = int(request.data.get('resumableTotalChunks'))
         resumable_chunk_number = int(request.data.get('resumableChunkNumber'))
         resumable_filename = request.data.get('resumableFilename')
@@ -61,8 +60,6 @@ class FileUploadView(generics.GenericAPIView):
             for chunk in chunk_data.chunks():
                 file.write(chunk)
 
-        print(f'Saved chunk: {chunk_file}')
-
         # check if the upload is complete
         chunk_paths = [os.path.join(temp_dir, get_chunk_name(resumable_filename, x)) for x in
                        range(1, resumable_total_chunks + 1)]
@@ -80,6 +77,5 @@ class FileUploadView(generics.GenericAPIView):
                     os.unlink(stored_chunk_file_name)
             target_file.close()
             os.rmdir(temp_dir)
-            print(f'File saved to: {target_file_name}')
 
-        return HttpResponse(200, "File saved to: {target_file}")
+        return OkResponse(data={"ok?": "ok"})
