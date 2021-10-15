@@ -16,7 +16,3 @@ class File(BaseModel):
     @property
     def get_file_name(self):
         return self.file_name
-
-
-    def is_graph(self):
-        pass
