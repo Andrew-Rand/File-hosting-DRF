@@ -4,11 +4,11 @@ from src.basecore.base_model import BaseModel
 
 
 STORAGE_TYPE_CHOICES = (
-    ("trans", 'transitional'),
-    ("perm", 'permanent'),
+    ("TD", 'transitional_directory'),
+    ("PD", 'permanent_directory'),
 )
 
 
 class FileStorage(BaseModel):
-    type = models.CharField(choices=STORAGE_TYPE_CHOICES, default="trans")
+    type = models.CharField(choices=STORAGE_TYPE_CHOICES, default="TD")
     destination = models.CharField(max_length=256)
