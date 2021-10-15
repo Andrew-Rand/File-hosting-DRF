@@ -6,7 +6,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 
-class ApiUploadView(generics.GenericAPIView):
+class UploadTemplateView(generics.GenericAPIView):
     renderer_classes = (TemplateHTMLRenderer, )
 
     def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:

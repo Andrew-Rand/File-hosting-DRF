@@ -22,7 +22,7 @@ class FileUploadView(generics.GenericAPIView):
         if not resumable_identifier or not resumable_filename or not resumable_chunk_number:
             # Parameters are missing or invalid
             # BadRequestError('Parameter error')
-            return HttpResponse(500, "parameter error")
+            return HttpResponse(400, "parameter error")
 
         temp_dir = os.path.join(FileUploadView.TempBase, resumable_identifier)
 
@@ -34,7 +34,7 @@ class FileUploadView(generics.GenericAPIView):
             return HttpResponse(200, "OK")
         else:
             # Let resumable.js know this chunk does not exists and needs to be uploaded
-            return HttpResponse(400, "not found")
+            return HttpResponse(204, "No Content")
 
     def post(self, request: Request, *args: Any, **kwargs: Any) -> HttpResponse:
         resumable_total_chunks = int(request.data.get('resumableTotalChunks'))
@@ -65,7 +65,7 @@ class FileUploadView(generics.GenericAPIView):
                        range(1, resumable_total_chunks + 1)]
         upload_complete = all([os.path.exists(p) for p in chunk_paths])
 
-        # combine all the chunks to create the final file
+        # create final file from all chunks
         if upload_complete:
             target_file_name = os.path.join(FileUploadView.TempBase, resumable_filename)
             with open(target_file_name, "ab") as target_file:
