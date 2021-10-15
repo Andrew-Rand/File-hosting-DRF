@@ -10,5 +10,5 @@ STORAGE_TYPE_CHOICES = (
 
 
 class FileStorage(BaseModel):
-    type = models.CharField(choices=STORAGE_TYPE_CHOICES, default="TD")
+    type = models.CharField(max_length=30, choices=STORAGE_TYPE_CHOICES, default="TD")
     destination = models.CharField(max_length=256)
