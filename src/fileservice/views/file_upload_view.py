@@ -65,8 +65,6 @@ class FileUploadView(generics.GenericAPIView):
             for chunk in chunk_data.chunks():
                 file.write(chunk)
 
-        print(f'Saved chunk: {chunk_file}')
-
         # check if the upload is complete
         chunk_paths = [os.path.join(temp_dir, get_chunk_name(resumable_filename, x)) for x in
                        range(1, resumable_total_chunks + 1)]
@@ -84,6 +82,5 @@ class FileUploadView(generics.GenericAPIView):
                     os.unlink(stored_chunk_file_name)
             target_file.close()
             os.rmdir(temp_dir)
-            print(f'File saved to: {target_file_name}')
 
         return HttpResponse(200, "File saved to: {target_file}")
