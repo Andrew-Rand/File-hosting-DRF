@@ -9,6 +9,7 @@ class File(BaseModel):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="files")
     name = models.CharField(max_length=128)
     type = models.CharField(max_length=32)
-    destination = models.ForeignKey(FileStorage, on_delete=models.DO_NOTHING, related_name="files")
+    storage = models.ForeignKey(FileStorage, on_delete=models.DO_NOTHING, related_name="files")
+    destination = models.CharField(max_length=256)
     hash = models.CharField(max_length=64)
     size = models.BigIntegerField()
