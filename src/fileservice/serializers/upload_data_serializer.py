@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 
 class UploadDataSerializer(serializers.Serializer):
-    resumable_total_chunks = serializers.IntegerField(read_only=True, min_value=1)
-    resumable_chunk_number = serializers.IntegerField(read_only=True, min_value=1)
-    resumable_filename = serializers.CharField(max_length=256, read_only=True)
-    resumable_identifier = serializers.CharField(max_length=256, read_only=True)
+    total_chunks = serializers.IntegerField(source='resumableTotalChunks', read_only=True, min_value=1)
+    chunk_number = serializers.IntegerField(source='resumableChunkNumber', read_only=True, min_value=1)
+    filename = serializers.CharField(source='resumableFilename', max_length=256, read_only=True)
+    identifier = serializers.CharField(source='resumableIdentifier', max_length=256, read_only=True)
