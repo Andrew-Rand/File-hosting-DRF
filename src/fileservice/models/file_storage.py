@@ -10,5 +10,8 @@ STORAGE_TYPE_CHOICES = (
 
 
 class FileStorage(BaseModel):
-    type = models.CharField(max_length=30, choices=STORAGE_TYPE_CHOICES)
+    type = models.CharField(max_length=128, choices=STORAGE_TYPE_CHOICES)
     destination = models.CharField(max_length=256)
+
+    class Meta:
+        db_table = "file_storages"
