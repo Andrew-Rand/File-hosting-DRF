@@ -8,7 +8,6 @@ from src.basecore.base_model import BaseModel
 from ..validators import validate_age, validate_name
 
 
-
 class User(BaseModel):
 
     objects = MyUserManager()
