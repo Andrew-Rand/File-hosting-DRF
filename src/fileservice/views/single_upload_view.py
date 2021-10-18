@@ -10,11 +10,11 @@ from src.basecore.responses import OkResponse
 
 class SingleUploadView(generics.GenericAPIView):
 
-    TempBase = os.path.expanduser("home/tmp/uploads")
+    TempBase = os.path.expanduser('home/tmp/uploads')
 
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
 
-        file_name = request.data.get('resumableFilename')
+        file_name = request.data.get('Filename')
         file_data = request.FILES.get('file')
 
         # make directory
