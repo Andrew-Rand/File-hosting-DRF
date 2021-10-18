@@ -32,8 +32,10 @@ class FileBuildView(generics.GenericAPIView):
         temp_dir = os.path.join(FileBuildView.TempBase, identifier)
 
         # check if the upload is complete
-        chunk_paths = [os.path.join(temp_dir, get_chunk_name(filename, x)) for x in
-                       range(1, total_chunks + 1)]
+        chunk_paths = [
+            os.path.join(temp_dir, get_chunk_name(filename, x))
+            for x in range(1, total_chunks + 1)
+        ]
         upload_complete = all([os.path.exists(p) for p in chunk_paths])
 
         # create final file from all chunks
