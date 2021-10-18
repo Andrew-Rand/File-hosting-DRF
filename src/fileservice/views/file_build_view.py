@@ -1,5 +1,5 @@
 import os
-from typing import Any
+from typing import Any, List
 
 from rest_framework import generics
 from rest_framework.request import Request
@@ -7,6 +7,17 @@ from rest_framework.response import Response
 
 from src.basecore.responses import OkResponse
 from src.fileservice.views.file_upload_view import get_chunk_name
+
+
+def build_file(target_file_name: str, chunk_paths: List[str]) -> None:
+    with open(target_file_name, "ab") as target_file:
+        for p in chunk_paths:
+            stored_chunk_file_name = p
+            stored_chunk_file = open(stored_chunk_file_name, 'rb')
+            target_file.write(stored_chunk_file.read())
+            stored_chunk_file.close()
+            os.unlink(stored_chunk_file_name)
+    target_file.close()
 
 
 class FileBuildView(generics.GenericAPIView):
@@ -29,14 +40,7 @@ class FileBuildView(generics.GenericAPIView):
         # create final file from all chunks
         if upload_complete:
             target_file_name = os.path.join(FileBuildView.TempBase, filename)
-            with open(target_file_name, "ab") as target_file:
-                for p in chunk_paths:
-                    stored_chunk_file_name = p
-                    stored_chunk_file = open(stored_chunk_file_name, 'rb')
-                    target_file.write(stored_chunk_file.read())
-                    stored_chunk_file.close()
-                    os.unlink(stored_chunk_file_name)
-            target_file.close()
+            build_file(target_file_name, chunk_paths)
             os.rmdir(temp_dir)
 
         return OkResponse(data={"ok?": "ok"})
