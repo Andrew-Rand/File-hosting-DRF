@@ -10,7 +10,7 @@ from src.basecore.responses import OkResponse
 
 
 def get_chunk_name(uploaded_filename: str, chunk_number: int) -> str:
-    return uploaded_filename + f"_part_{chunk_number}"
+    return f'{uploaded_filename}_part_{chunk_number}'
 
 
 class FileUploadView(generics.GenericAPIView):
