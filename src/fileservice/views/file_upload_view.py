@@ -2,11 +2,13 @@ import os
 from typing import Any
 
 from rest_framework import generics
+from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from src.basecore.custom_error_handler import BadRequestError, NotFoundError
+from src.basecore.custom_error_handler import NotFoundError
 from src.basecore.responses import OkResponse
+from src.fileservice.serializers.upload_data_serializer import UploadDataSerializer
 
 
 def get_chunk_name(uploaded_filename: str, chunk_number: int) -> str:
@@ -18,13 +20,15 @@ class FileUploadView(generics.GenericAPIView):
     TempBase = os.path.expanduser("home/tmp/uploads")
 
     def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        identifier = request.query_params.get('resumableIdentifier')
-        filename = request.query_params.get('resumableFilename')
-        chunk_number = int(request.query_params.get('resumableChunkNumber'))
 
-        if not identifier or not filename or not chunk_number:
-            # Parameters are missing or invalid
-            raise BadRequestError()
+        query = UploadDataSerializer(request.query_params)
+
+        # if not query.is_valid():
+        #     raise ValidationError(query.errors)
+
+        identifier = query.data.get("identifier")
+        filename = query.data.get("filename")
+        chunk_number = query.data.get("chunk_number")
 
         temp_dir = os.path.join(FileUploadView.TempBase, identifier)
 
@@ -37,9 +41,15 @@ class FileUploadView(generics.GenericAPIView):
             raise NotFoundError()
 
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        chunk_number = int(request.data.get('resumableChunkNumber'))
-        filename = request.data.get('resumableFilename')
-        identifier = request.data.get('resumableIdentifier')
+
+        query = UploadDataSerializer(request.query_params)
+
+        # if not query.is_valid():
+        #     raise ValidationError(query.errors)
+
+        identifier = query.data.get("identifier")
+        filename = query.data.get("filename")
+        chunk_number = query.data.get("chunk_number")
 
         # get chunk data
         chunk_data = request.FILES.get('file')

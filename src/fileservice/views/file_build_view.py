@@ -6,6 +6,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from src.basecore.responses import OkResponse
+from src.fileservice.serializers.upload_data_serializer import UploadDataSerializer
 from src.fileservice.views.file_upload_view import get_chunk_name
 
 
@@ -24,9 +25,15 @@ class FileBuildView(generics.GenericAPIView):
     TempBase = os.path.expanduser("home/tmp/uploads")
 
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        total_chunks = int(request.data.get('resumableTotalChunks'))
-        filename = request.data.get('resumableFilename')
-        identifier = request.data.get('resumableIdentifier')
+
+        query = UploadDataSerializer(request.query_params)
+
+        # if not query.is_valid():
+        #     raise ValidationError(query.errors)
+
+        identifier = query.data.get("identifier")
+        filename = query.data.get("filename")
+        total_chunks = query.data.get("total_chunks")
 
         # make temp directory
         temp_dir = os.path.join(FileBuildView.TempBase, identifier)
