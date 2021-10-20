@@ -22,7 +22,7 @@ def build_file(target_file_name: str, chunk_paths: List[str]) -> None:
 
 class FileBuildView(generics.GenericAPIView):
 
-    TempBase = os.path.expanduser("home/tmp/uploads")
+    temp_base = os.path.expanduser("home/tmp/uploads")
 
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
 
@@ -36,7 +36,7 @@ class FileBuildView(generics.GenericAPIView):
         total_chunks = query.data.get("total_chunks")
 
         # make temp directory
-        temp_dir = os.path.join(FileBuildView.TempBase, identifier)
+        temp_dir = os.path.join(FileBuildView.temp_base, identifier)
 
         # check if the upload is complete
         chunk_paths = [
@@ -47,7 +47,7 @@ class FileBuildView(generics.GenericAPIView):
 
         # create final file from all chunks
         if upload_complete:
-            target_file_name = os.path.join(FileBuildView.TempBase, filename)
+            target_file_name = os.path.join(FileBuildView.temp_base, filename)
             build_file(target_file_name, chunk_paths)
             os.rmdir(temp_dir)
 
