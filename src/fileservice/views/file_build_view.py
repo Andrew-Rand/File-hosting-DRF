@@ -27,6 +27,9 @@ class FileBuildView(generics.GenericAPIView):
     queryset = FileStorage.objects.get(type='temp')
     temp_storage_path = queryset.destination
 
+    queryset = FileStorage.objects.get(type='permanent')
+    permanent_storage_path = queryset.destination
+
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
 
         query = UploadDataSerializer(request.query_params)
@@ -38,11 +41,9 @@ class FileBuildView(generics.GenericAPIView):
         filename = query.data.get("filename")
         total_chunks = query.data.get("total_chunks")
 
-        print(identifier, filename, total_chunks)
 
         # make temp directory
         temp_dir = os.path.join(FileBuildView.temp_storage_path, identifier)
-        print(temp_dir)
 
         # check if the upload is complete
         chunk_paths = [
@@ -53,7 +54,10 @@ class FileBuildView(generics.GenericAPIView):
 
         # create final file from all chunks
         if upload_complete:
-            target_file_name = os.path.join(FileBuildView.temp_storage_path, filename)
+            if not os.path.isdir(FileBuildView.permanent_storage_path):
+                os.makedirs(FileBuildView.permanent_storage_path, 0o777)
+
+            target_file_name = os.path.join(FileBuildView.permanent_storage_path, filename)
             build_file(target_file_name, chunk_paths)
             os.rmdir(temp_dir)
 
@@ -62,4 +66,4 @@ class FileBuildView(generics.GenericAPIView):
         # serializer.save()
 
         # return CreatedResponse(data=serializer.data)
-        return CreatedResponse(data={"ok":"ok"})
+        return CreatedResponse(data={"file saved in": temp_dir})
