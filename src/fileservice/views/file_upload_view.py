@@ -27,16 +27,16 @@ class FileUploadView(generics.GenericAPIView):
         # if not query.is_valid():
         #     raise ValidationError(query.errors)
 
-        identifier = query.data.get("identifier")
-        filename = query.data.get("filename")
-        chunk_number = query.data.get("chunk_number")
+        identifier = query.data.get('identifier')
+        filename = query.data.get('filename')
+        chunk_number = query.data.get('chunk_number')
 
         temp_dir = os.path.join(FileUploadView.temp_storage_path, identifier)
 
         chunk_file = os.path.join(temp_dir, get_chunk_name(filename, chunk_number))
 
         if os.path.isfile(chunk_file):
-            return OkResponse(data={"ok?": "ok"})
+            return OkResponse(data={'ok?': 'ok'})
         else:
             # Let resumable.js know this chunk does not exists and needs to be uploaded
             raise NotFoundError()
@@ -48,9 +48,9 @@ class FileUploadView(generics.GenericAPIView):
         # if not query.is_valid():
         #     raise ValidationError(query.errors)
 
-        identifier = query.data.get("identifier")
-        filename = query.data.get("filename")
-        chunk_number = query.data.get("chunk_number")
+        identifier = query.data.get('identifier')
+        filename = query.data.get('filename')
+        chunk_number = query.data.get('chunk_number')
 
         # get chunk data
         chunk_data = request.FILES.get('file')
@@ -64,8 +64,8 @@ class FileUploadView(generics.GenericAPIView):
         chunk_name = get_chunk_name(filename, chunk_number)
         chunk_file = os.path.join(temp_dir, chunk_name)
 
-        with open(chunk_file, "wb") as file:
+        with open(chunk_file, 'wb') as file:
             for chunk in chunk_data.chunks():
                 file.write(chunk)
 
-        return OkResponse(data={"ok?": "ok"})
+        return OkResponse(data={'ok?': 'ok'})

@@ -40,9 +40,9 @@ class FileBuildView(generics.GenericAPIView):
         # if not query.is_valid():
         #     raise ValidationError(query.errors)
 
-        identifier = query.data.get("identifier")
-        filename = query.data.get("filename")
-        total_chunks = query.data.get("total_chunks")
+        identifier = query.data.get('identifier')
+        filename = query.data.get('filename')
+        total_chunks = query.data.get('total_chunks')
 
         # make temp directory
         temp_dir = os.path.join(FileBuildView.temp_storage_path, identifier)
@@ -83,4 +83,4 @@ class FileBuildView(generics.GenericAPIView):
             file.save()
             #  ^you can do it with File.create()^
 
-        return CreatedResponse(data={"file saved in": temp_dir})
+        return CreatedResponse(data={'file saved in': temp_dir})
