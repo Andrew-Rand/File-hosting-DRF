@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from src.accounts.authentication import login_required
 from src.accounts.models import User
 from src.basecore.responses import CreatedResponse
+from src.fileservice.calculate_hash import calculate_hash_md5
 from src.fileservice.models import FileStorage, File
 from src.fileservice.serializers.upload_data_serializer import UploadDataSerializer
 from src.fileservice.views.file_upload_view import get_chunk_name
@@ -62,10 +63,12 @@ class FileBuildView(generics.GenericAPIView):
             build_file(target_file_name, chunk_paths)
             os.rmdir(temp_dir)
 
+            #  calculate hash for database field
+            hash = calculate_hash_md5(target_file_name)
+
             # add information about file in files db (EXAMPLE)
             filetype = request.query_params.get('resumableType')
             filesize = request.query_params.get('resumableTotalSize')
-            file_hash_example = 'fasfvwiefc238t2c89t823xmt823'
 
             file = File()
 
@@ -74,9 +77,10 @@ class FileBuildView(generics.GenericAPIView):
             file.type = filetype
             file.storage = FileBuildView.queryset_perm
             file.destination = target_file_name
-            file.hash = file_hash_example
+            file.hash = hash
             file.size = filesize
 
             file.save()
+            #  ^you can do it with File.create()^
 
         return CreatedResponse(data={"file saved in": temp_dir})
