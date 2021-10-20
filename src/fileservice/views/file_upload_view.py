@@ -17,7 +17,7 @@ def get_chunk_name(uploaded_filename: str, chunk_number: int) -> str:
 
 class FileUploadView(generics.GenericAPIView):
 
-    temp_base = os.path.expanduser("home/tmp/uploads")
+    temp_base = os.path.expanduser("storage/temp/uploads")
     # temp_base = FileStorage.objects.filter(type='temp').first()
 
     def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:

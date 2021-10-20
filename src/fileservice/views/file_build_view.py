@@ -24,7 +24,7 @@ def build_file(target_file_name: str, chunk_paths: List[str]) -> None:
 
 class FileBuildView(generics.GenericAPIView):
 
-    temp_base = os.path.expanduser("home/tmp/uploads")
+    temp_base = os.path.expanduser("storage/temp/uploads")
     # temp_base = FileStorage.objects.filter(type='temp').first()
 
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
