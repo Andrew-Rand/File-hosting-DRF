@@ -2,7 +2,6 @@ import os
 from typing import Any
 
 from rest_framework import generics
-from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
 
