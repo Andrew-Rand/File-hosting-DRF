@@ -6,6 +6,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from src.basecore.responses import OkResponse, CreatedResponse
+from src.fileservice.models import FileStorage
 from src.fileservice.serializers.file_upload_serializer import FileUploadSerializer
 from src.fileservice.serializers.upload_data_serializer import UploadDataSerializer
 from src.fileservice.views.file_upload_view import get_chunk_name
@@ -24,6 +25,7 @@ def build_file(target_file_name: str, chunk_paths: List[str]) -> None:
 class FileBuildView(generics.GenericAPIView):
 
     temp_base = os.path.expanduser("home/tmp/uploads")
+    # temp_base = FileStorage.objects.filter(type='temp').first()
 
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
 
@@ -57,5 +59,3 @@ class FileBuildView(generics.GenericAPIView):
         serializer.save()
 
         return CreatedResponse(data=serializer.data)
-
-

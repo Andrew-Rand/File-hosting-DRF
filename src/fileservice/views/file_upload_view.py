@@ -17,7 +17,8 @@ def get_chunk_name(uploaded_filename: str, chunk_number: int) -> str:
 
 class FileUploadView(generics.GenericAPIView):
 
-    TempBase = os.path.expanduser("home/tmp/uploads")
+    temp_base = os.path.expanduser("home/tmp/uploads")
+    # temp_base = FileStorage.objects.filter(type='temp').first()
 
     def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
 
@@ -30,7 +31,7 @@ class FileUploadView(generics.GenericAPIView):
         filename = query.data.get("filename")
         chunk_number = query.data.get("chunk_number")
 
-        temp_dir = os.path.join(FileUploadView.TempBase, identifier)
+        temp_dir = os.path.join(FileUploadView.temp_base, identifier)
 
         chunk_file = os.path.join(temp_dir, get_chunk_name(filename, chunk_number))
 
@@ -55,7 +56,7 @@ class FileUploadView(generics.GenericAPIView):
         chunk_data = request.FILES.get('file')
 
         # make temp directory
-        temp_dir = os.path.join(FileUploadView.TempBase, identifier)
+        temp_dir = os.path.join(FileUploadView.temp_base, identifier)
         if not os.path.isdir(temp_dir):
             os.makedirs(temp_dir, 0o777)
 
