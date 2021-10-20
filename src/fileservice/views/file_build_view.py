@@ -5,7 +5,8 @@ from rest_framework import generics
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from src.basecore.responses import OkResponse
+from src.basecore.responses import OkResponse, CreatedResponse
+from src.fileservice.serializers.file_upload_serializer import FileUploadSerializer
 from src.fileservice.serializers.upload_data_serializer import UploadDataSerializer
 from src.fileservice.views.file_upload_view import get_chunk_name
 
@@ -51,4 +52,10 @@ class FileBuildView(generics.GenericAPIView):
             build_file(target_file_name, chunk_paths)
             os.rmdir(temp_dir)
 
-        return OkResponse(data={"ok?": "ok"})
+        serializer = FileUploadSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return CreatedResponse(data=serializer.data)
+
+
