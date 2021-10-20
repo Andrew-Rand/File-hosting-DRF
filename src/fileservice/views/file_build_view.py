@@ -5,9 +5,10 @@ from rest_framework import generics
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from src.basecore.responses import OkResponse, CreatedResponse
-from src.fileservice.models import FileStorage
-from src.fileservice.serializers.file_upload_serializer import FileUploadSerializer
+from src.accounts.authentication import login_required
+from src.accounts.models import User
+from src.basecore.responses import CreatedResponse
+from src.fileservice.models import FileStorage, File
 from src.fileservice.serializers.upload_data_serializer import UploadDataSerializer
 from src.fileservice.views.file_upload_view import get_chunk_name
 
@@ -24,13 +25,14 @@ def build_file(target_file_name: str, chunk_paths: List[str]) -> None:
 
 class FileBuildView(generics.GenericAPIView):
 
-    queryset = FileStorage.objects.get(type='temp')
-    temp_storage_path = queryset.destination
+    queryset_temp = FileStorage.objects.get(type='temp')
+    temp_storage_path = queryset_temp.destination
 
-    queryset = FileStorage.objects.get(type='permanent')
-    permanent_storage_path = queryset.destination
+    queryset_perm = FileStorage.objects.get(type='permanent')
+    permanent_storage_path = queryset_perm.destination
 
-    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    @login_required
+    def post(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
 
         query = UploadDataSerializer(request.query_params)
 
@@ -40,7 +42,6 @@ class FileBuildView(generics.GenericAPIView):
         identifier = query.data.get("identifier")
         filename = query.data.get("filename")
         total_chunks = query.data.get("total_chunks")
-
 
         # make temp directory
         temp_dir = os.path.join(FileBuildView.temp_storage_path, identifier)
@@ -61,9 +62,21 @@ class FileBuildView(generics.GenericAPIView):
             build_file(target_file_name, chunk_paths)
             os.rmdir(temp_dir)
 
-        # serializer = FileUploadSerializer(data=data_to_serializer)
-        # serializer.is_valid(raise_exception=True)
-        # serializer.save()
+            # add information about file in files db (EXAMPLE)
+            filetype = request.query_params.get('resumableType')
+            filesize = request.query_params.get('resumableTotalSize')
+            file_hash_example = 'fasfvwiefc238t2c89t823xmt823'
 
-        # return CreatedResponse(data=serializer.data)
+            file = File()
+
+            file.user = user
+            file.name = filename
+            file.type = filetype
+            file.storage = FileBuildView.queryset_perm
+            file.destination = target_file_name
+            file.hash = file_hash_example
+            file.size = filesize
+
+            file.save()
+
         return CreatedResponse(data={"file saved in": temp_dir})
