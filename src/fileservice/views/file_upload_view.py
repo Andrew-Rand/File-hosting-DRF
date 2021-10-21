@@ -26,10 +26,9 @@ class FileUploadView(generics.GenericAPIView):
 
         if not query.is_valid():
             raise ValidationError(query.errors)
-
-        identifier = query.data.get('resumableIdentifier')
-        filename = query.data.get('resumableFilename')
-        chunk_number = query.data.get('resumableChunkNumber')
+        identifier = query.validated_data.get('identifier')
+        filename = query.validated_data.get('filename')
+        chunk_number = query.validated_data.get('chunk_number')
 
         chunks_dir_path = os.path.join(FileUploadView.temp_storage_path.destination, identifier)
 
@@ -48,9 +47,9 @@ class FileUploadView(generics.GenericAPIView):
         if not query.is_valid():
             raise ValidationError(query.errors)
 
-        identifier = query.data.get('resumableIdentifier')
-        filename = query.data.get('resumableFilename')
-        chunk_number = query.data.get('resumableChunkNumber')
+        identifier = query.validated_data.get('identifier')
+        filename = query.validated_data.get('filename')
+        chunk_number = query.validated_data.get('chunk_number')
 
         # get chunk data
         chunk_data = request.FILES.get('file')

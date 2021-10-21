@@ -39,12 +39,14 @@ class FileBuildView(generics.GenericAPIView):
         if not query.is_valid():
             raise ValidationError(query.errors)
 
-        identifier = query.data.get('resumableIdentifier')
-        filename = query.data.get('resumableFilename')
-        total_chunks = query.data.get('resumableTotalChunks')
+        identifier = query.validated_data.get('identifier')
+        filename = query.validated_data.get('filename')
+        total_chunks = query.validated_data.get('resumableTotalChunks')
+        filetype = query.validated_data.get('type')
+        filesize = query.validated_data.get('total_size')
 
         # make temp directory
-        chunks_dir_path = os.path.join(FileBuildView.temp_storage_path.destination, identifier)
+        chunks_dir_path = os.path.join(self.temp_storage_path.destination, identifier)
 
         # check if the upload is complete
         chunk_paths = [
@@ -57,31 +59,16 @@ class FileBuildView(generics.GenericAPIView):
             raise BadRequestError
 
         # create final file from all chunks
-        user_storage_path = os.path.join(FileBuildView.permanent_storage_path.destination, str(user.id))
-        os.makedirs(user_storage_path, 0o777)
+        user_storage_path = os.path.join(self.permanent_storage_path.destination, str(user.id))
+        os.makedirs(user_storage_path, 0o777, exist_ok=True)
 
         target_file_name = os.path.join(user_storage_path, filename)
         build_file(target_file_name, chunk_paths)
         os.rmdir(chunks_dir_path)
 
-        #  calculate hash for database field
-        hash = calculate_hash_md5(target_file_name)
+        file_hash = calculate_hash_md5(target_file_name)
 
-        # add information about file in files db
-        filetype = query.data.get('resumableType')
-        filesize = query.data.get('resumableTotalSize')
-
-        file = File()
-
-        file.user = user
-        file.name = filename
-        file.type = filetype
-        file.storage = FileBuildView.permanent_storage_path
-        file.destination = target_file_name
-        file.hash = hash
-        file.size = filesize
-
-        file.save()
-        #  ^you can do it with File.create()^
+        File.objects.create(user=user, name=filename, type=filetype, storage=FileBuildView.permanent_storage_path,
+                            destination=target_file_name, hash=file_hash, size=filesize)
 
         return CreatedResponse(data={'file saved in': user_storage_path})
