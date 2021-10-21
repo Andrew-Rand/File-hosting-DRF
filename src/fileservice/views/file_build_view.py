@@ -43,7 +43,7 @@ class FileBuildView(generics.GenericAPIView):
         total_chunks = query.data.get('total_chunks')
 
         # make temp directory
-        chunks_dir_path = os.path.join(FileBuildView.temp_storage_path.detination, identifier)
+        chunks_dir_path = os.path.join(FileBuildView.temp_storage_path.destination, identifier)
 
         # check if the upload is complete
         chunk_paths = [
