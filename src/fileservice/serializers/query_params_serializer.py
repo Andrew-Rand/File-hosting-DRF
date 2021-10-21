@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 
-class UploadDataSerializer(serializers.Serializer):
+class QueryParamsSerializer(serializers.Serializer):
     resumableTotalChunks = serializers.IntegerField(source='total_chunk', min_value=1)
     resumableChunkNumber = serializers.IntegerField(source='chunk_number', min_value=1)
     resumableFilename = serializers.CharField(source='filename', max_length=256)

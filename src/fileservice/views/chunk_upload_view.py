@@ -9,47 +9,47 @@ from rest_framework.response import Response
 from src.basecore.custom_error_handler import NotFoundError
 from src.basecore.responses import OkResponse
 from src.fileservice.models import FileStorage
-from src.fileservice.serializers.upload_data_serializer import UploadDataSerializer
+from src.fileservice.serializers.query_params_serializer import QueryParamsSerializer
 
 
 def get_chunk_name(uploaded_filename: str, chunk_number: int) -> str:
     return f'{uploaded_filename}_part_{chunk_number}'
 
 
-class FileUploadView(generics.GenericAPIView):
+class ChunkUploadView(generics.GenericAPIView):
 
     temp_storage_path = FileStorage.objects.get(type='temp')
 
     def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
 
-        query = UploadDataSerializer(data=request.query_params)
+        serializer = QueryParamsSerializer(data=request.query_params)
 
-        if not query.is_valid():
-            raise ValidationError(query.errors)
-        identifier = query.validated_data.get('identifier')
-        filename = query.validated_data.get('filename')
-        chunk_number = query.validated_data.get('chunk_number')
+        if not serializer.is_valid():
+            raise ValidationError(serializer.errors)
+        identifier = serializer.validated_data.get('identifier')
+        filename = serializer.validated_data.get('filename')
+        chunk_number = serializer.validated_data.get('chunk_number')
 
         chunks_dir_path = os.path.join(self.temp_storage_path.destination, identifier)
 
         chunk_file = os.path.join(chunks_dir_path, get_chunk_name(filename, chunk_number))
 
         if os.path.isfile(chunk_file):
-            return OkResponse(data={'ok?': 'ok'})
+            return OkResponse()
         else:
             # Let resumable.js know this chunk does not exists and needs to be uploaded
             raise NotFoundError()
 
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
 
-        query = UploadDataSerializer(data=request.query_params)
+        serializer = QueryParamsSerializer(data=request.query_params)
 
-        if not query.is_valid():
-            raise ValidationError(query.errors)
+        if not serializer.is_valid():
+            raise ValidationError(serializer.errors)
 
-        identifier = query.validated_data.get('identifier')
-        filename = query.validated_data.get('filename')
-        chunk_number = query.validated_data.get('chunk_number')
+        identifier = serializer.validated_data.get('identifier')
+        filename = serializer.validated_data.get('filename')
+        chunk_number = serializer.validated_data.get('chunk_number')
 
         # get chunk data
         chunk_data = request.FILES.get('file')
@@ -66,4 +66,4 @@ class FileUploadView(generics.GenericAPIView):
             for chunk in chunk_data.chunks():
                 file.write(chunk)
 
-        return OkResponse(data={'ok?': 'ok'})
+        return OkResponse()
