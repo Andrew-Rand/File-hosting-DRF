@@ -19,7 +19,7 @@ class File(BaseModel):
     class Meta:
         db_table = 'files'
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'file {self.name} belongs to {self.user}'
 
     @staticmethod
