@@ -2,6 +2,7 @@ import os
 from typing import Any
 
 from rest_framework import generics
+from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -21,14 +22,14 @@ class FileUploadView(generics.GenericAPIView):
 
     def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
 
-        query = UploadDataSerializer(request.query_params)
+        query = UploadDataSerializer(data=request.query_params)
 
-        # if not query.is_valid():
-        #     raise ValidationError(query.errors)
+        if not query.is_valid():
+            raise ValidationError(query.errors)
 
-        identifier = query.data.get('identifier')
-        filename = query.data.get('filename')
-        chunk_number = query.data.get('chunk_number')
+        identifier = query.data.get('resumableIdentifier')
+        filename = query.data.get('resumableFilename')
+        chunk_number = query.data.get('resumableChunkNumber')
 
         chunks_dir_path = os.path.join(FileUploadView.temp_storage_path.destination, identifier)
 
@@ -42,14 +43,14 @@ class FileUploadView(generics.GenericAPIView):
 
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
 
-        query = UploadDataSerializer(request.query_params)
+        query = UploadDataSerializer(data=request.query_params)
 
-        # if not query.is_valid():
-        #     raise ValidationError(query.errors)
+        if not query.is_valid():
+            raise ValidationError(query.errors)
 
-        identifier = query.data.get('identifier')
-        filename = query.data.get('filename')
-        chunk_number = query.data.get('chunk_number')
+        identifier = query.data.get('resumableIdentifier')
+        filename = query.data.get('resumableFilename')
+        chunk_number = query.data.get('resumableChunkNumber')
 
         # get chunk data
         chunk_data = request.FILES.get('file')

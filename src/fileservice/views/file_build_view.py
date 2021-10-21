@@ -2,6 +2,7 @@ import os
 from typing import Any, List
 
 from rest_framework import generics
+from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -33,14 +34,14 @@ class FileBuildView(generics.GenericAPIView):
     @login_required
     def post(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
 
-        query = UploadDataSerializer(request.query_params)
+        query = UploadDataSerializer(data=request.query_params)
 
-        # if not query.is_valid():
-        #     raise ValidationError(query.errors)
+        if not query.is_valid():
+            raise ValidationError(query.errors)
 
-        identifier = query.data.get('identifier')
-        filename = query.data.get('filename')
-        total_chunks = query.data.get('total_chunks')
+        identifier = query.data.get('resumableIdentifier')
+        filename = query.data.get('resumableFilename')
+        total_chunks = query.data.get('resumableTotalChunks')
 
         # make temp directory
         chunks_dir_path = os.path.join(FileBuildView.temp_storage_path.destination, identifier)
@@ -66,9 +67,9 @@ class FileBuildView(generics.GenericAPIView):
         #  calculate hash for database field
         hash = calculate_hash_md5(target_file_name)
 
-        # add information about file in files db (EXAMPLE)
-        filetype = request.query_params.get('resumableType')
-        filesize = request.query_params.get('resumableTotalSize')
+        # add information about file in files db
+        filetype = query.data.get('resumableType')
+        filesize = query.data.get('resumableTotalSize')
 
         file = File()
 
