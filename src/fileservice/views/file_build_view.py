@@ -42,8 +42,6 @@ class FileBuildView(generics.GenericAPIView):
         identifier = serializer.validated_data.get('identifier')
         filename = serializer.validated_data.get('filename')
         total_chunks = serializer.validated_data.get('total_chunk')
-        filetype = serializer.validated_data.get('type')
-        filesize = serializer.validated_data.get('total_size')
 
         # make temp directory
         chunks_dir_path = os.path.join(self.temp_storage_path.destination, identifier)
@@ -67,7 +65,6 @@ class FileBuildView(generics.GenericAPIView):
 
         file_hash = calculate_hash_md5(target_file_name)
 
-        File.objects.create(user=user, name=filename, type=filetype, storage=self.permanent_storage_path,
-                            destination=target_file_name, hash=file_hash, size=filesize)
+        File.create_model_object(user, file_hash, self.permanent_storage_path, target_file_name, serializer.validated_data)
 
         return CreatedResponse(data={'file saved in': user_storage_path})
