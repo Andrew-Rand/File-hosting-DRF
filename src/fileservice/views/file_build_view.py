@@ -7,6 +7,7 @@ from rest_framework.response import Response
 
 from src.accounts.authentication import login_required
 from src.accounts.models import User
+from src.basecore.custom_error_handler import BadRequestError
 from src.basecore.responses import CreatedResponse
 from src.fileservice.calculate_hash import calculate_hash_md5
 from src.fileservice.models import FileStorage, File
@@ -26,11 +27,8 @@ def build_file(target_file_name: str, chunk_paths: List[str]) -> None:
 
 class FileBuildView(generics.GenericAPIView):
 
-    queryset_temp = FileStorage.objects.get(type='temp')
-    temp_storage_path = queryset_temp.destination
-
-    queryset_perm = FileStorage.objects.get(type='permanent')
-    permanent_storage_path = queryset_perm.destination
+    temp_storage_path = FileStorage.objects.get(type='temp')
+    permanent_storage_path = FileStorage.objects.get(type='permanent')
 
     @login_required
     def post(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
@@ -45,42 +43,44 @@ class FileBuildView(generics.GenericAPIView):
         total_chunks = query.data.get('total_chunks')
 
         # make temp directory
-        temp_dir = os.path.join(FileBuildView.temp_storage_path, identifier)
+        chunks_dir_path = os.path.join(FileBuildView.temp_storage_path.detination, identifier)
 
         # check if the upload is complete
         chunk_paths = [
-            os.path.join(temp_dir, get_chunk_name(filename, x))
+            os.path.join(chunks_dir_path, get_chunk_name(filename, x))
             for x in range(1, total_chunks + 1)
         ]
         upload_complete = all([os.path.exists(p) for p in chunk_paths])
 
+        if not upload_complete:
+            raise BadRequestError
+
         # create final file from all chunks
-        if upload_complete:
-            if not os.path.isdir(FileBuildView.permanent_storage_path):
-                os.makedirs(FileBuildView.permanent_storage_path, 0o777)
+        user_storage_path = os.path.join(FileBuildView.permanent_storage_path.destination, str(user.id))
+        os.makedirs(user_storage_path, 0o777)
 
-            target_file_name = os.path.join(FileBuildView.permanent_storage_path, filename)
-            build_file(target_file_name, chunk_paths)
-            os.rmdir(temp_dir)
+        target_file_name = os.path.join(user_storage_path, filename)
+        build_file(target_file_name, chunk_paths)
+        os.rmdir(chunks_dir_path)
 
-            #  calculate hash for database field
-            hash = calculate_hash_md5(target_file_name)
+        #  calculate hash for database field
+        hash = calculate_hash_md5(target_file_name)
 
-            # add information about file in files db (EXAMPLE)
-            filetype = request.query_params.get('resumableType')
-            filesize = request.query_params.get('resumableTotalSize')
+        # add information about file in files db (EXAMPLE)
+        filetype = request.query_params.get('resumableType')
+        filesize = request.query_params.get('resumableTotalSize')
 
-            file = File()
+        file = File()
 
-            file.user = user
-            file.name = filename
-            file.type = filetype
-            file.storage = FileBuildView.queryset_perm
-            file.destination = target_file_name
-            file.hash = hash
-            file.size = filesize
+        file.user = user
+        file.name = filename
+        file.type = filetype
+        file.storage = FileBuildView.permanent_storage_path
+        file.destination = target_file_name
+        file.hash = hash
+        file.size = filesize
 
-            file.save()
-            #  ^you can do it with File.create()^
+        file.save()
+        #  ^you can do it with File.create()^
 
-        return CreatedResponse(data={'file saved in': temp_dir})
+        return CreatedResponse(data={'file saved in': user_storage_path})

@@ -17,8 +17,7 @@ def get_chunk_name(uploaded_filename: str, chunk_number: int) -> str:
 
 class FileUploadView(generics.GenericAPIView):
 
-    queryset = FileStorage.objects.get(type='temp')
-    temp_storage_path = queryset.destination
+    temp_storage_path = FileStorage.objects.get(type='temp')
 
     def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
 
@@ -31,9 +30,9 @@ class FileUploadView(generics.GenericAPIView):
         filename = query.data.get('filename')
         chunk_number = query.data.get('chunk_number')
 
-        temp_dir = os.path.join(FileUploadView.temp_storage_path, identifier)
+        chunks_dir_path = os.path.join(FileUploadView.temp_storage_path.detination, identifier)
 
-        chunk_file = os.path.join(temp_dir, get_chunk_name(filename, chunk_number))
+        chunk_file = os.path.join(chunks_dir_path, get_chunk_name(filename, chunk_number))
 
         if os.path.isfile(chunk_file):
             return OkResponse(data={'ok?': 'ok'})
@@ -56,13 +55,13 @@ class FileUploadView(generics.GenericAPIView):
         chunk_data = request.FILES.get('file')
 
         # make temp directory
-        temp_dir = os.path.join(FileUploadView.temp_storage_path, identifier)
-        if not os.path.isdir(temp_dir):
-            os.makedirs(temp_dir, 0o777)
+        chunks_dir_path = os.path.join(FileUploadView.temp_storage_path.detination, identifier)
+        if not os.path.isdir(chunks_dir_path):
+            os.makedirs(chunks_dir_path, 0o777)
 
         # save chunk data
         chunk_name = get_chunk_name(filename, chunk_number)
-        chunk_file = os.path.join(temp_dir, chunk_name)
+        chunk_file = os.path.join(chunks_dir_path, chunk_name)
 
         with open(chunk_file, 'wb') as file:
             for chunk in chunk_data.chunks():
