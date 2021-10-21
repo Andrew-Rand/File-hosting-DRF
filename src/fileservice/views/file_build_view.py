@@ -41,7 +41,7 @@ class FileBuildView(generics.GenericAPIView):
 
         identifier = query.validated_data.get('identifier')
         filename = query.validated_data.get('filename')
-        total_chunks = query.validated_data.get('resumableTotalChunks')
+        total_chunks = query.validated_data.get('total_chunk')
         filetype = query.validated_data.get('type')
         filesize = query.validated_data.get('total_size')
 
@@ -61,7 +61,6 @@ class FileBuildView(generics.GenericAPIView):
         # create final file from all chunks
         user_storage_path = os.path.join(self.permanent_storage_path.destination, str(user.id))
         os.makedirs(user_storage_path, 0o777, exist_ok=True)
-
         target_file_name = os.path.join(user_storage_path, filename)
         build_file(target_file_name, chunk_paths)
         os.rmdir(chunks_dir_path)
