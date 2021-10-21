@@ -17,7 +17,7 @@ from src.fileservice.views.chunk_upload_view import get_chunk_name
 
 
 def build_file(target_file_name: str, chunk_paths: List[str]) -> None:
-    with open(target_file_name, "ab") as target_file:
+    with open(target_file_name, 'ab') as target_file:
         for stored_chunk_file_name in chunk_paths:
             stored_chunk_file = open(stored_chunk_file_name, 'rb')
             target_file.write(stored_chunk_file.read())
