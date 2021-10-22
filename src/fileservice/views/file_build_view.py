@@ -12,7 +12,7 @@ from src.basecore.custom_error_handler import BadRequestError
 from src.basecore.responses import CreatedResponse
 from src.fileservice.calculate_hash import calculate_hash_md5
 from src.fileservice.models import FileStorage, File
-from src.fileservice.serializers.query_params_serializer import QueryParamsSerializer
+from src.fileservice.serializers.file_upload_parameters_serializer import FileUploadParametersSerializer
 from src.fileservice.views.chunk_upload_view import get_chunk_name
 
 
@@ -30,11 +30,12 @@ class FileBuildView(generics.GenericAPIView):
 
     temp_storage_path = FileStorage.objects.get(type='temp')
     permanent_storage_path = FileStorage.objects.get(type='permanent')
+    serializer_class = FileUploadParametersSerializer
 
     @login_required
     def post(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
 
-        serializer = QueryParamsSerializer(data=request.query_params)
+        serializer = self.get_serializer(data=request.data)
 
         if not serializer.is_valid():
             raise ValidationError(serializer.errors)
