@@ -44,7 +44,8 @@ class FileBuildView(generics.GenericAPIView):
         total_chunks = serializer.validated_data.get('total_chunk')
 
         # make temp directory
-        chunks_dir_path = os.path.join(self.temp_storage_path.destination, identifier)
+        user_dir_path = os.path.join(self.temp_storage_path.destination, str(user.id))
+        chunks_dir_path = os.path.join(user_dir_path, identifier)
 
         # check if the upload is complete
         chunk_paths = [

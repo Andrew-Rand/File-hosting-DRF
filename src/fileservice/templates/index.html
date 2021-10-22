@@ -102,8 +102,25 @@
               $('.resumable-progress .progress-resume-link').hide();
               $('.resumable-progress .progress-pause-link').show();
           });
+
+
+
+
+                XMLHttpRequest.prototype.open = (function(open) {
+          return function(method,url,async) {
+            open.apply(this,arguments);
+            this.setRequestHeader('Authorization', 'token');
+            this.setRequestHeader('customHeader2', 'someOtherValue');
+            };
+        })(XMLHttpRequest.prototype.open);
+
+
+
+
         }
+
       </script>
+
 
     </div>
   </body>
