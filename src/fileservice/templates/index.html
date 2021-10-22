@@ -106,13 +106,13 @@
 
 
 
-                XMLHttpRequest.prototype.open = (function(open) {
-          return function(method,url,async) {
-            open.apply(this,arguments);
-            this.setRequestHeader('Authorization', 'token');
-            this.setRequestHeader('customHeader2', 'someOtherValue');
+          XMLHttpRequest.prototype.open = (function(open) {
+            return function(method,url,async) {
+              open.apply(this,arguments);
+              this.setRequestHeader('Authorization', 'token');
+              this.setRequestHeader('customHeader2', 'someOtherValue');
             };
-        })(XMLHttpRequest.prototype.open);
+          })(XMLHttpRequest.prototype.open);
 
 
 
