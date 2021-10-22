@@ -24,15 +24,15 @@ class File(BaseModel):
 
     @staticmethod
     def create_model_object(user: User,
-                            file_hash: str,
-                            file_storage: FileStorage,
-                            target_file_name: str,
-                            validated_query_data: Dict[str, Any]) -> None:
+                            hash: str,
+                            storage: FileStorage,
+                            destination: str,
+                            data: Dict[str, Any]) -> None:
 
         File.objects.create(user=user,
-                            name=validated_query_data.get('filename'),
-                            type=validated_query_data.get('type'),
-                            storage=file_storage,
-                            destination=target_file_name,
-                            hash=file_hash,
-                            size=validated_query_data.get('total_size'))
+                            name=data.get('filename'),
+                            type=data.get('type'),
+                            storage=storage,
+                            destination=destination,
+                            hash=hash,
+                            size=data.get('total_size'))
