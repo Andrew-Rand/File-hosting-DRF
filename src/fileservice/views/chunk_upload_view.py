@@ -11,6 +11,7 @@ from src.accounts.models import User
 from src.basecore.custom_error_handler import NotFoundError
 from src.basecore.responses import OkResponse
 from src.fileservice.models import FileStorage
+from src.fileservice.models.file_storage import TEMP_STORAGE
 from src.fileservice.serializers.file_upload_parameters_serializer import FileUploadParametersSerializer
 
 
@@ -20,7 +21,7 @@ def get_chunk_name(uploaded_filename: str, chunk_number: int) -> str:
 
 class ChunkUploadView(generics.GenericAPIView):
 
-    temp_storage_path = FileStorage.objects.get(type='temp')
+    temp_storage_path = FileStorage.objects.get(type=TEMP_STORAGE)
     serializer_class = FileUploadParametersSerializer
 
     @login_required

@@ -3,9 +3,12 @@ from django.db import models
 from src.basecore.base_model import BaseModel
 
 
+TEMP_STORAGE = 'temp'
+PERMANENT_STORAGE = 'permanent'
+
 STORAGE_TYPE_CHOICES = (
-    ('temp', 'temp'),
-    ('permanent', 'permanent'),
+    (TEMP_STORAGE, 'temp'),
+    (PERMANENT_STORAGE, 'permanent'),
 )
 
 

@@ -10,6 +10,7 @@ from src.accounts.authentication import login_required
 from src.accounts.models import User
 from src.basecore.custom_error_handler import BadRequestError
 from src.basecore.responses import CreatedResponse
+from src.fileservice.models.file_storage import TEMP_STORAGE, PERMANENT_STORAGE
 from src.fileservice.utils import calculate_hash_md5
 from src.fileservice.models import FileStorage, File
 from src.fileservice.serializers.file_upload_parameters_serializer import FileUploadParametersSerializer
@@ -28,8 +29,8 @@ def build_file(target_file_path: str, chunk_paths: List[str]) -> None:
 
 class FileBuildView(generics.GenericAPIView):
 
-    temp_storage_path = FileStorage.objects.get(type='temp')
-    permanent_storage_path = FileStorage.objects.get(type='permanent')
+    temp_storage_path = FileStorage.objects.get(type=TEMP_STORAGE)
+    permanent_storage_path = FileStorage.objects.get(type=PERMANENT_STORAGE)
     serializer_class = FileUploadParametersSerializer
 
     @login_required
