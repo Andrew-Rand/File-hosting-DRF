@@ -10,7 +10,7 @@ from src.accounts.authentication import login_required
 from src.accounts.models import User
 from src.basecore.custom_error_handler import BadRequestError
 from src.basecore.responses import CreatedResponse
-from src.fileservice.calculate_hash import calculate_hash_md5
+from src.fileservice.utils import calculate_hash_md5
 from src.fileservice.models import FileStorage, File
 from src.fileservice.serializers.file_upload_parameters_serializer import FileUploadParametersSerializer
 from src.fileservice.views.chunk_upload_view import get_chunk_name
