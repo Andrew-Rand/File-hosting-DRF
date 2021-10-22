@@ -16,8 +16,8 @@ from src.fileservice.serializers.file_upload_parameters_serializer import FileUp
 from src.fileservice.views.chunk_upload_view import get_chunk_name
 
 
-def build_file(target_file_name: str, chunk_paths: List[str]) -> None:
-    with open(target_file_name, 'ab') as target_file:
+def build_file(target_file_path: str, chunk_paths: List[str]) -> None:
+    with open(target_file_path, 'ab') as target_file:
         for stored_chunk_file_name in chunk_paths:
             stored_chunk_file = open(stored_chunk_file_name, 'rb')
             target_file.write(stored_chunk_file.read())
@@ -61,12 +61,12 @@ class FileBuildView(generics.GenericAPIView):
         # create final file from all chunks
         user_storage_path = os.path.join(self.permanent_storage_path.destination, str(user.id))
         os.makedirs(user_storage_path, 0o777, exist_ok=True)
-        target_file_name = os.path.join(user_storage_path, filename)
-        build_file(target_file_name, chunk_paths)
+        target_file_path = os.path.join(user_storage_path, filename)
+        build_file(target_file_path, chunk_paths)
         os.rmdir(chunks_dir_path)
 
-        file_hash = calculate_hash_md5(target_file_name)
+        file_hash = calculate_hash_md5(target_file_path)
 
-        File.create_model_object(user, file_hash, self.permanent_storage_path, target_file_name, serializer.validated_data)
+        File.create_model_object(user, file_hash, self.permanent_storage_path, target_file_path, serializer.validated_data)
 
         return CreatedResponse(data={'file saved in': user_storage_path})
