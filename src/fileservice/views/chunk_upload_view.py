@@ -40,7 +40,7 @@ class ChunkUploadView(generics.GenericAPIView):
         chunk_file = os.path.join(chunks_dir_path, get_chunk_name(filename, chunk_number))
 
         if os.path.isfile(chunk_file):
-            return OkResponse()
+            return OkResponse({})
         else:
             # Let resumable.js know this chunk does not exists and needs to be uploaded
             raise NotFoundError()
@@ -73,4 +73,4 @@ class ChunkUploadView(generics.GenericAPIView):
             for chunk in chunk_data.chunks():
                 file.write(chunk)
 
-        return OkResponse()
+        return OkResponse({})
