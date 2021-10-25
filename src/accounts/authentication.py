@@ -39,5 +39,5 @@ def login_required(func: Callable[..., Any]) -> Callable[..., Any]:
         if user is None:
             raise NotFoundError('User not found')
 
-        return func(request_object, request, *args, **kwargs)
+        return func(request_object, request, *args, user=user, **kwargs)
     return wrapper
