@@ -1,8 +1,8 @@
 from django.urls import re_path
 
 from .views.file_build_view import FileBuildView
-from .views.file_upload_view import FileUploadView
-from .views.single_upload_view import SingleUploadView
+from .views.chunk_upload_view import FileUploadView
+from .views.file_upload_view import SingleUploadView
 from .views.upload_template_view import UploadTemplateView
 
 urlpatterns = [

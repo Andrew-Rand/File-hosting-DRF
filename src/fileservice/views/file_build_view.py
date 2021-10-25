@@ -6,7 +6,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from src.basecore.responses import OkResponse
-from src.fileservice.views.file_upload_view import get_chunk_name
+from src.fileservice.views.chunk_upload_view import get_chunk_name
 
 
 def build_file(target_file_name: str, chunk_paths: List[str]) -> None:
