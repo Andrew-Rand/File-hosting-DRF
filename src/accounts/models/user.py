@@ -1,10 +1,11 @@
 from typing import List
 
 from django.db import models
+from django.contrib.auth.hashers import check_password, make_password
+
 from src.accounts.managers import MyUserManager
 from src.basecore.base_model import BaseModel
 from ..validators import validate_age, validate_name
-from django.contrib.auth.hashers import check_password, make_password
 
 
 class User(BaseModel):
