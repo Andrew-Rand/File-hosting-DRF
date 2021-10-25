@@ -70,4 +70,4 @@ class FileBuildView(generics.GenericAPIView):
 
         File.create_model_object(user, file_hash, self.permanent_storage_path, target_file_path, serializer.validated_data)
 
-        return CreatedResponse(data={'file saved in': user_storage_path})
+        return CreatedResponse(data=serializer.data)
