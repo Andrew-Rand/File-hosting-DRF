@@ -21,7 +21,7 @@ def get_chunk_name(uploaded_filename: str, chunk_number: int) -> str:
 
 class ChunkUploadView(generics.GenericAPIView):
 
-    temp_storage_path = FileStorage.objects.get(type=TEMP_STORAGE)
+    temp_storage = FileStorage.objects.get(type=TEMP_STORAGE)
     serializer_class = FileUploadParametersSerializer
 
     @login_required
@@ -35,7 +35,7 @@ class ChunkUploadView(generics.GenericAPIView):
         filename = serializer.validated_data.get('filename')
         chunk_number = serializer.validated_data.get('chunk_number')
 
-        user_dir_path = os.path.join(self.temp_storage_path.destination, str(user.id))
+        user_dir_path = os.path.join(self.temp_storage.destination, str(user.id))
         chunks_dir_path = os.path.join(user_dir_path, identifier)
 
         chunk_file = os.path.join(chunks_dir_path, get_chunk_name(filename, chunk_number))
@@ -62,15 +62,15 @@ class ChunkUploadView(generics.GenericAPIView):
         chunk_data = request.FILES.get('file')
 
         # make temp directory
-        user_dir_path = os.path.join(self.temp_storage_path.destination, str(user.id))
+        user_dir_path = os.path.join(self.temp_storage.destination, str(user.id))
         chunks_dir_path = os.path.join(user_dir_path, identifier)
         os.makedirs(chunks_dir_path, 0o777, exist_ok=True)
 
         # save chunk data
         chunk_name = get_chunk_name(filename, chunk_number)
-        chunk_file = os.path.join(chunks_dir_path, chunk_name)
+        chunk_file_path = os.path.join(chunks_dir_path, chunk_name)
 
-        with open(chunk_file, 'wb') as file:
+        with open(chunk_file_path, 'wb') as file:
             for chunk in chunk_data.chunks():
                 file.write(chunk)
 

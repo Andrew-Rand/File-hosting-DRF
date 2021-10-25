@@ -29,8 +29,8 @@ def build_file(target_file_path: str, chunk_paths: List[str]) -> None:
 
 class FileBuildView(generics.GenericAPIView):
 
-    temp_storage_path = FileStorage.objects.get(type=TEMP_STORAGE)
-    permanent_storage_path = FileStorage.objects.get(type=PERMANENT_STORAGE)
+    temp_storage = FileStorage.objects.get(type=TEMP_STORAGE)
+    permanent_storage = FileStorage.objects.get(type=PERMANENT_STORAGE)
     serializer_class = FileUploadParametersSerializer
 
     @login_required
@@ -46,7 +46,7 @@ class FileBuildView(generics.GenericAPIView):
         total_chunks = serializer.validated_data.get('total_chunk')
 
         # make temp directory
-        user_dir_path = os.path.join(self.temp_storage_path.destination, str(user.id))
+        user_dir_path = os.path.join(self.temp_storage.destination, str(user.id))
         chunks_dir_path = os.path.join(user_dir_path, identifier)
 
         # check if the upload is complete
@@ -60,7 +60,7 @@ class FileBuildView(generics.GenericAPIView):
             raise BadRequestError('There aren`t all chunks for this file. Try to continue upload chunks')
 
         # create final file from all chunks
-        user_storage_path = os.path.join(self.permanent_storage_path.destination, str(user.id))
+        user_storage_path = os.path.join(self.permanent_storage.destination, str(user.id))
         os.makedirs(user_storage_path, 0o777, exist_ok=True)
         target_file_path = os.path.join(user_storage_path, filename)
         build_file(target_file_path, chunk_paths)
@@ -68,6 +68,6 @@ class FileBuildView(generics.GenericAPIView):
 
         file_hash = calculate_hash_md5(target_file_path)
 
-        File.create_model_object(user, file_hash, self.permanent_storage_path, target_file_path, serializer.validated_data)
+        File.create_model_object(user, file_hash, self.permanent_storage, target_file_path, serializer.validated_data)
 
         return CreatedResponse(data=serializer.data)
