@@ -56,5 +56,18 @@ services:
     networks:
       - main
 
+  broker:
+    image: redis:6.2.5
+    restart: always
+
+  worker:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./srv/app/Dockerfile
+    volumes:
+      - ./storage:/usr/src/app/storage
+    command: ["celery", "--workdir:./src/config", "-A", "config", "worker"]
+
 volumes:
   data_ps:

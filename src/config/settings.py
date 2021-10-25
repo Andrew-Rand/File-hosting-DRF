@@ -112,3 +112,5 @@ AUTH_USER_MODEL = 'accounts.User'
 REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'src.basecore.custom_error_handler.error_handler'
 }
+
+CELERY_BROKER_URL = 'redis://broker:6379'

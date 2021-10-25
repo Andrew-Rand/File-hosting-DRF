@@ -13,6 +13,7 @@ from src.basecore.responses import OkResponse
 from src.fileservice.models import FileStorage
 from src.fileservice.models.file_storage import TEMP_STORAGE
 from src.fileservice.serializers.file_upload_parameters_serializer import FileUploadParametersSerializer
+from .. import tasks
 
 
 def get_chunk_name(uploaded_filename: str, chunk_number: int) -> str:
@@ -73,5 +74,7 @@ class ChunkUploadView(generics.GenericAPIView):
         with open(chunk_file_path, 'wb') as file:
             for chunk in chunk_data.chunks():
                 file.write(chunk)
-
+        #  celery task start
+        tasks.build_file.delay()
+        #  celery task end
         return OkResponse({})
