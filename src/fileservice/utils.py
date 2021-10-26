@@ -17,11 +17,7 @@ def calculate_hash_md5(file_path: str) -> str:
 
 
 def is_all_chunk_uploaded(chunk_paths: List[str]) -> bool:
-    upload_complete = all([os.path.exists(p) for p in chunk_paths])
-    if upload_complete:
-        return True
-    else:
-        return False
+    return all([os.path.exists(p) for p in chunk_paths])
 
 
 def get_chunk_name(uploaded_filename: str, chunk_number: int) -> str:
