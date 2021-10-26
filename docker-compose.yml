@@ -56,10 +56,12 @@ services:
     networks:
       - main
 
-  redis:
+  broker:
     image: redis:6.2.5
     ports:
       - 6379:6379
+    networks:
+      - main
 
 #  worker:
 #    restart: always
@@ -70,6 +72,8 @@ services:
 #      - ./:/usr/src/app
 #      - ./storage:/usr/src/app/storage
 #    command: ["celery", "-A", "src.config", "worker", "-l", "INFO"]
+#    networks:
+#      - main
 
 volumes:
   data_ps:
