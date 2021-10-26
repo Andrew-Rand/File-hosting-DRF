@@ -63,17 +63,17 @@ services:
     networks:
       - main
 
-#  worker:
-#    restart: always
-#    build:
-#      context: .
-#      dockerfile: ./srv/app/Dockerfile
-#    volumes:
-#      - ./:/usr/src/app
-#      - ./storage:/usr/src/app/storage
-#    command: ["celery", "-A", "src.config", "worker", "-l", "INFO"]
-#    networks:
-#      - main
+  worker:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./srv/app/Dockerfile
+    volumes:
+      - ./:/usr/src/app
+      - ./storage:/usr/src/app/storage
+    command: ["celery", "-A", "src.config", "worker", "-l", "INFO"]
+    networks:
+      - main
 
 volumes:
   data_ps:
