@@ -8,7 +8,10 @@ app = Celery('src.config')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 
-
-@app.task(bind=True)
-def debug_task(self):
-    print(f'Request: {self.request!r}')
+#  schedule for celery test task (every 5 seconds)
+app.conf.beat_schedule = {
+    'test-celery': {
+        'task': 'src.fileservice.tasks.test_task',
+        'schedule': 5.0
+    }
+}

@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'django_celery_beat',
 
     'src.accounts',
     'src.fileservice',
@@ -117,3 +118,4 @@ CELERY_TIMEZONE = 'Europe/Minsk'
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 CELERY_BROKER_URL = 'redis://broker:6379/0'
+CELERY_RESULT_BACKEND = "redis://broker:6379/0"

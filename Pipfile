@@ -13,6 +13,7 @@ pyjwt = "==2.1.0"
 celery = "*"
 redis = "*"
 django-redis = "*"
+django-celery-beat = "*"
 
 [dev-packages]
 pytest = "==6.2.5"

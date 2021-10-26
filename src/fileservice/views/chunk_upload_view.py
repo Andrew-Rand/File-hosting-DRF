@@ -78,15 +78,15 @@ class ChunkUploadView(generics.GenericAPIView):
         #  celery task start
         # check if the upload is complete (move it in)
         # TODO: Move it in utils
-        total_chunks = serializer.validated_data.get('total_chunk')
-        chunk_paths = [
-            os.path.join(chunks_dir_path, get_chunk_name(filename, x))
-            for x in range(1, total_chunks + 1)
-        ]
-        upload_complete = all([os.path.exists(p) for p in chunk_paths])
-
-        if upload_complete:
-            tasks.build_file.delay(self, request, *args, User, **kwargs)
+        # total_chunks = serializer.validated_data.get('total_chunk')
+        # chunk_paths = [
+        #     os.path.join(chunks_dir_path, get_chunk_name(filename, x))
+        #     for x in range(1, total_chunks + 1)
+        # ]
+        # upload_complete = all([os.path.exists(p) for p in chunk_paths])
+        #
+        # if upload_complete:
+        #     tasks.build_file.delay(request, *args, user=User, **kwargs)
         #  celery task end
 
         return OkResponse({})
