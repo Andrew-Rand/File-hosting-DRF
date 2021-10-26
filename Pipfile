@@ -12,6 +12,7 @@ gunicorn = "==20.1.0"
 pyjwt = "==2.1.0"
 celery = "*"
 redis = "*"
+django-redis = "*"
 
 [dev-packages]
 pytest = "==6.2.5"
