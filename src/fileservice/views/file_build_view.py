@@ -1,5 +1,4 @@
-import os
-from typing import Any, List
+from typing import Any
 
 from rest_framework import generics
 from rest_framework.exceptions import ValidationError
