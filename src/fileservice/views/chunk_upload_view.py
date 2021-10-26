@@ -11,9 +11,10 @@ from src.accounts.models import User
 from src.basecore.custom_error_handler import NotFoundError
 from src.basecore.responses import OkResponse
 from src.fileservice.models import FileStorage
-from src.fileservice.models.file_storage import TEMP_STORAGE
+from src.fileservice.models.file_storage import TEMP_STORAGE, PERMANENT_STORAGE
 from src.fileservice.serializers.file_upload_parameters_serializer import FileUploadParametersSerializer
 from .. import tasks
+from ..utils import is_all_chunk_uploaded
 
 
 def get_chunk_name(uploaded_filename: str, chunk_number: int) -> str:
@@ -23,6 +24,7 @@ def get_chunk_name(uploaded_filename: str, chunk_number: int) -> str:
 class ChunkUploadView(generics.GenericAPIView):
 
     temp_storage = FileStorage.objects.get(type=TEMP_STORAGE)
+    permanent_storage = FileStorage.objects.get(type=PERMANENT_STORAGE)
     serializer_class = FileUploadParametersSerializer
 
     @login_required
@@ -35,7 +37,6 @@ class ChunkUploadView(generics.GenericAPIView):
         identifier = serializer.validated_data.get('identifier')
         filename = serializer.validated_data.get('filename')
         chunk_number = serializer.validated_data.get('chunk_number')
-
         user_dir_path = os.path.join(self.temp_storage.destination, str(user.id))
         chunks_dir_path = os.path.join(user_dir_path, identifier)
 
@@ -75,18 +76,13 @@ class ChunkUploadView(generics.GenericAPIView):
             for chunk in chunk_data.chunks():
                 file.write(chunk)
 
-        #  celery task start
-        # check if the upload is complete (move it in)
-        # TODO: Move it in utils
-        # total_chunks = serializer.validated_data.get('total_chunk')
-        # chunk_paths = [
-        #     os.path.join(chunks_dir_path, get_chunk_name(filename, x))
-        #     for x in range(1, total_chunks + 1)
-        # ]
-        # upload_complete = all([os.path.exists(p) for p in chunk_paths])
-        #
-        # if upload_complete:
-        #     tasks.build_file.delay(request, *args, user=User, **kwargs)
-        #  celery task end
+        #  save file from chunks with celery
+        total_chunks = serializer.validated_data.get('total_chunk')
+        chunk_paths = [
+            os.path.join(chunks_dir_path, get_chunk_name(filename, x))
+            for x in range(1, total_chunks + 1)
+        ]
+        if is_all_chunk_uploaded(chunk_paths):
+            tasks.build_file_from_chunks(user, self.temp_storage, self.permanent_storage, serializer)
 
         return OkResponse({})
