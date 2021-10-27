@@ -71,7 +71,7 @@ services:
     volumes:
       - ./:/usr/src/app
       - ./storage:/usr/src/app/storage
-    command: "celery -A src.config beat"
+    command: "celery -A src.etl beat"
     networks:
       - main
     depends_on:
@@ -86,7 +86,7 @@ services:
     volumes:
       - ./:/usr/src/app
       - ./storage:/usr/src/app/storage
-    command: "celery -A src.config worker -l INFO"
+    command: "celery -A src.etl worker -l INFO"
     networks:
       - main
     depends_on:

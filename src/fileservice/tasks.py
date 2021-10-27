@@ -1,5 +1,5 @@
 from src.accounts.models import User
-from src.config.celery import app
+from src.etl.celery import app
 from src.fileservice.models import FileStorage
 from src.fileservice.serializers.file_upload_parameters_serializer import FileUploadParametersSerializer
 from src.fileservice.utils import build_file_from_chunks

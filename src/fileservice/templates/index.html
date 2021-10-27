@@ -109,7 +109,7 @@
           XMLHttpRequest.prototype.open = (function(open) {
             return function(method,url,async) {
               open.apply(this,arguments);
-              this.setRequestHeader('Authorization', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6ImNhMTg5MGZlLWMwMzAtNDY4Yy05YTg3LTk2NGEyMThmMTNiMiIsImV4cCI6MTYzNTI1ODI1OSwiaWF0IjoxNjM1MjU3MDU5fQ.EPOnW9KvdpBoNXws73PwqaiMCIZtAo9FHb35WrLwch8');
+              this.setRequestHeader('Authorization', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6ImNhMTg5MGZlLWMwMzAtNDY4Yy05YTg3LTk2NGEyMThmMTNiMiIsImV4cCI6MTYzNTM0MTk2NCwiaWF0IjoxNjM1MzQwNzY0fQ.XIH2c4lTFFYrK-NuDZAJujUt1FwASjNNQ7WSKEFtD30');
               this.setRequestHeader('customHeader2', 'someOtherValue');
             };
           })(XMLHttpRequest.prototype.open);
