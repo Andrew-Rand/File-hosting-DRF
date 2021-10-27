@@ -27,6 +27,6 @@ class FileBuildView(generics.GenericAPIView):
         if not serializer.is_valid():
             raise ValidationError(serializer.errors)
 
-        build_file_from_chunks(user, self.temp_storage, self.permanent_storage, serializer)
+        build_file_from_chunks(user.id, self.temp_storage.id, self.permanent_storage.id, serializer.validated_data)
 
         return CreatedResponse(data=serializer.data)

@@ -1,11 +1,10 @@
 import hashlib
 import os
-from typing import List
+from typing import List, Dict, Any
 
 from src.accounts.models import User
 from src.basecore.custom_error_handler import BadRequestError
 from src.fileservice.models import File, FileStorage
-from src.fileservice.serializers.file_upload_parameters_serializer import FileUploadParametersSerializer
 
 
 def calculate_hash_md5(file_path: str) -> str:
@@ -34,11 +33,15 @@ def save_file(target_file_path: str, chunk_paths: List[str]) -> None:
     target_file.close()
 
 
-def build_file_from_chunks(user: User, temp_storage: FileStorage, permanent_storage: FileStorage, serializer: FileUploadParametersSerializer) -> None:
+def build_file_from_chunks(user_id: str, temp_storage_id: str, permanent_storage_id: str, serializer: Dict[str, Any]) -> None:
 
-    identifier = serializer.validated_data.get('identifier')
-    filename = serializer.validated_data.get('filename')
-    total_chunks = serializer.validated_data.get('total_chunk')
+    identifier = serializer.get('identifier')
+    filename = serializer.get('filename')
+    total_chunks = serializer.get('total_chunk')
+
+    user = User.objects.get(id=user_id)
+    temp_storage = FileStorage.objects.get(id=temp_storage_id)
+    permanent_storage = FileStorage.objects.get(id=permanent_storage_id)
 
     # make temp directory
     user_dir_path = os.path.join(temp_storage.destination, str(user.id))
@@ -61,4 +64,4 @@ def build_file_from_chunks(user: User, temp_storage: FileStorage, permanent_stor
 
     file_hash = calculate_hash_md5(target_file_path)
 
-    File.create_model_object(user, file_hash, permanent_storage, target_file_path, serializer.validated_data)
+    File.create_model_object(user, file_hash, permanent_storage, target_file_path, serializer)

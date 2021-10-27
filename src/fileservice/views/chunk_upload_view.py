@@ -13,7 +13,7 @@ from src.basecore.responses import OkResponse
 from src.fileservice.models import FileStorage
 from src.fileservice.models.file_storage import TEMP_STORAGE, PERMANENT_STORAGE
 from src.fileservice.serializers.file_upload_parameters_serializer import FileUploadParametersSerializer
-from .. import tasks
+from ..tasks import task_build_file
 from ..utils import is_all_chunk_uploaded
 
 
@@ -83,6 +83,5 @@ class ChunkUploadView(generics.GenericAPIView):
             for x in range(1, total_chunks + 1)
         ]
         if is_all_chunk_uploaded(chunk_paths):
-            tasks.build_file_from_chunks(user, self.temp_storage, self.permanent_storage, serializer)
-
+            task_build_file.delay(user.id, self.temp_storage.id, self.permanent_storage.id, serializer.validated_data)
         return OkResponse({})

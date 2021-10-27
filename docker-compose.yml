@@ -67,30 +67,29 @@ services:
     restart: always
     build:
       context: .
-      dockerfile: ./srv/app/Dockerfile
+      dockerfile: ./srv/celery/Dockerfile
     volumes:
       - ./:/usr/src/app
-      - ./storage:/usr/src/app/storage
     command: "celery -A src.etl beat"
     networks:
       - main
     depends_on:
       - app_auth
+      - broker
 
 
   celery_worker:
     restart: always
     build:
       context: .
-      dockerfile: ./srv/app/Dockerfile
+      dockerfile: ./srv/celery/Dockerfile
     volumes:
       - ./:/usr/src/app
-      - ./storage:/usr/src/app/storage
-    command: "celery -A src.etl worker -l INFO"
+    command: celery -A src.etl worker -l INFO
     networks:
       - main
     depends_on:
-      - celery_beat
+      - broker
 
 
 volumes:

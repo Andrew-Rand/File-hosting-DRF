@@ -1,15 +1,14 @@
-from src.accounts.models import User
-from src.etl.celery import app
-from src.fileservice.models import FileStorage
-from src.fileservice.serializers.file_upload_parameters_serializer import FileUploadParametersSerializer
+from typing import Dict, Any
+
+from src.etl import celery_app
 from src.fileservice.utils import build_file_from_chunks
 
 
-@app.task
-def task_build_file(user: User, temp_storage: FileStorage, permanent_storage: FileStorage, serializer: FileUploadParametersSerializer) -> None:
-    build_file_from_chunks(user, temp_storage, permanent_storage, serializer)
+@celery_app.task
+def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: str, serializer: Dict[str, Any]) -> None:
+    build_file_from_chunks(user_id, temp_storage_id, permanent_storage_id, serializer)
 
 
-@app.task
+@celery_app.task
 def test_task() -> str:
     return "Your celery task is working"
