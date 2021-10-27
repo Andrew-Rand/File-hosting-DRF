@@ -113,8 +113,3 @@ AUTH_USER_MODEL = 'accounts.User'
 REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'src.basecore.custom_error_handler.error_handler'
 }
-
-CELERY_TIMEZONE = 'Europe/Minsk'
-CELERY_TASK_TRACK_STARTED = True
-CELERY_TASK_TIME_LIMIT = 30 * 60
-CELERY_BROKER_URL = config('CELERY_BROKER_HOST_AND_PORT'),
