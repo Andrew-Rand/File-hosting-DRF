@@ -1,5 +1,3 @@
-from celery import shared_task
-
 from src.accounts.models import User
 from src.config.celery import app
 from src.fileservice.models import FileStorage
