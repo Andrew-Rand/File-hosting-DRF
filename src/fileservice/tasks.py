@@ -63,3 +63,4 @@ def delete_unbuilt_chunks() -> str:
             if datetime.now() - time_of_dir_mod > CHUNK_EXPIRED_TIME:
                 shutil.rmtree(dirpath_to_rm, ignore_errors=True)
                 return f'chunks from {dirpath_to_rm} was deleted'
+    return 'All chunk was built'
