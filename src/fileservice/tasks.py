@@ -9,11 +9,11 @@ from src.fileservice.utils import get_chunk_name, is_all_chunk_uploaded, save_fi
 
 
 @celery_app.task
-def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: str, serializer: Dict[str, Any]) -> None:
+def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: str, data: Dict[str, Any]) -> None:
 
-    identifier = serializer.get('identifier')
-    filename = serializer.get('filename')
-    total_chunks = serializer.get('total_chunk')
+    identifier = data.get('identifier')
+    filename = data.get('filename')
+    total_chunks = data.get('total_chunk')
 
     user = User.objects.get(id=user_id)
     temp_storage = FileStorage.objects.get(id=temp_storage_id)
@@ -40,4 +40,4 @@ def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: st
 
     file_hash = calculate_hash_md5(target_file_path)
 
-    File.create_model_object(user, file_hash, permanent_storage, target_file_path, serializer)
+    File.create_model_object(user, file_hash, permanent_storage, target_file_path, data)
