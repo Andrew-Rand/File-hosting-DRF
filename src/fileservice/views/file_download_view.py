@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from src.accounts.authentication import login_required
 from src.accounts.models import User
 from src.basecore.custom_error_handler import BadRequestError, NotFoundError
+from src.basecore.responses import OkResponse
 from src.fileservice.models import File
 from src.fileservice.serializers.file_serializer import FileSerializer
 
@@ -28,15 +29,15 @@ class FileDownloadView(generics.GenericAPIView):
 
         queryset = File.objects.get(id=file_id)
         if not queryset.user.id == user.id:
-            raise BadRequestError(f'This user doesn`t have this file in own repistory')
+            raise BadRequestError('This user doesn`t  have this file in own repository')
 
         file_path = queryset.destination
 
         if os.path.exists(file_path):
             with open(file_path, 'rb') as fh:
                 response = HttpResponse(fh.read(), content_type=queryset.type)
-                response['Content-Disposition'] = f'inline; filename={os.path.basename(file_path)}'
+                response['Content-Disposition'] = f'attachment; filename={os.path.basename(file_path)}'
                 return response
         raise NotFoundError('file doesn`t exist in storrage')
 
-        # return OkResponse({}, headers={'Content-Disposition': (f'attachment; filename="{file_path}"')})
+        # return Response(headers={'Content-Disposition': (f'attachment; filename="{file_path}"')})
