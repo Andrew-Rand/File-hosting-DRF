@@ -8,6 +8,8 @@ from rest_framework.response import Response
 
 from src.accounts.authentication import login_required
 from src.accounts.models import User
+from src.basecore.custom_error_handler import BadRequestError
+from src.basecore.responses import OkResponse
 from src.fileservice.models import File
 from src.fileservice.serializers.file_serializer import FileSerializer
 
@@ -21,20 +23,10 @@ class FileDownloadView(generics.GenericAPIView):
 
         if not serializer.is_valid():
             raise ValidationError(serializer.errors)
-
         file_id = serializer.data.get('id')
-        queryset = File.objects.filter(id=file_id).first
-        print(queryset)
 
-        file_location = queryset.destination
+        queryset = File.objects.get(id=file_id)
+        if not queryset.User.id == user.id:
+            raise BadRequestError(f'This user doesn`t have this file in own repistory')
 
-        try:
-            with open(file_location, 'r') as f:
-                file_data = f.read()
-
-            # sending response
-            response = HttpResponse(file_data, content_type='application/vnd.ms-excel')
-            response['Content-Disposition'] = 'attachment; filename="foo.xls" '
-        except IOError:
-            # handle file not exist case here
-            response = HttpResponseNotFound('<h1>File not exist</h1>')
+        return OkResponse({})
