@@ -1,6 +1,7 @@
+import os
 from typing import Any
 
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse
 from rest_framework import generics
 from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
@@ -8,8 +9,7 @@ from rest_framework.response import Response
 
 from src.accounts.authentication import login_required
 from src.accounts.models import User
-from src.basecore.custom_error_handler import BadRequestError
-from src.basecore.responses import OkResponse
+from src.basecore.custom_error_handler import BadRequestError, NotFoundError
 from src.fileservice.models import File
 from src.fileservice.serializers.file_serializer import FileSerializer
 
@@ -31,4 +31,11 @@ class FileDownloadView(generics.GenericAPIView):
             raise BadRequestError(f'This user doesn`t have this file in own repistory')
 
         file_path = queryset.destination
-        return OkResponse({'path to file': file_path})
+
+        if os.path.exists(file_path):
+            with open(file_path, 'rb') as fh:
+                response = HttpResponse(fh.read(), content_type=queryset.type)
+                response['Content-Disposition'] = f'inline; filename={os.path.basename(file_path)}'
+                return response
+        raise NotFoundError('file doesn`t exist in storrage')
+

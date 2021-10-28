@@ -53,6 +53,7 @@ services:
       - ./srv/webserver/nginx.conf:/etc/nginx/nginx.conf
       - ./srv/webserver/conf.d/:/etc/nginx/conf.d
       - ./static/:/static
+      - ./storage/:/storage
     networks:
       - main
 
@@ -63,33 +64,33 @@ services:
     networks:
       - main
 
-  celery_beat:
-    restart: always
-    build:
-      context: .
-      dockerfile: ./srv/celery/Dockerfile
-    volumes:
-      - ./:/usr/src/app
-    command: "celery -A src.etl beat"
-    networks:
-      - main
-    depends_on:
-      - app_auth
-      - broker
-
-
-  celery_worker:
-    restart: always
-    build:
-      context: .
-      dockerfile: ./srv/celery/Dockerfile
-    volumes:
-      - ./:/usr/src/app
-    command: celery -A src.etl worker -l INFO
-    networks:
-      - main
-    depends_on:
-      - broker
+#  celery_beat:
+#    restart: always
+#    build:
+#      context: .
+#      dockerfile: ./srv/celery/Dockerfile
+#    volumes:
+#      - ./:/usr/src/app
+#    command: "celery -A src.etl beat"
+#    networks:
+#      - main
+#    depends_on:
+#      - app_auth
+#      - broker
+#
+#
+#  celery_worker:
+#    restart: always
+#    build:
+#      context: .
+#      dockerfile: ./srv/celery/Dockerfile
+#    volumes:
+#      - ./:/usr/src/app
+#    command: celery -A src.etl worker -l INFO
+#    networks:
+#      - main
+#    depends_on:
+#      - broker
 
 
 volumes:
