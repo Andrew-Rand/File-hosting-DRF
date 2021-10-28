@@ -20,15 +20,15 @@ class FileDownloadView(generics.GenericAPIView):
     def get(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
 
         serializer = FileSerializer(data=request.data)
-        print(request.data)
+
         if not serializer.is_valid():
             raise ValidationError(serializer.errors)
-        print('!!!!!!!!!!!serializer !!!!!!!!!!!!!!!!!!11')
-        print(serializer.validated_data)
+
         file_id = serializer.validated_data.get('id')
 
         queryset = File.objects.get(id=file_id)
-        if not queryset.User.id == user.id:
+        if not queryset.user.id == user.id:
             raise BadRequestError(f'This user doesn`t have this file in own repistory')
 
-        return OkResponse({})
+        file_path = queryset.destination
+        return OkResponse({'path to file': file_path})
