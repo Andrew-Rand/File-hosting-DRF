@@ -20,10 +20,12 @@ class FileDownloadView(generics.GenericAPIView):
     def get(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
 
         serializer = FileSerializer(data=request.data)
-
+        print(request.data)
         if not serializer.is_valid():
             raise ValidationError(serializer.errors)
-        file_id = serializer.data.get('id')
+        print('!!!!!!!!!!!serializer !!!!!!!!!!!!!!!!!!11')
+        print(serializer.validated_data)
+        file_id = serializer.validated_data.get('id')
 
         queryset = File.objects.get(id=file_id)
         if not queryset.User.id == user.id:
