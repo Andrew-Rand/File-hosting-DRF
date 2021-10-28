@@ -39,3 +39,4 @@ class FileDownloadView(generics.GenericAPIView):
                 return response
         raise NotFoundError('file doesn`t exist in storrage')
 
+        # return OkResponse({}, headers={'Content-Disposition': (f'attachment; filename="{file_path}"')})
