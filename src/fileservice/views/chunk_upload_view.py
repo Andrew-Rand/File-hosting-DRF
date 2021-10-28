@@ -77,11 +77,11 @@ class ChunkUploadView(generics.GenericAPIView):
                 file.write(chunk)
 
         #  save file from chunks with celery
-        total_chunks = serializer.validated_data.get('total_chunk')
-        chunk_paths = [
-            os.path.join(chunks_dir_path, get_chunk_name(filename, x))
-            for x in range(1, total_chunks + 1)
-        ]
-        if is_all_chunk_uploaded(chunk_paths):
-            task_build_file.delay(user.id, self.temp_storage.id, self.permanent_storage.id, serializer.validated_data)
+        # total_chunks = serializer.validated_data.get('total_chunk')
+        # chunk_paths = [
+        #     os.path.join(chunks_dir_path, get_chunk_name(filename, x))
+        #     for x in range(1, total_chunks + 1)
+        # ]
+        # if is_all_chunk_uploaded(chunk_paths):
+        #     task_build_file.delay(user.id, self.temp_storage.id, self.permanent_storage.id, serializer.validated_data)
         return OkResponse({})

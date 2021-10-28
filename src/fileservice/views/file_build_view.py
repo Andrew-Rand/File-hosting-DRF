@@ -1,3 +1,4 @@
+import os
 from typing import Any
 
 from rest_framework import generics
@@ -9,9 +10,10 @@ from src.accounts.authentication import login_required
 from src.accounts.models import User
 from src.basecore.responses import CreatedResponse
 from src.fileservice.models.file_storage import TEMP_STORAGE, PERMANENT_STORAGE
-from src.fileservice.utils import build_file_from_chunks
+from src.fileservice.utils import get_chunk_name, is_all_chunk_uploaded
 from src.fileservice.models import FileStorage
 from src.fileservice.serializers.file_upload_parameters_serializer import FileUploadParametersSerializer
+from src.fileservice.tasks import task_build_file
 
 
 class FileBuildView(generics.GenericAPIView):
@@ -27,6 +29,20 @@ class FileBuildView(generics.GenericAPIView):
         if not serializer.is_valid():
             raise ValidationError(serializer.errors)
 
-        build_file_from_chunks(user.id, self.temp_storage.id, self.permanent_storage.id, serializer.validated_data)
+        identifier = serializer.validated_data.get('identifier')
+        filename = serializer.validated_data.get('filename')
+        total_chunks = serializer.validated_data.get('total_chunk')
+
+        user_dir_path = os.path.join(self.temp_storage.destination, str(user.id))
+        chunks_dir_path = os.path.join(user_dir_path, identifier)
+
+        #  save file from chunks with celery
+
+        chunk_paths = [
+            os.path.join(chunks_dir_path, get_chunk_name(filename, x))
+            for x in range(1, total_chunks + 1)
+        ]
+        if is_all_chunk_uploaded(chunk_paths):
+            task_build_file.delay(user.id, self.temp_storage.id, self.permanent_storage.id, serializer.validated_data)
 
         return CreatedResponse(data=serializer.data)
