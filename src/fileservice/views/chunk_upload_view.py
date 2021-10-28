@@ -13,8 +13,6 @@ from src.basecore.responses import OkResponse
 from src.fileservice.models import FileStorage
 from src.fileservice.models.file_storage import TEMP_STORAGE, PERMANENT_STORAGE
 from src.fileservice.serializers.file_upload_parameters_serializer import FileUploadParametersSerializer
-from ..tasks import task_build_file
-from ..utils import is_all_chunk_uploaded
 
 
 def get_chunk_name(uploaded_filename: str, chunk_number: int) -> str:

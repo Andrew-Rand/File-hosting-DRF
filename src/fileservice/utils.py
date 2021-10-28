@@ -1,10 +1,8 @@
 import hashlib
 import os
-from typing import List, Dict, Any
 
-from src.accounts.models import User
-from src.basecore.custom_error_handler import BadRequestError
-from src.fileservice.models import File, FileStorage
+
+from typing import List
 
 
 def calculate_hash_md5(file_path: str) -> str:
