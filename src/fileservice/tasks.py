@@ -1,11 +1,17 @@
 import os
+import shutil
+from datetime import datetime, timedelta
 from typing import Dict, Any
 
 from src.accounts.models import User
 from src.basecore.custom_error_handler import BadRequestError
 from src.etl import celery_app
 from src.fileservice.models import FileStorage, File
+from src.fileservice.models.file_storage import TEMP_STORAGE
 from src.fileservice.utils import get_chunk_name, is_all_chunk_uploaded, save_file, calculate_hash_md5
+
+
+CHUNK_EXPIRED_TIME = timedelta(days=1)
 
 
 @celery_app.task
@@ -41,3 +47,19 @@ def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: st
     file_hash = calculate_hash_md5(target_file_path)
 
     File.create_model_object(user, file_hash, permanent_storage, target_file_path, data)
+
+
+@celery_app.task
+def delete_unbuilt_chunks() -> str:
+    temp_storage = FileStorage.objects.get(type=TEMP_STORAGE)
+    temp_storage_path = temp_storage.destination
+    user_dirs = os.listdir(temp_storage_path)
+    if user_dirs:
+        for user_dir in user_dirs:
+            dirpath_to_rm = os.path.join(temp_storage_path, user_dir)
+            st = os.stat(dirpath_to_rm)
+            mtime = st.st_mtime
+            time_of_dir_mod = datetime.fromtimestamp(mtime)
+            if datetime.now() - time_of_dir_mod > CHUNK_EXPIRED_TIME:
+                shutil.rmtree(dirpath_to_rm, ignore_errors=True)
+                return f'chunks from {dirpath_to_rm} was deleted'
