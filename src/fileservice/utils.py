@@ -2,7 +2,11 @@ import hashlib
 import os
 
 
-from typing import List
+from typing import List, Dict, Any
+
+from django.core.mail import send_mail
+
+from src.config import settings
 
 
 def calculate_hash_md5(file_path: str) -> str:
@@ -13,7 +17,11 @@ def calculate_hash_md5(file_path: str) -> str:
     return hash_md5.hexdigest()
 
 
-def make_chunk_paths(chunks_dir_path: str, filename: str, total_chunks: int) -> List[str]:
+def make_chunk_paths(chunks_dir_path: str, data: Dict[str, Any]) -> List[str]:
+
+    filename = data.get('filename')
+    total_chunks = data.get('total_chunk')
+
     chunk_paths = [
         os.path.join(chunks_dir_path, get_chunk_name(filename, x))
         for x in range(1, total_chunks + 1)
@@ -37,3 +45,7 @@ def save_file(target_file_path: str, chunk_paths: List[str]) -> None:
             stored_chunk_file.close()
             os.unlink(stored_chunk_file_name)
     target_file.close()
+
+
+def send_warning_email_to_user(user_email: str, message) -> None:
+    send_mail('Warning', message, settings.DEFAULT_FROM_EMAIL, (user_email,))

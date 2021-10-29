@@ -29,18 +29,14 @@ class FileBuildView(generics.GenericAPIView):
         if not serializer.is_valid():
             raise ValidationError(serializer.errors)
 
-        identifier = serializer.validated_data.get('identifier')
-        filename = serializer.validated_data.get('filename')
-        total_chunks = serializer.validated_data.get('total_chunk')
-
         user_dir_path = os.path.join(self.temp_storage.destination, str(user.id))
-        chunks_dir_path = os.path.join(user_dir_path, identifier)
+        chunks_dir_path = os.path.join(user_dir_path, serializer.validated_data.get('identifier'))
 
         #  save file from chunks with celery
-        chunk_paths = make_chunk_paths(chunks_dir_path, filename, total_chunks)
+        chunk_paths = make_chunk_paths(chunks_dir_path, serializer.validated_data)
         if is_all_chunk_uploaded(chunk_paths):
             task_build_file.delay(user_id=user.id,
-                                  temp_storagese_id=self.temp_storage.id,
+                                  temp_storage_id=self.temp_storage.id,
                                   permanent_storage_id=self.permanent_storage.id,
                                   data=serializer.validated_data)
 
