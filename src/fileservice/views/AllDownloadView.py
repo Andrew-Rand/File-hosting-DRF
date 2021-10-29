@@ -27,8 +27,8 @@ class AllDownloadView(generics.GenericAPIView):
         if not os.path.exists(user_dir_path) or len(os.listdir(user_dir_path)) == 0:
             raise NotFoundError('Dir of this user does not exist or empty')
 
-        shutil.make_archive(user_id, archive_type, user_dir_path)
+        archive_name = shutil.make_archive(user_id, archive_type, user_dir_path, user_dir_path)
 
-        file_path = os.path.join(user_dir_path, f'{user_id}.{archive_type}')
+        archive_path = os.path.join(user_dir_path, archive_name)
 
-        return Response(headers={'Content-Disposition': f'attachment; filename="{file_path}"'})
+        return Response(headers={'Content-Disposition': f'attachment; filename="{archive_path}"'})
