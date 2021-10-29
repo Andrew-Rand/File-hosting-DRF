@@ -23,11 +23,12 @@ class AllDownloadView(generics.GenericAPIView):
         archive_type = 'zip'
         user_id = str(user.id)
         user_dir_path = os.path.join(self.permanent_storage.destination, user_id)
+        print(user_dir_path)
 
         if not os.path.exists(user_dir_path) or len(os.listdir(user_dir_path)) == 0:
             raise NotFoundError('Dir of this user does not exist or empty')
 
-        archive_name = shutil.make_archive(user_id, archive_type, user_dir_path, user_dir_path)
+        archive_name = shutil.make_archive(base_name=user_id, format=archive_type, root_dir=user_dir_path, base_dir=user_dir_path)
 
         archive_path = os.path.join(user_dir_path, archive_name)
 
