@@ -1,5 +1,6 @@
 from django.urls import re_path
 
+from .views.AllDownloadView import AllDownloadView
 from .views.file_build_view import FileBuildView
 from .views.chunk_upload_view import ChunkUploadView
 from .views.file_download_view import FileDownloadView
@@ -10,5 +11,6 @@ urlpatterns = [
     re_path(r'^upload/$', ChunkUploadView.as_view(), name='file_upload'),
     re_path(r'^build/$', FileBuildView.as_view(), name='file_build'),
 
-    re_path(r'^download/$', FileDownloadView().as_view(), name='file_download'),
+    re_path(r'^download/$', FileDownloadView.as_view(), name='file_download'),
+    re_path(r'^all_download/$', AllDownloadView.as_view(), name='all_download'),
 ]
