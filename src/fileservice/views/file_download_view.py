@@ -36,4 +36,4 @@ class FileDownloadView(generics.GenericAPIView):
         if not os.path.exists(file_path):
             raise NotFoundError('file doesn`t exist in storrage')
 
-        return Response(headers={'Content-Disposition': f'attachment; filename="{queryset.name}"'})
+        return Response(headers={'Content-Disposition': f'attachment; filename="{file_path}"'})
