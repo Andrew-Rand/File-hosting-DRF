@@ -11,6 +11,6 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'delete_unbuilt_chunks': {
         'task': 'src.fileservice.tasks.delete_unbuilt_chunks',
-        'schedule': crontab(minute='*/15')  # every 15 minutes
+        'schedule': crontab(minute=0, hour=0)  # everyday at midnight
     }
 }

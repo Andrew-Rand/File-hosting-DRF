@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 from src.accounts.authentication import login_required
 from src.accounts.models import User
-from src.basecore.responses import CreatedResponse
+from src.basecore.responses import OkResponse
 from src.fileservice.models.file_storage import TEMP_STORAGE, PERMANENT_STORAGE
 from src.fileservice.utils import get_chunk_name, is_all_chunk_uploaded
 from src.fileservice.models import FileStorage
@@ -43,6 +43,9 @@ class FileBuildView(generics.GenericAPIView):
             for x in range(1, total_chunks + 1)
         ]
         if is_all_chunk_uploaded(chunk_paths):
-            task_build_file.delay(user.id, self.temp_storage.id, self.permanent_storage.id, serializer.validated_data)
+            task_build_file.delay(user_id=user.id,
+                                  temp_storagese_id=self.temp_storage.id,
+                                  permanent_storage_id=self.permanent_storage.id,
+                                  data=serializer.validated_data)
 
-        return CreatedResponse(data=serializer.data)
+        return OkResponse(data=serializer.data)
