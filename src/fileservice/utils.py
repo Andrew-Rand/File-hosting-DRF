@@ -17,6 +17,12 @@ def calculate_hash_md5(file_path: str) -> str:
     return hash_md5.hexdigest()
 
 
+def make_chunk_dir_path(temp_storage_path: str, user_id: str, data: Dict[str, Any]) -> str:
+    user_dir_path = os.path.join(temp_storage_path, user_id)
+    chunks_dir_path = os.path.join(user_dir_path, data.get('identifier'))
+    return chunks_dir_path
+
+
 def make_chunk_paths(chunks_dir_path: str, data: Dict[str, Any]) -> List[str]:
 
     filename = data.get('filename')
@@ -47,5 +53,5 @@ def save_file(target_file_path: str, chunk_paths: List[str]) -> None:
     target_file.close()
 
 
-def send_warning_email_to_user(user_email: str, message) -> None:
+def send_warning_email_to_user(user_email: str, message: str) -> None:
     send_mail('Warning', message, settings.DEFAULT_FROM_EMAIL, (user_email,))

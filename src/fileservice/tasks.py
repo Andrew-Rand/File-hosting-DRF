@@ -4,12 +4,10 @@ from datetime import datetime, timedelta
 from typing import Dict, Any
 
 from src.accounts.models import User
-from src.basecore.custom_error_handler import BadRequestError
 from src.etl import celery_app
 from src.fileservice.models import FileStorage, File
 from src.fileservice.models.file_storage import TEMP_STORAGE
-from src.fileservice.utils import is_all_chunk_uploaded, save_file, calculate_hash_md5, make_chunk_paths, \
-    send_warning_email_to_user
+from src.fileservice.utils import is_all_chunk_uploaded, save_file, calculate_hash_md5, make_chunk_paths, send_warning_email_to_user, make_chunk_dir_path
 
 CHUNK_EXPIRATION_TIME = timedelta(days=7)
 
@@ -18,12 +16,10 @@ CHUNK_EXPIRATION_TIME = timedelta(days=7)
 def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: str, data: Dict[str, Any]) -> None:
 
     user = User.objects.get(id=user_id)
-    temp_storage = FileStorage.objects.get(id=temp_storage_id)
     permanent_storage = FileStorage.objects.get(id=permanent_storage_id)
+    temp_storage = FileStorage.objects.get(id=temp_storage_id)
 
-    # make temp directory
-    user_dir_path = os.path.join(temp_storage.destination, str(user.id))
-    chunks_dir_path = os.path.join(user_dir_path, data.get('identifier'))
+    chunks_dir_path = make_chunk_dir_path(temp_storage.destination, user_id, data)
 
     # check if the upload is complete
     chunk_paths = make_chunk_paths(chunks_dir_path, data)
