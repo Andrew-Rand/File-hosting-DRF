@@ -32,7 +32,6 @@ class FileBuildView(generics.GenericAPIView):
 
         #  save file from chunks with celery
         chunk_paths = make_chunk_paths(chunks_dir_path, serializer.validated_data)
-        print(f'path when build chunks before celery{chunks_dir_path}')
         if is_all_chunk_uploaded(chunk_paths):
             task_build_file.delay(user_id=user.id,
                                   temp_storage_id=self.temp_storage.id,
