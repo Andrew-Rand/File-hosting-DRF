@@ -13,6 +13,14 @@ def calculate_hash_md5(file_path: str) -> str:
     return hash_md5.hexdigest()
 
 
+def make_chunk_paths(chunks_dir_path: str, filename: str, total_chunks: int) -> List[str]:
+    chunk_paths = [
+        os.path.join(chunks_dir_path, get_chunk_name(filename, x))
+        for x in range(1, total_chunks + 1)
+    ]
+    return chunk_paths
+
+
 def is_all_chunk_uploaded(chunk_paths: List[str]) -> bool:
     return all([os.path.exists(p) for p in chunk_paths])
 

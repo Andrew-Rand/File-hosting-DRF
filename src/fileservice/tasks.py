@@ -8,8 +8,7 @@ from src.basecore.custom_error_handler import BadRequestError
 from src.etl import celery_app
 from src.fileservice.models import FileStorage, File
 from src.fileservice.models.file_storage import TEMP_STORAGE
-from src.fileservice.utils import get_chunk_name, is_all_chunk_uploaded, save_file, calculate_hash_md5
-
+from src.fileservice.utils import is_all_chunk_uploaded, save_file, calculate_hash_md5, make_chunk_paths
 
 CHUNK_EXPIRATION_TIME = timedelta(days=7)
 
@@ -30,10 +29,7 @@ def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: st
     chunks_dir_path = os.path.join(user_dir_path, identifier)
 
     # check if the upload is complete
-    chunk_paths = [
-        os.path.join(chunks_dir_path, get_chunk_name(filename, x))
-        for x in range(1, total_chunks + 1)
-    ]
+    chunk_paths = make_chunk_paths(chunks_dir_path, filename, total_chunks)
     if not is_all_chunk_uploaded(chunk_paths):
         raise BadRequestError('There aren`t all chunks for this file. Try to continue upload chunks')
 
