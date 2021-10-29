@@ -6,6 +6,7 @@ from .views.chunk_upload_view import ChunkUploadView
 from .views.file_download_view import FileDownloadView
 from .views.upload_template_view import UploadTemplateView
 
+
 urlpatterns = [
     re_path(r'^template/$', UploadTemplateView.as_view(), name='api_file_upload'),
     re_path(r'^upload/$', ChunkUploadView.as_view(), name='file_upload'),

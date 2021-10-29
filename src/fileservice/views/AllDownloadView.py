@@ -20,13 +20,15 @@ class AllDownloadView(generics.GenericAPIView):
     @login_required
     def get(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
 
-        user_dir_path = os.path.join(self.permanent_storage.destination, str(user.id))
+        archive_type = 'zip'
+        user_id = str(user.id)
+        user_dir_path = os.path.join(self.permanent_storage.destination, user_id)
 
         if not os.path.exists(user_dir_path) or len(os.listdir(user_dir_path)) == 0:
             raise NotFoundError('Dir of this user does not exist or empty')
 
-        shutil.make_archive(user.id, 'zip', user_dir_path)
+        shutil.make_archive(user_id, archive_type, user_dir_path)
 
-        file_path = os.path.join(user_dir_path, user.id)
+        file_path = os.path.join(user_dir_path, f'{user_id}.{archive_type}')
 
         return Response(headers={'Content-Disposition': f'attachment; filename="{file_path}"'})
