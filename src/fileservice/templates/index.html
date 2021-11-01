@@ -109,7 +109,7 @@
           XMLHttpRequest.prototype.open = (function(open) {
             return function(method,url,async) {
               open.apply(this,arguments);
-              this.setRequestHeader('Authorization', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6ImNhMTg5MGZlLWMwMzAtNDY4Yy05YTg3LTk2NGEyMThmMTNiMiIsImV4cCI6MTYzNTUyNDc3MSwiaWF0IjoxNjM1NTIzNTcxfQ.eAgn5CbwA7vzxmkVkvR6AwgAZdLsCUep5n9yEjs1qGU');
+              this.setRequestHeader('Authorization', 'token');
               this.setRequestHeader('customHeader2', 'someOtherValue');
             };
           })(XMLHttpRequest.prototype.open);
