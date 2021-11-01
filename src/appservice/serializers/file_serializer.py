@@ -6,4 +6,4 @@ from src.fileservice.models import File
 class FileSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
-        fields = ('name', 'type', 'date_created')
+        fields = ('id', 'name', 'type', 'date_created')
