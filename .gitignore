@@ -3,4 +3,4 @@ __pycache__/
 .env
 storage/
 celerybeat-schedule
-.log
+logfile.log
