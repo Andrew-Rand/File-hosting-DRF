@@ -1,12 +1,13 @@
 import hashlib
 import os
+from typing import List, Dict, Any, Union
 
-
-from typing import List, Dict, Any
-
+import magic
+from django.core.files.uploadedfile import UploadedFile
 from django.core.mail import send_mail
 
 from src.config import settings
+from src.fileservice.constants import ALLOWED_FILETYPES
 
 
 def calculate_hash_md5(file_path: str) -> str:
@@ -55,3 +56,14 @@ def save_file(target_file_path: str, chunk_paths: List[str]) -> None:
 
 def send_warning_email_to_user(user_email: str, message: str) -> None:
     send_mail('Warning', message, settings.DEFAULT_FROM_EMAIL, (user_email,))
+
+
+def is_filetype_valid(file: Union[UploadedFile, str]) -> bool:
+    if isinstance(file, UploadedFile):
+        file = file.read(2048)
+        file_type = magic.from_buffer(file, mime=True)
+    elif isinstance(file, str):
+        file_type = magic.from_file(file, mime=True)
+    else:
+        return False
+    return file_type in ALLOWED_FILETYPES
