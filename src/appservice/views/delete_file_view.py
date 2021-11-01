@@ -6,17 +6,20 @@ from rest_framework.response import Response
 
 from src.accounts.authentication import login_required
 from src.accounts.models import User
+from src.appservice.serializers.file_delete_serializer import FileDeleteSerializer
 from src.appservice.serializers.file_serializer import FileSerializer
 from src.basecore.custom_error_handler import NotFoundError
+from src.basecore.responses import OkResponse
 from src.fileservice.models import File
 
 
-class FileDetailView(generics.GenericAPIView):
+class DeleteFileView(generics.GenericAPIView):
 
     @login_required
-    def get(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
-        queryset = File.objects.get(id=self.kwargs['pk'])
-        if not queryset.user == user:
+    def put(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
+        file = File.objects.get(id=self.kwargs['pk'])
+        if not file.user == user:
             raise NotFoundError()
-        serializer_for_queryset = FileSerializer(instance=queryset)
-        return Response(serializer_for_queryset.data)
+        file.is_alive = False
+        file.save()
+        return OkResponse({})
