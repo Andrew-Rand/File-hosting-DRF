@@ -64,7 +64,7 @@ class ChunkUploadView(generics.GenericAPIView):
         # make temp directory
         chunks_dir_path = make_chunk_dir_path(self.temp_storage.destination, str(user.id), serializer.validated_data)
         os.makedirs(chunks_dir_path, 0o777, exist_ok=True)
-        print(f'path when save chunks{chunks_dir_path}')
+
         # save chunk data
         chunk_name = get_chunk_name(filename, chunk_number)
         chunk_file_path = os.path.join(chunks_dir_path, chunk_name)

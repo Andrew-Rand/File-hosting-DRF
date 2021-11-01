@@ -31,7 +31,7 @@ def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: st
     if not is_all_chunk_uploaded(chunk_paths):
         send_warning_email_to_user(user.email, 'The server cant build your file, all chunks are not loaded!')
         logger.info('There is a problem with filebuild (all chunks was not uploaded)')
-        logger.warning(f'File was not build, warning email send to user {user.email}')  # whrite in console and in logfile
+        logger.error('File was not build, warning email send to user %s' % user.email)  # whrite in console and in logfile
         raise FileExistsError
 
     # create final file from all chunks
