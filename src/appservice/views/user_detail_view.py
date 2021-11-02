@@ -22,12 +22,12 @@ class UserDetailView(generics.GenericAPIView):
         serializer_for_queryset = UserDetailSerializer(instance=user)
         return Response(serializer_for_queryset.data)
 
-    # @login_required
-    # def put(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
-    #     try:
-    #         user = User.objects.get(id=user.id)
-    #     except User.DoesNotExist:
-    #         raise NotFoundError('This user does not exist')
-    #     serializer = UserDetailSerializer(data=request.data)
-    #     user.save()
-    #     return OkResponse(data=serializer.data)
+    @login_required
+    def patch(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
+        try:
+            user = User.objects.get(id=user.id)
+        except User.DoesNotExist:
+            raise NotFoundError('This user does not exist')
+        serializer = UserDetailSerializer(data=request.data, partial=True)
+        serializer.save()
+        return OkResponse(data=serializer.data)
