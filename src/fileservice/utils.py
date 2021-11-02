@@ -9,13 +9,6 @@ from django.core.mail import send_mail
 from src.config import settings
 from src.fileservice.constants import ALLOWED_FILETYPES
 
-def is_filetype_valid(file: Union[UploadedFile, str]) -> bool:
-    if isinstance(file, UploadedFile):
-        file = file.read(2048)
-        file_type = magic.from_buffer(file, mime=True)
-    elif isinstance(file, str):
-        file_type = magic.from_file(file, mime=True)
-
 
 def calculate_hash_md5(file: Union[UploadedFile, str]) -> str:
     hash_md5 = hashlib.md5()
