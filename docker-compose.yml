@@ -57,41 +57,6 @@ services:
     networks:
       - main
 
-  broker:
-    image: redis:6.2.5
-    ports:
-      - 6379:6379
-    networks:
-      - main
-
-#  celery_beat:
-#    restart: always
-#    build:
-#      context: .
-#      dockerfile: ./srv/celery/Dockerfile
-#    volumes:
-#      - ./:/usr/src/app
-#    command: "celery -A src.etl beat"
-#    networks:
-#      - main
-#    depends_on:
-#      - app_auth
-#      - broker
-#
-#
-#  celery_worker:
-#    restart: always
-#    build:
-#      context: .
-#      dockerfile: ./srv/celery/Dockerfile
-#    volumes:
-#      - ./:/usr/src/app
-#    command: celery -A src.etl worker -l INFO
-#    networks:
-#      - main
-#    depends_on:
-#      - broker
-
 
 volumes:
   data_ps:
