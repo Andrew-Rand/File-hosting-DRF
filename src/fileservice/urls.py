@@ -10,5 +10,5 @@ urlpatterns = [
     re_path(r'^upload/$', ChunkUploadView.as_view(), name='file_upload'),
     re_path(r'^build/$', FileBuildView.as_view(), name='file_build'),
 
-    re_path(r'^download/$', FileDownloadView().as_view(), name='file_download'),
+    re_path(r'^(?P<pk>.+)/download/$', FileDownloadView().as_view(), name='file_download'),
 ]

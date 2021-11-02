@@ -12,7 +12,6 @@ from src.accounts.models import User
 from src.basecore.custom_error_handler import BadRequestError, NotFoundError
 from src.basecore.responses import OkResponse
 from src.fileservice.models import File
-from src.fileservice.serializers.file_serializer import FileSerializer
 
 
 class FileDownloadView(generics.GenericAPIView):
@@ -20,24 +19,17 @@ class FileDownloadView(generics.GenericAPIView):
     @login_required
     def get(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
 
-        serializer = FileSerializer(data=request.data)
+        try:
+            file = File.objects.get(id=self.kwargs['pk'])
+        except File.DoesNotExist:
+            raise NotFoundError('This file does not exist')
 
-        if not serializer.is_valid():
-            raise ValidationError(serializer.errors)
-
-        file_id = serializer.validated_data.get('id')
-
-        queryset = File.objects.get(id=file_id)
-        if not queryset.user.id == user.id:
+        if not file.user.id == user.id:
             raise BadRequestError('This user doesn`t  have this file in own repository')
 
-        file_path = queryset.destination
+        file_path = file.destination
 
-        if os.path.exists(file_path):
-            with open(file_path, 'rb') as fh:
-                response = HttpResponse(fh.read(), content_type=queryset.type)
-                response['Content-Disposition'] = f'attachment; filename={os.path.basename(file_path)}'
-                return response
-        raise NotFoundError('file doesn`t exist in storrage')
+        if not os.path.exists(file_path):
+            raise NotFoundError('file doesn`t exist in storrage')
 
-        # return Response(headers={'Content-Disposition': (f'attachment; filename="{file_path}"')})
+        return Response(headers={'Content-Disposition': f'attachment; filename="{file_path}"'})
