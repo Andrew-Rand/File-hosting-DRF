@@ -29,5 +29,9 @@ class UserDetailView(generics.GenericAPIView):
         except User.DoesNotExist:
             raise NotFoundError('This user does not exist')
         serializer = UserDetailSerializer(data=request.data, partial=True)
-        serializer.save()
+        user.first_name = serializer.validated_data.get('first_name', user.first_name)
+        user.last_name = serializer.validated_data.get('last_name', user.last_name)
+        user.email = serializer.validated_data.get('email', user.email)
+        user.age = serializer.validated_data.get('age', user.age)
+        user.save()
         return OkResponse(data=serializer.data)
