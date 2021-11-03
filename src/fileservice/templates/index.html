@@ -44,7 +44,7 @@
 
       <script>
         var r = new Resumable({
-            target:'/api/files/upload/',
+            target:'/api/files/chunk-upload/',
             chunkSize:50*1024*1024,
             simultaneousUploads:4,
             testChunks:true,
@@ -109,7 +109,7 @@
           XMLHttpRequest.prototype.open = (function(open) {
             return function(method,url,async) {
               open.apply(this,arguments);
-              this.setRequestHeader('Authorization', 'token');
+              this.setRequestHeader('Authorization', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6ImNhMTg5MGZlLWMwMzAtNDY4Yy05YTg3LTk2NGEyMThmMTNiMiIsImV4cCI6MTY2NzQ4NTM3OCwiaWF0IjoxNjM1OTQ5Mzc4fQ.nn0d8Cb9IEpOXgo6qzirkW6KP-BdVYtbJXopKf_mHY4');
               this.setRequestHeader('customHeader2', 'someOtherValue');
             };
           })(XMLHttpRequest.prototype.open);
