@@ -24,7 +24,7 @@ class UserDetailView(generics.GenericAPIView):
         return Response(serializer_for_queryset.data)
 
     @login_required
-    def patch(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
+    def put(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
         try:
             user = User.objects.get(id=user.id)
         except User.DoesNotExist:
