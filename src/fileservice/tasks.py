@@ -18,7 +18,7 @@ logger = logger_conf.get_logger(__name__)
 @celery_app.task
 def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: str, data: Dict[str, Any]) -> None:
 
-    logger.info('Celery task for filebuild starts')  # info only in console
+    logger.info('Celery task for filebuild %s starts' % data.get('filename'))  # info only in console
 
     user = User.objects.get(id=user_id)
     permanent_storage = FileStorage.objects.get(id=permanent_storage_id)
@@ -29,9 +29,9 @@ def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: st
     # check if the upload is complete
     chunk_paths = make_chunk_paths(chunks_dir_path, data)
     if not is_all_chunk_uploaded(chunk_paths):
-        send_warning_email_to_user(user.email, 'The server cant build your file, all chunks are not loaded!')
-        logger.info('There is a problem with filebuild (all chunks was not uploaded)')
-        logger.error('File was not build, warning email send to user %s' % user.email)  # whrite in console and in logfile
+        send_warning_email_to_user(user.email, f'The server cant build your file {data.get("filename")}, please try to upload again!')
+        logger.info('There is a problem with filebuild %s (all chunks was not uploaded)' % data.get('filename'))
+        logger.warning('File %s was not build, warning email send to user %s' % (data.get('filename'), user.email))  # whrite in console and in logfilele
         raise FileExistsError
 
     # create final file from all chunks
@@ -45,7 +45,7 @@ def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: st
 
     File.create_model_object(user, file_hash, permanent_storage, target_file_path, data)
 
-    logger.info('Celery task for filebuild сompleted successfully')
+    logger.info('Celery task for filebuild %s сompleted successfully' % data.get('filename'))
 
 
 @celery_app.task
