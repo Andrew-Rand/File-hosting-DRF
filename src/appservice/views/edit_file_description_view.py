@@ -21,6 +21,6 @@ class EditFiledescriptionView(generics.GenericAPIView):
             raise NotFoundError('This file does not exist')
         if not file.user == user:
             raise ForbiddenError('This file doesn`t belong to you')
-        file.description = request.data.get('description ')
+        file.description = request.data.get('description')
         file.save()
         return OkResponse({})
