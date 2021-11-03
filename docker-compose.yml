@@ -15,6 +15,7 @@ services:
     volumes:
       - ./:/usr/src/app
       - ./static/:/static
+      - ./storage/:/storage
     ports:
       - 8000:8000
     expose:
@@ -53,6 +54,7 @@ services:
       - ./srv/webserver/nginx.conf:/etc/nginx/nginx.conf
       - ./srv/webserver/conf.d/:/etc/nginx/conf.d
       - ./static/:/static
+      - ./storage/:/usr/src/app/storage
     networks:
       - main
 

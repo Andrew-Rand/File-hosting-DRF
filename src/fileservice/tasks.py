@@ -43,7 +43,9 @@ def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: st
 
     file_hash = calculate_hash_md5(target_file_path)
 
-    File.create_model_object(user, file_hash, permanent_storage, target_file_path, data)
+    relative_path = os.path.join(str(user.id), data.get('filename'))
+
+    File.create_model_object(user, file_hash, permanent_storage, relative_path, data)
 
     logger.info('Celery task for filebuild сompleted successfully')
 
