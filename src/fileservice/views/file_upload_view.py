@@ -44,6 +44,8 @@ class FileUploadView(generics.GenericAPIView):
 
         file_hash = calculate_hash_md5(file_path)
 
-        File.create_model_object(user, file_hash, self.permanent_storage, file_path, serializer.validated_data)
+        relative_path = os.path.join(str(user.id), filename)
+
+        File.create_model_object(user, file_hash, self.permanent_storage, relative_path, serializer.validated_data)
 
         return OkResponse({})
