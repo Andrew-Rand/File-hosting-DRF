@@ -7,7 +7,7 @@ from django.core.files.uploadedfile import UploadedFile
 from django.core.mail import send_mail
 
 from src.config import settings
-from src.fileservice.constants import ALLOWED_FILETYPES
+from src.fileservice.filetype_constants import ALLOWED_FILETYPES
 
 
 def calculate_hash_md5(file: Union[UploadedFile, str]) -> str:
