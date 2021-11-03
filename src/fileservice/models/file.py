@@ -15,6 +15,7 @@ class File(BaseModel):
     destination = models.CharField(max_length=256)
     hash = models.CharField(max_length=300)
     size = models.BigIntegerField()
+    description = models.TextField(null=True)
 
     class Meta:
         db_table = 'files'
