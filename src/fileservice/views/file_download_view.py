@@ -29,9 +29,6 @@ class FileDownloadView(generics.GenericAPIView):
 
         file_path = file.get_absolute_path()
 
-        if not os.path.exists(file_path):
-            raise NotFoundError('file doesn`t exist in storrage')
-
         return Response(content_type='application/force-download',
                         headers={'Content-Disposition': f'attachment; filename="{file.name}"',
-                                 'X-Accel-Redirect': file.get_absolute_path})
+                                 'X-Accel-Redirect': file_path})
