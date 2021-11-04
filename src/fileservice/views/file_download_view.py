@@ -16,11 +16,11 @@ class FileDownloadView(generics.GenericAPIView):
     def get(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
 
         if not File.objects.filter(id=self.kwargs['pk'], user=user).exists():
-            raise NotFoundError('This file does not exist or doesn`t belong to this user')
+            raise NotFoundError('This file does not exist')
 
         file = File.objects.get(id=self.kwargs['pk'])
 
-        file_path = file.get_absolute_path()
+        file_path = file.absolute_path
 
         return Response(content_type='application/force-download',
                         headers={'Content-Disposition': f'attachment; filename="{file.name}"',
