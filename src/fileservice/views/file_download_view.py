@@ -19,7 +19,7 @@ class FileDownloadView(generics.GenericAPIView):
         if not File.objects.filter(id=pk, user=user).exists():
             raise NotFoundError('This file does not exist')
 
-        file = File.objects.get(id=self.kwargs['pk'])
+        file = File.objects.get(id=pk)
 
         file_path = file.absolute_path
 
