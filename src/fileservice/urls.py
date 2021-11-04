@@ -20,7 +20,7 @@ urlpatterns = [
     path('<uuid:pk>/download/', FileDownloadView.as_view(), name='file_download'),
     re_path(r'^download/$', AllFilesDownloadView.as_view(), name='download_all_file_as_zip'),
     re_path(r'^/$', AllFilesView.as_view(), name='all_user_files'),
-    re_path(r'^(?P<pk>[0-9A-Fa-f-]+)/$', FileDetailView.as_view(), name='file_detail'),
-    re_path(r'^(?P<pk>[0-9A-Fa-f-]+)/delete/$', DeleteFileView.as_view(), name='delete_file'),
-    re_path(r'^(?P<pk>[0-9A-Fa-f-]+)/edit/$', EditFiledescriptionView.as_view(), name='edit_description'),
+    path('<uuid:pk>/', FileDetailView.as_view(), name='file_detail'),
+    path('<uuid:pk>/delete/', DeleteFileView.as_view(), name='delete_file'),
+    path('<uuid:pk>/edit/', EditFiledescriptionView.as_view(), name='edit_description'),
 ]
