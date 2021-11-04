@@ -14,7 +14,7 @@ def calculate_hash_md5(file: Union[UploadedFile, str]) -> str:
     hash_md5 = hashlib.md5()
 
     if isinstance(file, UploadedFile):
-        for chunk in iter(lambda: f.read(4096), b''):
+        for chunk in iter(lambda: file.read(4096), b''):
             hash_md5.update(chunk)
     elif isinstance(file, str):
         with open(file, 'rb') as f:
