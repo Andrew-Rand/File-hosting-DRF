@@ -29,4 +29,5 @@ class ChangePasswordView(generics.GenericAPIView):
         if not user.check_password(password):
             raise BadRequestError({'incorrect password'})
         user.set_password(serializer.validated_data.get('new_password'))
+        user.save()
         return CreatedResponse({})
