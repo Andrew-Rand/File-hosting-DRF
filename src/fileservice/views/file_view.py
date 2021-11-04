@@ -22,8 +22,8 @@ class FileView(generics.GenericAPIView):
         if not file:
             raise NotFoundError
 
-        serializer_for_queryset = FileSerializer(instance=file)
-        return Response(serializer_for_queryset.data)
+        serializer = FileSerializer(instance=file)
+        return Response(serializer.data)
 
     @login_required
     def patch(self, request: Request, pk: UUID, *args: Any, user: User, **kwargs: Any) -> Response:
