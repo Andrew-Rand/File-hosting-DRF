@@ -29,7 +29,7 @@ def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: st
     # check if the upload is complete
     chunk_paths = make_chunk_paths(chunks_dir_path, data)
     if not is_all_chunk_uploaded(chunk_paths):
-        send_warning_email_to_user(user.email, 'The server cant build your file, all chunks are not loaded!')
+        send_warning_email_to_user(user.email, f'The server cant build your file {data.get("filename")}, please try to upload again!')
         logger.info('There is a problem with filebuild %s (all chunks was not uploaded)' % data.get('filename'))
         logger.warning('File %s was not build, warning email send to user %s' % (data.get('filename'), user.email))  # whrite in console and in logfile
         raise FileExistsError
