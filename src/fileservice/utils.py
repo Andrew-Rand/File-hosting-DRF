@@ -1,7 +1,5 @@
 import hashlib
 import os
-
-
 from typing import List, Dict, Any
 
 from django.core.mail import send_mail
