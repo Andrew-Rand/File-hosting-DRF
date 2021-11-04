@@ -14,7 +14,7 @@ from src.fileservice.models import FileStorage
 from src.fileservice.models.file_storage import PERMANENT_STORAGE
 
 
-class AllDownloadView(generics.GenericAPIView):
+class AllFilesDownloadView(generics.GenericAPIView):
 
     permanent_storage = FileStorage.objects.get(type=PERMANENT_STORAGE)
 
@@ -28,7 +28,7 @@ class AllDownloadView(generics.GenericAPIView):
             raise NotFoundError('Dir of this user does not exist or empty')
 
         archive_path = shutil.make_archive(base_name=user_dir_path, format=ARCHIVE_TYPE, root_dir=self.permanent_storage.destination, base_dir=user_id)
-        archive_name = f'{user_id}.zip'
+        archive_name = os.path.split(archive_path)[1]
 
         return Response(content_type='application/force-download',
                         headers={'Content-Disposition': f'attachment; filename={archive_name}',
