@@ -1,4 +1,4 @@
-from django.urls import re_path
+from django.urls import re_path, path
 
 from .views.all_files_view import AllFilesView
 from .views.file_build_view import FileBuildView
@@ -16,7 +16,7 @@ urlpatterns = [
     re_path(r'^build/$', FileBuildView.as_view(), name='file_build'),
     re_path(r'^file-upload/$', FileUploadView.as_view(), name='file_upload'),
     re_path(r'^/$', AllFilesView.as_view(), name='all_user_files'),
-    re_path(r'^(?P<pk>[0-9A-Fa-f-]+)/$', FileDetailView.as_view(), name='file_detail'),
-    re_path(r'^(?P<pk>[0-9A-Fa-f-]+)/delete/$', DeleteFileView.as_view(), name='delete_file'),
-    re_path(r'^(?P<pk>[0-9A-Fa-f-]+)/edit/$', EditFiledescriptionView.as_view(), name='edit_description'),
+    path('<uuid:pk>/', FileDetailView.as_view(), name='file_detail'),
+    path('<uuid:pk>/delete/', DeleteFileView.as_view(), name='delete_file'),
+    path('<uuid:pk>/edit/', EditFiledescriptionView.as_view(), name='edit_description'),
 ]
