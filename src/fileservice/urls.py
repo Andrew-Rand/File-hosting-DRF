@@ -1,4 +1,4 @@
-from django.urls import re_path
+from django.urls import re_path, path
 
 from .views.all_files_download_view import AllFilesDownloadView
 from .views.file_build_view import FileBuildView
@@ -12,6 +12,6 @@ urlpatterns = [
     re_path(r'^chunk-upload/$', ChunkUploadView.as_view(), name='chunk_upload'),
     re_path(r'^build/$', FileBuildView.as_view(), name='file_build'),
     re_path(r'^file-upload/$', FileUploadView.as_view(), name='file_upload'),
-    re_path(r'^(?P<pk>[0-9A-Fa-f-]+)/download$', FileDownloadView.as_view(), name='file_download'),
+    path('<uuid:pk>/download', FileDownloadView.as_view(), name='file_download'),
     re_path(r'^download/$', AllFilesDownloadView.as_view(), name='all_download_zip'),
 ]
