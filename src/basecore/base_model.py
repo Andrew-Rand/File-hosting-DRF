@@ -13,6 +13,6 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
 
-    def delete(self, using=None, keep_parents=False):
+    def delete(self, using: bool = None, keep_parents: bool = False) -> None:
         self.is_alive = False
         self.save()

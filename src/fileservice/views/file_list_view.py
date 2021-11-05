@@ -26,4 +26,4 @@ class FileListView(generics.GenericAPIView):
         queryset = File.objects.filter(user=user)
         serializer = FileSerializer(instance=queryset, many=True)
 
-        return OkResponse(self.paginate_queryset(serializer.data))
+        return OkResponse(self.paginate_queryset(self.filter_queryset(serializer.data)))
