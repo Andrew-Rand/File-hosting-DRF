@@ -21,7 +21,7 @@ class FileListView(generics.GenericAPIView):
     ordering_fields = ORDERING_FILED
 
     @login_required
-    def get(self, request: Request, user: User,  *args: Any, **kwargs: Any) -> Response:
+    def get(self, request: Request, user: User, *args: Any, **kwargs: Any) -> Response:
         user = User.objects.get(id=user.id)
         queryset = File.objects.filter(user=user)
         serializer = FileSerializer(instance=queryset, many=True)

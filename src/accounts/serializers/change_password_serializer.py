@@ -6,19 +6,15 @@ from rest_framework.exceptions import ValidationError
 from src.accounts.models import User
 
 
-class ChangePasswordSerializer(serializers.ModelSerializer):
+class ChangePasswordSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=100)
     new_password = serializers.CharField(max_length=100)
     new_password_repeated = serializers.CharField(max_length=100)
     id = serializers.UUIDField()
 
-    class Meta:
-        model = User
-        fields = ('password', 'new_password', 'new_password_repeated', 'id')
-
     def validate(self, data: Dict[str, Any]) -> Dict[str, Any]:
 
-        user = User.objects.get(id=data.get('user_id'))
+        user = User.objects.get(id=data.get('id'))
         password = data.get('password')
         new_password = data.get('new_password')
         new_password_repeated = data.get('new_password_repeated')
