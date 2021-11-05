@@ -20,9 +20,9 @@ class FileListView(generics.GenericAPIView):
     filter_backends = [OrderingFilter, SearchFilter]
     ordering_fields = ORDERING_FILED
 
-    # @login_required
-    def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        user = User.objects.get(id='9148d1e1-5ba3-47e0-84b5-65c157f62e3a')
+    @login_required
+    def get(self, request: Request, user: User,  *args: Any, **kwargs: Any) -> Response:
+        user = User.objects.get(id=user.id)
         queryset = File.objects.filter(user=user)
         serializer = FileSerializer(instance=queryset, many=True)
 
