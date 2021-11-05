@@ -12,3 +12,7 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
+
+    def delete(self, using=None, keep_parents=False):
+        self.is_alive = False
+        self.save()
