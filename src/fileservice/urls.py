@@ -13,5 +13,5 @@ urlpatterns = [
     re_path(r'^build/$', FileBuildView.as_view(), name='file_build'),
     re_path(r'^file-upload/$', FileUploadView.as_view(), name='file_upload'),
     path('<uuid:pk>/download/', FileDownloadView.as_view(), name='file_download'),
-    re_path(r'^download/$', AllFilesDownloadView.as_view(), name='all_download_zip'),
+    re_path(r'^download/$', AllFilesDownloadView.as_view(), name='download_all_file_as_zip'),
 ]
