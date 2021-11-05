@@ -20,8 +20,6 @@ class FileDownloadView(generics.GenericAPIView):
         if not file:
             raise NotFoundError('File not found')
 
-        file_path = file.absolute_path
-
         return Response(content_type='application/force-download',
                         headers={'Content-Disposition': f'attachment; filename="{file.name}"',
-                                 'X-Accel-Redirect': file_path})
+                                 'X-Accel-Redirect': file.absolute_path})
