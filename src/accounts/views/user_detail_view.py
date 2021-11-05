@@ -18,8 +18,8 @@ class UserDetailView(generics.GenericAPIView):
     @login_required
     def get(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
 
-        serializer_for_queryset = self.get_serializer(instance=user)
-        return Response(serializer_for_queryset.data)
+        serializer = self.get_serializer(instance=user)
+        return Response(serializer.data)
 
     @login_required
     def patch(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
@@ -27,9 +27,5 @@ class UserDetailView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data, partial=True)
         if not serializer.is_valid():
             raise ValidationError(serializer.errors)
-        user.first_name = serializer.validated_data.get('first_name', user.first_name)
-        user.last_name = serializer.validated_data.get('last_name', user.last_name)
-        user.email = serializer.validated_data.get('email', user.email)
-        user.age = serializer.validated_data.get('age', user.age)
-        user.save()
+        serializer.update(instance=user, validated_data=serializer.validated_data)
         return OkResponse(data=serializer.validated_data)
