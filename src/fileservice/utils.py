@@ -3,10 +3,7 @@ import os
 from typing import List, Dict, Any
 
 from django.core.mail import send_mail
-from rest_framework.pagination import PageNumberPagination
-from rest_framework.response import Response
 
-from src.basecore.responses import OkResponse
 from src.config import settings
 
 
@@ -56,20 +53,3 @@ def save_file(target_file_path: str, chunk_paths: List[str]) -> None:
 
 def send_warning_email_to_user(user_email: str, message: str) -> None:
     send_mail('Warning', message, settings.DEFAULT_FROM_EMAIL, (user_email,))
-
-
-class PaginationFiles(PageNumberPagination):
-    page_size = 7
-    max_page_size = 1000
-
-    def get_paginated_response(self, data):
-        print(self.page.paginator.count)
-        return OkResponse(data=data, total_count=self.page.paginator.count)
-        # return Response({
-        #     'links': {
-        #         'next': self.get_next_link(),
-        #         'previous': self.get_previous_link()
-        #     },
-        #     'count': self.page.paginator.count,
-        #     'results': data
-        # })
