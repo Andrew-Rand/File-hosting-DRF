@@ -14,5 +14,5 @@ urlpatterns = [
     re_path(r'^build/$', FileBuildView.as_view(), name='file_build'),
     re_path(r'^file-upload/$', FileUploadView.as_view(), name='file_upload'),
     re_path(r'^/$', FileListView.as_view(), name='files'),
-    path('<uuid:pk>/', FileView.as_view(), name='file_detail'),
+    path('<uuid:pk>/', FileView.as_view(), name='file'),
 ]
