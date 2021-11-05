@@ -42,7 +42,5 @@ class FileView(generics.GenericAPIView):
         file = File.objects.filter(id=pk, user=user).first()
         if not file:
             raise NotFoundError('File not found')
-
-        file.is_alive = False
-        file.save()
+        file.delete()
         return OkResponse({})
