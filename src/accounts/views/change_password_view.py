@@ -17,9 +17,12 @@ class ChangePasswordView(generics.GenericAPIView):
     @login_required
     def put(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
 
-        request.data['user_id'] = str(user.id)
+        data = {
+            **request.data,
+            'user_id': str(user.id),
+        }
 
-        serializer = ChangePasswordSerializer(data=request.data)
+        serializer = ChangePasswordSerializer(data=data)
         if not serializer.is_valid():
             raise ValidationError(serializer.errors)
 

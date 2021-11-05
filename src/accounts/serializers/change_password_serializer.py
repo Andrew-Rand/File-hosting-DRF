@@ -1,9 +1,9 @@
 from typing import Dict, Any
 
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from src.accounts.models import User
-from src.basecore.custom_error_handler import BadRequestError
 
 
 class ChangePasswordSerializer(serializers.ModelSerializer):
@@ -24,9 +24,9 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         new_password_repeated = data.get('new_password_repeated')
 
         if not user.check_password(password):
-            raise BadRequestError({'incorrect password'})
+            raise ValidationError({'incorrect password'})
         if new_password != new_password_repeated:
-            raise BadRequestError({'new passwords is not the same'})
+            raise ValidationError({'new passwords do not match'})
         return {
             "new_password": new_password,
         }
