@@ -10,11 +10,11 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=100)
     new_password = serializers.CharField(max_length=100)
     new_password_repeated = serializers.CharField(max_length=100)
-    user_id = serializers.UUIDField()
+    id = serializers.UUIDField()
 
     class Meta:
         model = User
-        fields = ('password', 'new_password', 'new_password_repeated', 'user_id')
+        fields = ('password', 'new_password', 'new_password_repeated', 'id')
 
     def validate(self, data: Dict[str, Any]) -> Dict[str, Any]:
 
