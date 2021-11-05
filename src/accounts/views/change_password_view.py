@@ -1,4 +1,3 @@
-from copy import copy
 from typing import Any
 
 from rest_framework import generics
@@ -19,7 +18,7 @@ class ChangePasswordView(generics.GenericAPIView):
 
         data = {
             **request.data,
-            'user_id': str(user.id),
+            'id': str(user.id),
         }
 
         serializer = ChangePasswordSerializer(data=data)
