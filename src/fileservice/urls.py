@@ -13,6 +13,6 @@ urlpatterns = [
     re_path(r'^chunk-upload/$', ChunkUploadView.as_view(), name='chunk_upload'),
     re_path(r'^build/$', FileBuildView.as_view(), name='file_build'),
     re_path(r'^file-upload/$', FileUploadView.as_view(), name='file_upload'),
-    path('/', FileListView.as_view(), name='all_user_files'),
+    re_path(r'^/$', FileListView.as_view(), name='files'),
     path('<uuid:pk>/', FileView.as_view(), name='file_detail'),
 ]
