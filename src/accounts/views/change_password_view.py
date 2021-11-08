@@ -8,13 +8,13 @@ from rest_framework.response import Response
 from src.accounts.authentication import login_required
 from src.accounts.models import User
 from src.accounts.serializers.change_password_serializer import ChangePasswordSerializer
-from src.basecore.responses import CreatedResponse
+from src.basecore.responses import OkResponse
 
 
 class ChangePasswordView(generics.GenericAPIView):
 
     @login_required
-    def put(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
+    def patch(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
 
         serializer = ChangePasswordSerializer(data=request.data, context={'user': user})
         if not serializer.is_valid():
@@ -22,4 +22,4 @@ class ChangePasswordView(generics.GenericAPIView):
 
         serializer.set_password()
 
-        return CreatedResponse({})
+        return OkResponse({})

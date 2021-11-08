@@ -17,10 +17,10 @@ class FileDownloadView(generics.GenericAPIView):
     @login_required
     def get(self, request: Request, pk: UUID, *args: Any, user: User, **kwargs: Any) -> Response:
 
-        file = File.objects.filter(id=pk, user=user).first()
-        if not file:
+        file_obj = File.objects.filter(id=pk, user=user).first()
+        if not file_obj:
             raise NotFoundError('File not found')
 
         return Response(content_type='application/force-download',
-                        headers={'Content-Disposition': f'attachment; filename="{file.name}"',
-                                 'X-Accel-Redirect': f'/{NGINX_PERMANENT_STORAGE_PATH}{user.id}/{file.name}'})
+                        headers={'Content-Disposition': f'attachment; filename="{file_obj.name}"',
+                                 'X-Accel-Redirect': f'/{NGINX_PERMANENT_STORAGE_PATH}{user.id}/{file_obj.name}'})

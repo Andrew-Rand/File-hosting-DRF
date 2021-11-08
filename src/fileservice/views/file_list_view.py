@@ -11,7 +11,7 @@ from src.basecore.responses import OkResponse
 from src.fileservice.pagination import FilesPagination
 from src.fileservice.serializers.file_serializer import FileSerializer
 from src.fileservice.models import File
-from src.fileservice.views.constants import ORDERING_FILED
+from src.fileservice.constants import ORDERING_FILED
 
 
 class FileListView(generics.GenericAPIView):
@@ -22,8 +22,8 @@ class FileListView(generics.GenericAPIView):
 
     @login_required
     def get(self, request: Request, user: User, *args: Any, **kwargs: Any) -> Response:
-        user = User.objects.get(id=user.id)
-        queryset = File.objects.filter(user=user)
-        serializer = FileSerializer(instance=queryset, many=True)
+
+        file_qs = File.objects.filter(user=user)
+        serializer = FileSerializer(instance=file_qs, many=True)
 
         return OkResponse(self.paginate_queryset(self.filter_queryset(serializer.data)))
