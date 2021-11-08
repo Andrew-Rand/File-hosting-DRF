@@ -12,8 +12,12 @@ class BaseModel(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     is_alive = models.BooleanField(default=True)
 
+    alive_objects = BaseModelManager()
+    objects = models.Manager()
+
     class Meta:
         abstract = True
 
-    alive_objects = BaseModelManager()
-    objects = models.Manager()
+    def delete(self, using: bool = None, keep_parents: bool = False) -> None:
+        self.is_alive = False
+        self.save()
