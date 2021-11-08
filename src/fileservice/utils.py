@@ -5,10 +5,7 @@ from typing import List, Dict, Any, Union
 import magic
 from django.core.files.uploadedfile import UploadedFile
 from django.core.mail import send_mail
-from rest_framework.pagination import PageNumberPagination
-from rest_framework.response import Response
 
-from src.basecore.responses import OkResponse
 from src.config import settings
 from src.fileservice.filetype_constants import ALLOWED_FILETYPES
 
