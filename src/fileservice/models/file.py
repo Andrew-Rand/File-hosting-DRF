@@ -36,3 +36,7 @@ class File(BaseModel):
                             destination=destination,
                             hash=hash,
                             size=data.get('total_size'))
+
+    @property
+    def absolute_path(self) -> str:
+        return self.storage.destination / self.destination
