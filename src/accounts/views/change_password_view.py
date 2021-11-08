@@ -20,6 +20,6 @@ class ChangePasswordView(generics.GenericAPIView):
         if not serializer.is_valid():
             raise ValidationError(serializer.errors)
 
-        user.set_password(serializer.validated_data.get('new_password'))
-        user.save()
+        serializer.set_password()
+
         return CreatedResponse({})
