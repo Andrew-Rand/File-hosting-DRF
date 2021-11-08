@@ -3,6 +3,8 @@ import uuid
 
 from django.db import models
 
+from src.basecore.mangers import BaseModelManager
+
 
 class BaseModel(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
@@ -12,3 +14,6 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
+
+    alive_objects = BaseModelManager()
+    objects = models.Manager()
