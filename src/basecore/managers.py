@@ -7,7 +7,7 @@ class QuerySetDelete(models.query.QuerySet):
     def delete(self) -> None:
         self.update(is_alive=False)
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         return self.filter(is_alive=True)
 
 

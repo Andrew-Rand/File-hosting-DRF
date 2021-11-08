@@ -3,7 +3,7 @@ import uuid
 
 from django.db import models
 
-from src.basecore.mangers import BaseModelManager
+from src.basecore.managers import BaseModelManager
 
 
 class BaseModel(models.Model):
