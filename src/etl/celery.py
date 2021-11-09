@@ -13,7 +13,7 @@ app.conf.beat_schedule = {
         'task': 'src.fileservice.tasks.delete_unbuilt_chunks',
         'schedule': crontab(minute=0, hour=0)  # everyday at midnight
     },
-    'delete_non_living_files':{
+    'delete_non_living_files': {
         'task': 'src.fileservice.tasks.delete_non_living_files',
         'schedule': crontab(0, 0, day_of_month='5')  # 5th day every month
     }
