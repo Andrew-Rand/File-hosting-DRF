@@ -31,7 +31,7 @@ class AllFilesDownloadView(generics.GenericAPIView):
         user_archive_path = os.path.join(self.temp_storage.destination, user_id)
         shutil.make_archive(base_name=user_archive_path, format=ARCHIVE_TYPE, root_dir=self.permanent_storage.destination, base_dir=user_id)
 
-        archive_name = f'{user_id}.zip'
+        archive_name = f'{user_id}.{ARCHIVE_TYPE}'
 
         return Response(content_type='application/force-download',
                         headers={'Content-Disposition': f'attachment; filename={archive_name}',
