@@ -31,11 +31,6 @@ class TeapotError(Exception):
         super().__init__(args)
 
 
-class NoContent(Exception):
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        super().__init__(args)
-
-
 def error_handler(exc: Exception, context: Any) -> Response:
 
     if isinstance(exc, BadRequestError):
@@ -55,6 +50,3 @@ def error_handler(exc: Exception, context: Any) -> Response:
 
     elif isinstance(exc, TeapotError):
         return Response(create_std_response(error_detail=exc.args), status=status.HTTP_418_IM_A_TEAPOT)
-
-    elif isinstance(exc, NoContent):
-        return Response(create_std_response(error_detail=exc.args), status=status.HTTP_204_NO_CONTENT)

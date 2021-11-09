@@ -8,9 +8,9 @@ from rest_framework.response import Response
 
 from src.accounts.authentication import login_required
 from src.accounts.models import User
-from src.basecore.responses import OkResponse
+from src.basecore.responses import OkResponse, NoContentResponse
 from src.fileservice.serializers.file_serializer import FileSerializer
-from src.basecore.custom_error_handler import NotFoundError, NoContent
+from src.basecore.custom_error_handler import NotFoundError
 from src.fileservice.models import File
 
 
@@ -47,6 +47,6 @@ class FileView(generics.GenericAPIView):
 
         file_obj = File.objects.filter(id=pk, user=user).first()
         if not file_obj:
-            raise NoContent('File not found')
+            return NoContentResponse({})
         file_obj.delete()
         return OkResponse({})

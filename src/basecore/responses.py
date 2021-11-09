@@ -13,3 +13,8 @@ class OkResponse(Response):
 class CreatedResponse(Response):
     def __init__(self, data: Dict[str, Any], total_count: int = 0) -> None:
         super().__init__(create_std_response(result=data, total_count=total_count), status=status.HTTP_201_CREATED)
+
+
+class NoContentResponse(Response):
+    def __init__(self, data: Dict[str, Any], total_count: int = 0) -> None:
+        super().__init__(create_std_response(result=data, total_count=total_count), status=status.HTTP_204_NO_CONTENT)
