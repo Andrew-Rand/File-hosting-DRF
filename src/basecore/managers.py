@@ -14,4 +14,4 @@ class QuerySetDelete(models.query.QuerySet):
 class BaseModelManager(models.Manager):
 
     def get_queryset(self) -> QuerySet:
-        return QuerySetDelete(self.models).get_queryset()
+        return QuerySetDelete(self.model).get_queryset()
