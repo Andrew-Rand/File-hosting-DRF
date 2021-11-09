@@ -11,8 +11,8 @@ class BaseModel(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     is_alive = models.BooleanField(default=True)
 
-    alive_objects = BaseModelManager()
-    objects = models.Manager()
+    objects = BaseModelManager()
+    all_objects = models.Manager()
 
     class Meta:
         abstract = True
