@@ -5,7 +5,6 @@ from typing import Dict, Any
 
 from src.accounts.models import User
 from src.basecore import logger_conf
-from src.basecore.custom_error_handler import NotFoundError
 from src.etl import celery_app
 from src.fileservice.models import FileStorage, File
 from src.fileservice.models.file_storage import TEMP_STORAGE
@@ -51,7 +50,7 @@ def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: st
 
 
 @celery_app.task
-def delete_unbuilt_chunks() -> None:
+def task_delete_unbuilt_chunks() -> None:
     temp_storage = FileStorage.objects.get(type=TEMP_STORAGE)
     temp_storage_path = temp_storage.destination
     user_dirs = os.listdir(temp_storage_path)
@@ -66,23 +65,30 @@ def delete_unbuilt_chunks() -> None:
 
 
 @celery_app.task
-def delete_non_living_files() -> None:
+def task_clean_up_deleted_files() -> None:
 
     files_qs = File.objects.filter(is_alive=False)  # marked as deleted
     if not files_qs:
-        raise NotFoundError('Files not found')
+        logger.info('Deleted files not found')
+        return None
     for file in files_qs:
         file_path = file.absolute_path
         if not os.path.exists(file_path):
-            raise NotFoundError('File not found')  # TODO: rebuild with 204 status code after merging
+            logger.info('File %s not found' % file.name)
+            return None
         os.remove(file_path)
 
 
 @celery_app.task
-def delete_file(file_id: str) -> None:  # TODO: add this task to file_view after merging
+def task_delete_file(file_id: str) -> None:
 
-    file_obj = File.objects.get(id=file_id)
+    try:
+        file_obj = File.objects.get(id=file_id)
+    except File.DoesNotExist:
+        logger.info('File %s not found' % file_id)
+        return None
     file_path = file_obj.absolute_path
     if not os.path.isfile(file_path):
-        raise NotFoundError('File not found')  # TODO: rebuild with 204 status code after merging
+        logger.info('File %s not found' % file_obj.name)
+        return None
     os.remove(file_path)

@@ -12,6 +12,7 @@ from src.basecore.responses import OkResponse
 from src.fileservice.serializers.file_serializer import FileSerializer
 from src.basecore.custom_error_handler import NotFoundError
 from src.fileservice.models import File
+from src.fileservice.tasks import task_delete_file
 
 
 class FileView(generics.GenericAPIView):
@@ -49,4 +50,5 @@ class FileView(generics.GenericAPIView):
         if not file:
             raise NotFoundError('File not found')
         file.delete()
+        task_delete_file.delay(file_id=file.id)
         return OkResponse({})
