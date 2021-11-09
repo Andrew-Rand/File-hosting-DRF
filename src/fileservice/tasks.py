@@ -5,6 +5,7 @@ from typing import Dict, Any
 
 from src.accounts.models import User
 from src.basecore import logger_conf
+from src.basecore.custom_error_handler import NotFoundError
 from src.etl import celery_app
 from src.fileservice.models import FileStorage, File
 from src.fileservice.models.file_storage import TEMP_STORAGE
@@ -62,3 +63,26 @@ def delete_unbuilt_chunks() -> None:
             time_of_dir_mod = datetime.fromtimestamp(mtime)
             if datetime.utcnow() - time_of_dir_mod > CHUNK_EXPIRATION_TIME:
                 shutil.rmtree(dirpath_to_rm, ignore_errors=True)
+
+
+@celery_app.task
+def delete_non_living_files() -> None:
+
+    files_qs = File.objects.filter(is_alive=False)  # marked as deleted
+    if not files_qs:
+        raise NotFoundError('Files not found')
+    for file in files_qs:
+        file_path = file.absolute_path
+        if not os.path.exists(file_path):
+            raise NotFoundError('File not found')  # TODO: rebuild with 204 status code after merging
+        os.remove(file_path)
+
+
+@celery_app.task
+def delete_file(file_id: str) -> None:  # TODO: add this task to file_view after merging
+
+    file_obj = File.objects.get(id=file_id)
+    file_path = file_obj.absolute_path
+    if not os.path.isfile(file_path):
+        raise NotFoundError('File not found')  # TODO: rebuild with 204 status code after merging
+    os.remove(file_path)
