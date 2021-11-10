@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 
 
 @pytest.mark.django_db
-def test_user_create():
+def test_user_create() -> None:
 
     User = get_user_model()
     # user_data = {'first_name': 'test_name',
