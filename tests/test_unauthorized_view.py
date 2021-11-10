@@ -9,6 +9,8 @@ from src.fileservice.constants import FILE_DETAIL_URL_NAME, FILE_DOWNLOAD_URL_NA
 from src.fileservice.models import File
 from tests.constants import TEST_QUERYSET_FOR_BUILD
 
+from src.fileservice.constants import FILE_DETAIL_URL_NAME
+
 
 class TestUnauthorizedRequest:
 
@@ -98,4 +100,10 @@ class TestUnauthorizedRequest:
         url = reverse(FILE_BUILD_URL_NAME)
         response = test_client.post(url + TEST_QUERYSET_FOR_BUILD)
 
+        assert response.status_code == 403
+
+    @pytest.mark.django_db
+    def test_unauthorized_file_detail(self, test_client, file_create):
+        url = reverse(FILE_DETAIL_URL_NAME, kwargs={'pk': str(file_create.id)})
+        response = test_client.get(url)
         assert response.status_code == 403
