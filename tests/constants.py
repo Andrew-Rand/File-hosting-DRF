@@ -11,8 +11,12 @@ TEST_USER_REGISTER_DATA = {'first_name': 'test_first_name',
 
 TEST_FILE_NAME = 'test_file'
 TEST_FILE_TYPE = '.txt'
-TEST_FILE_PATH = f'tests/{TEST_FILE_NAME}{TEST_FILE_TYPE}'
-TEST_FILE_DATA = {'filename': TEST_FILE_NAME,
+TEST_STORAGE_PATH = 'storage/permanent'
+TEST_FILE_DATA = {'filename': TEST_FILE_NAME + TEST_FILE_TYPE,
                   'type': TEST_FILE_TYPE,
                   'total_size': 48
                   }
+
+TEST_QUERYSET_FOR_BUILD = '?resumableChunkNumber=1&resumableChunkSize=52428800&resumableCurrentChunkSize=160497&' \
+                          'resumableTotalSize=160497&resumableType=image%2Fjpeg&resumableIdentifier=160497-RedCatjpg&' \
+                          'resumableFilename=RedCat.jpg&resumableRelativePath=RedCat.jpg&resumableTotalChunks=1'
