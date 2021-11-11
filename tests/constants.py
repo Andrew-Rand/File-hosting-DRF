@@ -17,6 +17,13 @@ TEST_FILE_DATA = {'filename': TEST_FILE_NAME + TEST_FILE_TYPE,
                   'total_size': 48
                   }
 
-TEST_QUERYSET_FOR_BUILD = '?resumableChunkNumber=1&resumableChunkSize=52428800&resumableCurrentChunkSize=160497&' \
-                          'resumableTotalSize=160497&resumableType=image%2Fjpeg&resumableIdentifier=160497-RedCatjpg&' \
-                          'resumableFilename=RedCat.jpg&resumableRelativePath=RedCat.jpg&resumableTotalChunks=1'
+TEST_CHUNK_PATH = 'storage/temp'
+TEST_CHUNK_DIR = '148-test_chunktxt'
+TEST_CHUNK_NAME = 'test_chunk.txt_part_1'
+TEST_QUERYSET_FOR_BUILD = '?resumableChunkNumber=1&resumableChunkSize=52428800&resumableCurrentChunkSize=148&' \
+                          'resumableTotalSize=148&resumableType=text%2Fplain&resumableIdentifier=148-test_chunktxt&' \
+                          'resumableFilename=test_chunk.txt&resumableRelativePath=test_chunk.txt&resumableTotalChunks=1'
+
+# TEST_QUERYSET_FOR_BUILD = '?resumableChunkNumber=1&resumableChunkSize=52428800&resumableCurrentChunkSize=160497&' \
+#                           'resumableTotalSize=160497&resumableType=image%2Fjpeg&resumableIdentifier=160497-RedCatjpg&' \
+#                           'resumableFilename=RedCat.jpg&resumableRelativePath=RedCat.jpg&resumableTotalChunks=1'
