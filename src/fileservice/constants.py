@@ -3,6 +3,10 @@ ARCHIVE_TYPE = 'zip'
 NGINX_TEMP_STORAGE_PATH = 'media/temp/'
 NGINX_PERMANENT_STORAGE_PATH = 'media/permanent/'
 
+PAGE_SIZE = 5
+MAX_PAGE_SIZE = 1000
+ORDERING_FILED = ('date_modified', 'name')
+
 FILE_TEMPLATE_URL_NAME = 'api_file_upload'
 FILE_CHUNK_UPLOAD_URL_NAME = 'chunk_upload'
 FILE_BUILD_URL_NAME = 'file_build'
