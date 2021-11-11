@@ -40,4 +40,4 @@ class File(BaseModel):
 
     @property
     def absolute_path(self) -> str:
-        return self.storage.destination / self.destination
+        return f'{self.storage.destination}/{self.destination}'
