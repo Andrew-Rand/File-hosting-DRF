@@ -11,7 +11,7 @@ from src.basecore.responses import OkResponse
 from src.fileservice.pagination import FilesPagination
 from src.fileservice.serializers.file_serializer import FileSerializer
 from src.fileservice.models import File
-from src.fileservice.views.constants import ORDERING_FILED
+from src.fileservice.constants import ORDERING_FILED
 
 
 class FileListView(generics.GenericAPIView):
