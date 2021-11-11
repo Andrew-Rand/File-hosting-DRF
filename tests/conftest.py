@@ -53,7 +53,7 @@ def file_create(create_user_and_get_token: Tuple[User, str]) -> File:
 
 
 @pytest.fixture
-def chunks_create(create_user_and_get_token) -> str:
+def chunks_create(create_user_and_get_token: Tuple[User, str]) -> str:
     user = create_user_and_get_token[0]
     user_chunks_path = f'{TEST_CHUNK_PATH}/{user.id}/148-test_chunktxt/'
     os.makedirs(user_chunks_path, 0o777, exist_ok=True)
