@@ -75,8 +75,8 @@ def task_clean_up_deleted_files() -> None:
         file_path = file.absolute_path
         if not os.path.exists(file_path):
             logger.info('File %s not found' % file.name)
-            return None
-        os.remove(file_path)
+        else:
+            os.remove(file_path)
 
 
 @celery_app.task
