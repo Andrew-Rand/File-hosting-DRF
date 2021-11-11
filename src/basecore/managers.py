@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import QuerySet
 
 
-class SoftQuerySetDelete(models.query.QuerySet):
+class BaseQuerySet(models.query.QuerySet):
 
     def delete(self) -> None:
         self.update(is_alive=False)
@@ -14,4 +14,4 @@ class SoftQuerySetDelete(models.query.QuerySet):
 class BaseModelManager(models.Manager):
 
     def get_queryset(self) -> QuerySet:
-        return SoftQuerySetDelete(self.model).get_queryset()
+        return BaseQuerySet(self.model).get_queryset()
