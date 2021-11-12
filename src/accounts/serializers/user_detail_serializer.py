@@ -16,8 +16,9 @@ class UserDetailSerializer(serializers.ModelSerializer):
         email = data.get('email')
         if email is None:
             return data
-        users_qs = User.objects.filter(email=email).first
-        if not users_qs:
+        users_qs = User.objects.filter(email=email).first()
+
+        if users_qs:
             raise serializers.ValidationError("User with this email already exist")
 
         return data
