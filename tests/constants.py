@@ -48,3 +48,13 @@ MAKE_CHUNK_PATHS_RESULT = ['tes_storage/test_file_part_1',
                            'tes_storage/test_file_part_5']
 
 CHUNK_NAME_RESULT = f'{TEST_CHUNK_DATA.get("filename")}_part_{TEST_CHUNK_DATA.get("total_chunk")}'
+
+#  ===================SERIALIZER_TESTS======================================================================
+
+TEST_NEW_PASSWORD = 'new_password'
+
+TEST_CHANGE_PASSWORD_SERIALIZER_DATA_VALID = {
+    'password': TEST_PASSWORD,
+    'new_password': TEST_NEW_PASSWORD,
+    'new_password_repeated': TEST_NEW_PASSWORD,
+}
