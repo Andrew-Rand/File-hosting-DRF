@@ -58,3 +58,12 @@ TEST_CHANGE_PASSWORD_SERIALIZER_DATA_VALID = {
     'new_password': TEST_NEW_PASSWORD,
     'new_password_repeated': TEST_NEW_PASSWORD,
 }
+
+# ===================TEST_USER_CHANGE_VIEW=====================================================================
+
+TEST_NEW_USER_DATA = {
+    'email': 'new@mail.ru',
+    'age': 50,
+    'first_name': 'new_name',
+    'last_name': 'new_l_name'
+}
