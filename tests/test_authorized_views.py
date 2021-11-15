@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Callable
 
 import pytest
 
@@ -16,11 +16,16 @@ from tests.constants import TEST_QUERYSET_FOR_BUILD
 class TestAuthorizedRequest:
 
     @pytest.mark.django_db
-    def test_authorized_user_detail(self, test_client: APIClient,
-                                    create_user_and_get_token: Tuple[User, str]) -> None:
+    def test_authorized_user_detail(
+            self,
+            test_client: APIClient,
+            user: Callable,
+            token: Callable
+    ) -> None:
 
         url = reverse(ACCOUNTS_DETAIL_URL_NAME)
-        test_client.credentials(HTTP_Authorization=create_user_and_get_token[1])
+        test_client.credentials(HTTP_Authorization=token(user()))
+
         response = test_client.get(url)
 
         assert response.status_code == 200

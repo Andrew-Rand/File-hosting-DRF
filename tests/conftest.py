@@ -1,5 +1,5 @@
 import os
-from typing import Tuple
+from typing import Tuple, Callable, Any
 
 import pytest
 from rest_framework.test import APIClient
@@ -17,6 +17,33 @@ from tests.constants import TEST_USERNAME, TEST_EMAIL, TEST_PASSWORD, TEST_STORA
 def test_client() -> APIClient:
     from rest_framework.test import APIClient
     return APIClient()
+
+
+@pytest.fixture
+@pytest.mark.django_db
+def user() -> Callable:
+    def create_user(**kwargs: Any) -> User:
+
+        username = kwargs.get('username', 'test_username')
+        password = kwargs.get('password', '1234Abc%%%')
+        email = kwargs.get('email', 'test@mail.ru')
+
+        return User.objects.create_user(
+            username=username,
+            password=password,
+            email=email,
+            **kwargs
+        )
+    return create_user
+
+
+@pytest.fixture
+@pytest.mark.django_db
+def token() -> Callable:
+    def make_token(user: User) -> str:
+        token = create_token(user_id=str(user.id), time_delta_seconds=ACCESS_TOKEN_LIFETIME)
+        return token
+    return make_token
 
 
 @pytest.fixture
