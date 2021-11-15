@@ -11,3 +11,7 @@ FILE_DOWNLOAD_URL_NAME = 'file_download'
 FILE_DOWNLOAD_ALL_URL_NAME = 'download_all_file_as_zip'
 FILE_ALL_USER_FILES_URL_NAME = 'all_user_files'
 FILE_DETAIL_URL_NAME = 'file_detail'
+
+PAGE_SIZE = 5
+MAX_PAGE_SIZE = 1000
+ORDERING_FILED = ('date_modified', 'name')
