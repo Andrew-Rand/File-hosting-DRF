@@ -21,7 +21,7 @@ def test_client() -> APIClient:
 
 @pytest.fixture
 @pytest.mark.django_db
-def user() -> Callable:
+def get_user() -> Callable:
     def create_user(**kwargs: Any) -> User:
 
         username = kwargs.get('username', 'test_username')
@@ -39,7 +39,7 @@ def user() -> Callable:
 
 @pytest.fixture
 @pytest.mark.django_db
-def token() -> Callable:
+def get_token() -> Callable:
     def make_token(user: User) -> str:
         token = create_token(user_id=str(user.id), time_delta_seconds=ACCESS_TOKEN_LIFETIME)
         return token
@@ -51,6 +51,35 @@ def create_user_and_get_token() -> Tuple[User, str]:
     user = User.objects.create_user(username=TEST_USERNAME, email=TEST_EMAIL, password=TEST_PASSWORD)
     token = create_token(str(user.id), time_delta_seconds=ACCESS_TOKEN_LIFETIME)
     return user, token
+
+
+@pytest.fixture
+@pytest.mark.django_db
+def get_file() -> Callable:
+    def make_file(user: User) -> File:
+        from src.fileservice.models import File
+        from src.fileservice.models import FileStorage
+        from src.fileservice.models.file_storage import PERMANENT_STORAGE
+
+        permanent_storage = FileStorage.objects.get(type=PERMANENT_STORAGE)
+        os.mkdir(f'{TEST_STORAGE_PATH}/{user.id}')
+        test_file_path = f'{TEST_STORAGE_PATH}/{user.id}/{TEST_FILE_NAME}{TEST_FILE_TYPE}'
+        test_file = open(test_file_path, 'w')
+        test_file.close()
+
+        file_hash = calculate_hash_md5(test_file_path)
+
+        File.create_model_object(user=user,
+                                 hash=file_hash,
+                                 storage=permanent_storage,
+                                 destination=f'{user.id}/{TEST_FILE_NAME}{TEST_FILE_TYPE}',
+                                 data=TEST_FILE_DATA)
+
+        file = File.objects.filter(user=user).first()
+
+        return file
+    return make_file
+
 
 
 @pytest.fixture
