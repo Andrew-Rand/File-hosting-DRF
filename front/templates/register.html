@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+     User register
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+    <h3>User register</h3>
+
+    <form method = "POST">
+        <h5>Username</h5>
+        <input type="text" name="header" id="header" class="form-control" placeholder="Enter username"><br>
+        <h5>Email</h5>
+        <textarea name="intro" id="intro" class="form-control" placeholder="Enter email"></textarea><br>
+        <h5>Password</h5>
+        <textarea name="text" id="text" class="form-control" placeholder="Enter Password"></textarea><br>
+        <input type="submit" class="btn btn-success" value="Register">
+    </form>
+    </div>
+{% endblock %}
