@@ -9,10 +9,6 @@ from src.fileservice.constants import FILE_DETAIL_URL_NAME, FILE_DOWNLOAD_URL_NA
 from src.fileservice.models import File
 from tests.constants import TEST_QUERYSET_FOR_BUILD
 
-from src.fileservice.constants import FILE_DETAIL_URL_NAME
-
-from src.fileservice.constants import FILE_DETAIL_URL_NAME
-
 
 class TestUnauthorizedRequest:
 

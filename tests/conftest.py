@@ -20,7 +20,6 @@ def test_client() -> APIClient:
 
 
 @pytest.fixture
-@pytest.mark.django_db
 def get_user() -> Callable:
     def create_user(**kwargs: Any) -> User:
 
@@ -38,7 +37,6 @@ def get_user() -> Callable:
 
 
 @pytest.fixture
-@pytest.mark.django_db
 def get_token() -> Callable:
     def make_token(user: User) -> str:
         token = create_token(user_id=str(user.id), time_delta_seconds=ACCESS_TOKEN_LIFETIME)
@@ -47,14 +45,6 @@ def get_token() -> Callable:
 
 
 @pytest.fixture
-def create_user_and_get_token() -> Tuple[User, str]:
-    user = User.objects.create_user(username=TEST_USERNAME, email=TEST_EMAIL, password=TEST_PASSWORD)
-    token = create_token(str(user.id), time_delta_seconds=ACCESS_TOKEN_LIFETIME)
-    return user, token
-
-
-@pytest.fixture
-@pytest.mark.django_db
 def get_file() -> Callable:
     def make_file(user: User) -> File:
         from src.fileservice.models import File
@@ -62,8 +52,8 @@ def get_file() -> Callable:
         from src.fileservice.models.file_storage import PERMANENT_STORAGE
 
         permanent_storage = FileStorage.objects.get(type=PERMANENT_STORAGE)
-        os.mkdir(f'{TEST_STORAGE_PATH}/{user.id}')
-        test_file_path = f'{TEST_STORAGE_PATH}/{user.id}/{TEST_FILE_NAME}{TEST_FILE_TYPE}'
+        os.mkdir(f'storage/permanent/{user.id}')
+        test_file_path = f'storage/permanent/{user.id}/test_file.txt'
         test_file = open(test_file_path, 'w')
         test_file.close()
 
@@ -81,6 +71,25 @@ def get_file() -> Callable:
     return make_file
 
 
+@pytest.fixture
+def get_chunks() -> Callable:
+    def make_chunks(user: User) -> str:
+        user_chunks_path = f'storage/temp/{user.id}/148-test_chunktxt/'
+        os.makedirs(user_chunks_path, 0o777, exist_ok=True)
+        test_file_path = f'{user_chunks_path}test_chunk.txt_part_1'
+        test_chunk = open(test_file_path, 'w')
+        test_chunk.close()
+        return '?resumableChunkNumber=1&resumableChunkSize=52428800&resumableCurrentChunkSize=148&' \
+               'resumableTotalSize=148&resumableType=text%2Fplain&resumableIdentifier=148-test_chunktxt&' \
+               'resumableFilename=test_chunk.txt&resumableRelativePath=test_chunk.txt&resumableTotalChunks=1'
+    return make_chunks
+
+
+@pytest.fixture
+def create_user_and_get_token() -> Tuple[User, str]:
+    user = User.objects.create_user(username=TEST_USERNAME, email=TEST_EMAIL, password=TEST_PASSWORD)
+    token = create_token(str(user.id), time_delta_seconds=ACCESS_TOKEN_LIFETIME)
+    return user, token
 
 @pytest.fixture
 def file_create(create_user_and_get_token: Tuple[User, str]) -> File:
@@ -117,3 +126,4 @@ def chunks_create(create_user_and_get_token: Tuple[User, str]) -> str:
     test_chunk = open(test_file_path, 'w')
     test_chunk.close()
     return TEST_QUERYSET_FOR_BUILD
+

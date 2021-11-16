@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Callable
 
 import pytest
 
@@ -16,25 +16,36 @@ class TestSettings:
 class TestUserModel:
 
     @pytest.mark.django_db
-    def test_user_create(self, create_user_and_get_token: Tuple[User, str]) -> None:
+    def test_user_create(self, get_user: Callable) -> None:
+
+        get_user()
+
         assert User.objects.count() == 1
 
     @pytest.mark.django_db
-    def test_default_user_is_alive(self, create_user_and_get_token: Tuple[User, str]) -> None:
-        user = create_user_and_get_token[0]
+    def test_default_user_is_alive(self, get_user: Callable) -> None:
+
+        user = get_user()
+
         assert user.is_alive
 
     @pytest.mark.django_db
-    def test_default_user_is_active(self, create_user_and_get_token: Tuple[User, str]) -> None:
-        user = create_user_and_get_token[0]
+    def test_default_user_is_active(self, get_user: Callable) -> None:
+
+        user = get_user()
+
         assert user.is_active
 
     @pytest.mark.django_db
-    def test_default_user_is_staff(self, create_user_and_get_token: Tuple[User, str]) -> None:
-        user = create_user_and_get_token[0]
+    def test_default_user_is_staff(self, get_user: Callable) -> None:
+
+        user = get_user()
+
         assert not user.is_staff
 
     @pytest.mark.django_db
-    def test_default_user_is_superuser(self, create_user_and_get_token: Tuple[User, str]) -> None:
-        user = create_user_and_get_token[0]
+    def test_default_user_is_superuser(self, get_user: Callable) -> None:
+
+        user = get_user()
+
         assert not user.is_superuser

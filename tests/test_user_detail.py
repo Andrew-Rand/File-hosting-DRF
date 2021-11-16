@@ -1,23 +1,26 @@
-from typing import Tuple
+from typing import Callable
 
 import pytest
 from django.urls import reverse
 from rest_framework.test import APIClient
 
 from src.accounts.constants import ACCOUNTS_DETAIL_URL_NAME
-from src.accounts.models import User
-from tests.constants import TEST_NEW_USER_DATA, TEST_EMAIL
 
 
 class TestUserDetailGet:
 
     @pytest.mark.django_db
-    def test_user_detail_get(self, test_client: APIClient,
-                             create_user_and_get_token: Tuple[User, str]) -> None:
+    def test_user_detail_get(
+            self,
+            test_client: APIClient,
+            get_user: Callable,
+            get_token: Callable
+    ) -> None:
+
+        user = get_user()
         url = reverse(ACCOUNTS_DETAIL_URL_NAME)
-        user = create_user_and_get_token[0]
-        token = create_user_and_get_token[1]
-        test_client.credentials(HTTP_Authorization=token)
+        test_client.credentials(HTTP_Authorization=get_token(user))
+
         response = test_client.get(url)
 
         assert response.status_code == 200
@@ -31,30 +34,45 @@ class TestUserDetailGet:
 
 class TestUserDetailPatch:
 
-    @pytest.mark.django_db
-    def test_user_detail_get_if_change_valid_all_fields(self, test_client: APIClient,
-                                                        create_user_and_get_token: Tuple[User, str]) -> None:
+    TEST_NEW_USER_DATA = {
+            'email': 'new@mail.ru',
+            'age': 50,
+            'first_name': 'new_name',
+            'last_name': 'new_l_name'
+        }
 
+    @pytest.mark.django_db
+    def test_user_detail_get_if_change_valid_all_fields(
+            self,
+            test_client: APIClient,
+            get_user: Callable,
+            get_token: Callable
+    ) -> None:
+
+        user = get_user()
         url = reverse(ACCOUNTS_DETAIL_URL_NAME)
-        token = create_user_and_get_token[1]
-        data = TEST_NEW_USER_DATA
-        test_client.credentials(HTTP_Authorization=token)
+        data = self.TEST_NEW_USER_DATA
+        test_client.credentials(HTTP_Authorization=get_token(user))
+
         response = test_client.patch(url, data=data)
         data_to_assert = response.data.get('data')
 
         assert response.status_code == 200
-        assert data_to_assert.get('result') == TEST_NEW_USER_DATA
+        assert data_to_assert.get('result') == data
         assert data_to_assert.get('error_detail') is None
 
     @pytest.mark.django_db
-    def test_user_detail_get_if_empty_data(self, test_client: APIClient,
-                                           create_user_and_get_token: Tuple[User, str]) -> None:
+    def test_user_detail_get_if_empty_data(
+            self,
+            test_client: APIClient,
+            get_user: Callable,
+            get_token: Callable
+    ) -> None:
 
+        user = get_user()
         url = reverse(ACCOUNTS_DETAIL_URL_NAME)
-        token = create_user_and_get_token[1]
-        data = {}
-        test_client.credentials(HTTP_Authorization=token)
-        response = test_client.patch(url, data=data)
+        test_client.credentials(HTTP_Authorization=get_token(user))
+        response = test_client.patch(url, data={})
         data_to_assert = response.data.get('data')
 
         assert response.status_code == 200
@@ -62,15 +80,20 @@ class TestUserDetailPatch:
         assert data_to_assert.get('error_detail') is None
 
     @pytest.mark.django_db
-    def test_user_detail_get_if_change_valid_email(self, test_client: APIClient,
-                                                   create_user_and_get_token: Tuple[User, str]) -> None:
+    def test_user_detail_get_if_change_valid_email(
+            self,
+            test_client: APIClient,
+            get_user: Callable,
+            get_token: Callable
+    ) -> None:
 
+        user = get_user()
         test_field = 'email'
 
         url = reverse(ACCOUNTS_DETAIL_URL_NAME)
-        token = create_user_and_get_token[1]
-        data = {test_field: TEST_NEW_USER_DATA.get(test_field)}
-        test_client.credentials(HTTP_Authorization=token)
+        data = {test_field: self.TEST_NEW_USER_DATA.get(test_field)}
+        test_client.credentials(HTTP_Authorization=get_token(user))
+
         response = test_client.patch(url, data=data)
         data_to_assert = response.data.get('data')
 
@@ -79,15 +102,20 @@ class TestUserDetailPatch:
         assert data_to_assert.get('error_detail') is None
 
     @pytest.mark.django_db
-    def test_user_detail_get_if_email_already_in_use(self, test_client: APIClient,
-                                                     create_user_and_get_token: Tuple[User, str]) -> None:
+    def test_user_detail_get_if_email_already_in_use(
+            self,
+            test_client: APIClient,
+            get_user: Callable,
+            get_token: Callable
+    ) -> None:
 
+        user = get_user()
         test_field = 'email'
 
         url = reverse(ACCOUNTS_DETAIL_URL_NAME)
-        token = create_user_and_get_token[1]
-        data = {test_field: TEST_EMAIL}
-        test_client.credentials(HTTP_Authorization=token)
+        data = {test_field: 'test@mail.ru'}
+        test_client.credentials(HTTP_Authorization=get_token(user))
+
         response = test_client.patch(url, data=data)
         data_to_assert = response.data.get('data')
 
@@ -96,15 +124,20 @@ class TestUserDetailPatch:
         assert data_to_assert.get('error_detail')[0] == {"email": ["user with this email already exists."]}
 
     @pytest.mark.django_db
-    def test_user_detail_get_if_change_valid_age(self, test_client: APIClient,
-                                                 create_user_and_get_token: Tuple[User, str]) -> None:
+    def test_user_detail_get_if_change_valid_age(
+            self,
+            test_client: APIClient,
+            get_user: Callable,
+            get_token: Callable
+    ) -> None:
 
+        user = get_user()
         test_field = 'age'
 
         url = reverse(ACCOUNTS_DETAIL_URL_NAME)
-        token = create_user_and_get_token[1]
-        data = {test_field: TEST_NEW_USER_DATA.get(test_field)}
-        test_client.credentials(HTTP_Authorization=token)
+        data = {test_field: self.TEST_NEW_USER_DATA.get(test_field)}
+        test_client.credentials(HTTP_Authorization=get_token(user))
+
         response = test_client.patch(url, data=data)
         data_to_assert = response.data.get('data')
 
@@ -113,15 +146,20 @@ class TestUserDetailPatch:
         assert data_to_assert.get('error_detail') is None
 
     @pytest.mark.django_db
-    def test_user_detail_get_if_change_valid_first_name(self, test_client: APIClient,
-                                                        create_user_and_get_token: Tuple[User, str]) -> None:
+    def test_user_detail_get_if_change_valid_first_name(
+            self,
+            test_client: APIClient,
+            get_user: Callable,
+            get_token: Callable
+    ) -> None:
 
+        user = get_user()
         test_field = 'first_name'
 
         url = reverse(ACCOUNTS_DETAIL_URL_NAME)
-        token = create_user_and_get_token[1]
-        data = {test_field: TEST_NEW_USER_DATA.get(test_field)}
-        test_client.credentials(HTTP_Authorization=token)
+        data = {test_field: self.TEST_NEW_USER_DATA.get(test_field)}
+        test_client.credentials(HTTP_Authorization=get_token(user))
+
         response = test_client.patch(url, data=data)
         data_to_assert = response.data.get('data')
 
@@ -130,15 +168,20 @@ class TestUserDetailPatch:
         assert data_to_assert.get('error_detail') is None
 
     @pytest.mark.django_db
-    def test_user_detail_get_if_change_valid_last_name(self, test_client: APIClient,
-                                                       create_user_and_get_token: Tuple[User, str]) -> None:
+    def test_user_detail_get_if_change_valid_last_name(
+            self,
+            test_client: APIClient,
+            get_user: Callable,
+            get_token: Callable
+    ) -> None:
 
+        user = get_user()
         test_field = 'last_name'
 
         url = reverse(ACCOUNTS_DETAIL_URL_NAME)
-        token = create_user_and_get_token[1]
-        data = {test_field: TEST_NEW_USER_DATA.get(test_field)}
-        test_client.credentials(HTTP_Authorization=token)
+        data = {test_field: self.TEST_NEW_USER_DATA.get(test_field)}
+        test_client.credentials(HTTP_Authorization=get_token(user))
+
         response = test_client.patch(url, data=data)
         data_to_assert = response.data.get('data')
 

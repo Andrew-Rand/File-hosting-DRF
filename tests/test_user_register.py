@@ -4,7 +4,6 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 
 from src.accounts.constants import ACCOUNTS_REGISTER_URL_NAME
-from tests.constants import TEST_USER_REGISTER_DATA
 
 
 class TestUserRegister:
@@ -13,7 +12,14 @@ class TestUserRegister:
     def test_register_view_ok(self, test_client: APIClient) -> None:
 
         url = reverse(ACCOUNTS_REGISTER_URL_NAME)
-        data = TEST_USER_REGISTER_DATA
+        data = {
+            'first_name': 'test_first_name',
+            'last_name': 'test_last_name',
+            'email': 'test_email@gmail.com',
+            'password': '1234Abc%%%',
+            'username': 'test_username'
+        }
+
         response = test_client.post(url, data=data)
 
         assert response.status_code == 201
@@ -22,7 +28,7 @@ class TestUserRegister:
     def test_register_view_bad(self, test_client: APIClient) -> None:
 
         url = reverse(ACCOUNTS_REGISTER_URL_NAME)
-        data = {}
-        response = test_client.post(url, data=data)
+
+        response = test_client.post(url, data={})
 
         assert response.status_code == 400
