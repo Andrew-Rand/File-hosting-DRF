@@ -7,8 +7,10 @@ from rest_framework.test import APIClient
 from src.accounts.authentication import create_token
 from src.accounts.constants import ACCESS_TOKEN_LIFETIME
 from src.accounts.models import User
-from src.fileservice.models import File
 from src.fileservice.utils import calculate_hash_md5
+from src.fileservice.models import File
+from src.fileservice.models import FileStorage
+from src.fileservice.models.file_storage import PERMANENT_STORAGE
 
 
 @pytest.fixture
@@ -45,10 +47,6 @@ def get_token() -> Callable:
 @pytest.fixture
 def get_file() -> Callable:
     def make_file(user: User) -> File:
-        from src.fileservice.models import File
-        from src.fileservice.models import FileStorage
-        from src.fileservice.models.file_storage import PERMANENT_STORAGE
-
         permanent_storage = FileStorage.objects.get(type=PERMANENT_STORAGE)
         os.mkdir(f'storage/permanent/{user.id}')
         test_file_path = f'storage/permanent/{user.id}/test_file.txt'

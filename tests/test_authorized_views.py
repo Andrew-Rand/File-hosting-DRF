@@ -191,6 +191,10 @@ class TestAuthorizedRequest:
         url = reverse(FILE_BUILD_URL_NAME)
         test_client.credentials(HTTP_Authorization=get_token(user))
 
-        response = test_client.post(url + self.TEST_QUERY_PARAMS)
+        response = test_client.post(
+            url + '?resumableChunkNumber=1&resumableChunkSize=52428800&resumableCurrentChunkSize=148&' \
+                  'resumableTotalSize=148&resumableType=text%2Fplain&resumableIdentifier=148-test_chunktxt&' \
+                  'resumableFilename=test_chunk.txt&resumableRelativePath=test_chunk.txt&resumableTotalChunks=1'
+        )
 
         assert response.status_code == 200
