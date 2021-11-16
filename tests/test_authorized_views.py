@@ -8,10 +8,13 @@ from rest_framework.test import APIClient
 from src.accounts.constants import ACCOUNTS_DETAIL_URL_NAME
 from src.fileservice.constants import FILE_DETAIL_URL_NAME, FILE_DOWNLOAD_URL_NAME, FILE_UPLOAD_URL_NAME, \
     FILE_BUILD_URL_NAME, FILE_CHUNK_UPLOAD_URL_NAME, FILE_DOWNLOAD_ALL_URL_NAME, FILE_ALL_USER_FILES_URL_NAME
-from tests.constants import TEST_QUERYSET_FOR_BUILD
 
 
 class TestAuthorizedRequest:
+
+    TEST_QUERY_PARAMS = '?resumableChunkNumber=1&resumableChunkSize=52428800&resumableCurrentChunkSize=148&' \
+                        'resumableTotalSize=148&resumableType=text%2Fplain&resumableIdentifier=148-test_chunktxt&' \
+                        'resumableFilename=test_chunk.txt&resumableRelativePath=test_chunk.txt&resumableTotalChunks=1'
 
     @pytest.mark.django_db
     def test_authorized_user_detail(
@@ -188,6 +191,6 @@ class TestAuthorizedRequest:
         url = reverse(FILE_BUILD_URL_NAME)
         test_client.credentials(HTTP_Authorization=get_token(user))
 
-        response = test_client.post(url + TEST_QUERYSET_FOR_BUILD)
+        response = test_client.post(url + self.TEST_QUERY_PARAMS)
 
         assert response.status_code == 200
