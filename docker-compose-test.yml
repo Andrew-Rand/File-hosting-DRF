@@ -1,0 +1,17 @@
+version: '3.3'
+
+
+networks:
+  main:
+    driver: bridge
+
+
+services:
+  test_auth:
+    build:
+      context: .
+      dockerfile: ./srv/test/Dockerfile
+    volumes:
+      - ./:/usr/src/app
+    networks:
+      - main

@@ -18,4 +18,4 @@ CWD="$(pwd)"
 echo "startesting"
 
 echo "-----------start pytest-------------------"
-pytest
+docker-compose -f docker-compose-test.yml run --rm test_auth bash -c "pytest ."

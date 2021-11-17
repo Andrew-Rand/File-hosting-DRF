@@ -1,5 +1,7 @@
 from django.urls import re_path, path
 
+from .constants import FILE_TEMPLATE_URL_NAME, FILE_CHUNK_UPLOAD_URL_NAME, FILE_BUILD_URL_NAME, FILE_UPLOAD_URL_NAME, \
+    FILE_DOWNLOAD_URL_NAME, FILE_DOWNLOAD_ALL_URL_NAME, FILE_ALL_USER_FILES_URL_NAME, FILE_DETAIL_URL_NAME
 from .views.file_list_view import FileListView
 from .views.all_files_download_view import AllFilesDownloadView
 from .views.file_build_view import FileBuildView
@@ -11,12 +13,12 @@ from .views.upload_template_view import UploadTemplateView
 
 
 urlpatterns = [
-    re_path(r'^template/$', UploadTemplateView.as_view(), name='api_file_upload'),
-    re_path(r'^chunk-upload/$', ChunkUploadView.as_view(), name='chunk_upload'),
-    re_path(r'^build/$', FileBuildView.as_view(), name='file_build'),
-    re_path(r'^file-upload/$', FileUploadView.as_view(), name='file_upload'),
-    path('<uuid:pk>/download/', FileDownloadView.as_view(), name='file_download'),
-    re_path(r'^download/$', AllFilesDownloadView.as_view(), name='download_all_file_as_zip'),
-    re_path(r'^/$', FileListView.as_view(), name='all_user_files'),
-    path('<uuid:pk>/', FileView.as_view(), name='file_detail'),
+    re_path(r'^template/$', UploadTemplateView.as_view(), name=FILE_TEMPLATE_URL_NAME),
+    re_path(r'^chunk-upload/$', ChunkUploadView.as_view(), name=FILE_CHUNK_UPLOAD_URL_NAME),
+    re_path(r'^build/$', FileBuildView.as_view(), name=FILE_BUILD_URL_NAME),
+    re_path(r'^file-upload/$', FileUploadView.as_view(), name=FILE_UPLOAD_URL_NAME),
+    path('<uuid:pk>/download/', FileDownloadView.as_view(), name=FILE_DOWNLOAD_URL_NAME),
+    re_path(r'^download/$', AllFilesDownloadView.as_view(), name=FILE_DOWNLOAD_ALL_URL_NAME),
+    re_path(r'^/$', FileListView.as_view(), name=FILE_ALL_USER_FILES_URL_NAME),
+    path('<uuid:pk>/', FileView.as_view(), name=FILE_DETAIL_URL_NAME),
 ]

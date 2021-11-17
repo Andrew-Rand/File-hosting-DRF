@@ -15,14 +15,19 @@ redis = "==3.5.3"
 django-redis = "==5.0.0"
 django-celery-beat = "==2.2.1"
 python-magic = "==0.4.24"
+pytest = "==6.2.5"
+pytest-django = "==4.4.0"
 
 [dev-packages]
-pytest = "==6.2.5"
 flake8 = "==3.9.2"
 mypy = "==0.910"
 pylint-django = "==2.4.4"
 pylint = "==2.10.2"
 pycodestyle = "==2.7.0"
+
+
+
+
 
 [requires]
 python_version = "3.8"
