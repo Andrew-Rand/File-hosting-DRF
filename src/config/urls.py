@@ -7,18 +7,14 @@ urlpatterns = [
     path('admin/', admin.site.urls)
 ]
 
+user_url = [path('api/accounts/', include('src.accounts.urls')), ]
+file_url = [path('api/files/', include('src.fileservice.urls')), ]
+
 if APP_TYPE == APP_TYPE_AUTH:
-    urlpatterns = [
-        path('api/accounts/', include('src.accounts.urls')),
-    ]
+    urlpatterns = user_url
 
 elif APP_TYPE == APP_TYPE_FILE:
-    urlpatterns = [
-        path('api/files/', include('src.fileservice.urls')),
-    ]
+    urlpatterns = file_url
 
 elif APP_TYPE == APP_TYPE_TEST:
-    urlpatterns = [
-        path('api/accounts/', include('src.accounts.urls')),
-        path('api/files/', include('src.fileservice.urls')),
-    ]
+    urlpatterns = user_url + file_url
