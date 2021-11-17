@@ -128,3 +128,10 @@ APP_TYPE = os.environ.get('APP_TYPE')
 APP_TYPE_AUTH = config('AUTH_ENVIRONMENT')
 APP_TYPE_FILE = config('FILE_ENVIRONMENT')
 APP_TYPE_TEST = config('TEST_ENVIRONMENT')
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = [
+    'Authorization',
+    'Content-Type',
+]
