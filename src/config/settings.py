@@ -121,3 +121,8 @@ REST_FRAMEWORK = {
 #  to sending message from Django
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = config('ADMIN_EMAIL')
+
+APP_TYPE = os.environ.get('APP_TYPE')
+APP_TYPE_AUTH = config('AUTH_ENVIRONMENT')
+APP_TYPE_FILE = config('FILE_ENVIRONMENT')
+APP_TYPE_TEST = config('TEST_ENVIRONMENT')
