@@ -17,6 +17,7 @@ django-celery-beat = "==2.2.1"
 python-magic = "==0.4.24"
 pytest = "==6.2.5"
 pytest-django = "==4.4.0"
+django-cors-headers = "==3.10.0"
 
 [dev-packages]
 flake8 = "==3.9.2"
@@ -24,10 +25,6 @@ mypy = "==0.910"
 pylint-django = "==2.4.4"
 pylint = "==2.10.2"
 pycodestyle = "==2.7.0"
-
-
-
-
 
 [requires]
 python_version = "3.8"

@@ -4,7 +4,7 @@ import os
 from decouple import config
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 SECRET_KEY = config('SECRET_KEY')
@@ -26,6 +26,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'django_celery_beat',
+    'corsheaders',
 
     'src.accounts',
     'src.fileservice',
@@ -39,6 +40,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'src.config.urls'
@@ -126,3 +128,10 @@ APP_TYPE = os.environ.get('APP_TYPE')
 APP_TYPE_AUTH = config('AUTH_ENVIRONMENT')
 APP_TYPE_FILE = config('FILE_ENVIRONMENT')
 APP_TYPE_TEST = config('TEST_ENVIRONMENT')
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = [
+    'Authorization',
+    'Content-Type',
+]
