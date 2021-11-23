@@ -8,3 +8,5 @@ class FileUploadParametersSerializer(serializers.Serializer):
     resumableIdentifier = serializers.CharField(source='identifier', max_length=256)
     resumableType = serializers.CharField(source='type', max_length=256)
     resumableTotalSize = serializers.CharField(source='total_size', max_length=256)
+    resumableDescription = serializers.CharField(source='description', max_length=256)
+    resumableHash = serializers.CharField(source='file_hash', max_length=256)

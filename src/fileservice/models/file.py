@@ -29,14 +29,15 @@ class File(BaseModel):
                             storage: FileStorage,
                             destination: str,
                             data: Dict[str, Any]) -> None:
-
+        print(data)
         File.objects.create(user=user,
                             name=data.get('filename'),
                             type=data.get('type'),
                             storage=storage,
                             destination=destination,
                             hash=hash,
-                            size=data.get('total_size'))
+                            size=data.get('total_size'),
+                            description=data.get('description'))
 
     @property
     def absolute_path(self) -> str:
