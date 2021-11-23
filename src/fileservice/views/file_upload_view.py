@@ -18,18 +18,12 @@ from src.fileservice.utils import calculate_hash_md5
 class FileUploadView(generics.GenericAPIView):
 
     permanent_storage = FileStorage.objects.get(type=PERMANENT_STORAGE)
-    serializer_class = FileUploadParametersSerializer
 
     @login_required
     def post(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
 
-        serializer = self.get_serializer(data=request.data)
-
-        if not serializer.is_valid():
-            raise ValidationError(serializer.errors)
-
-        filename = serializer.validated_data.get('filename')
         file_data = request.FILES.get('file')
+        filename = request.data.get('filename')
 
         # make directory
         user_dir_path = os.path.join(self.permanent_storage.destination, str(user.id))
@@ -46,6 +40,6 @@ class FileUploadView(generics.GenericAPIView):
 
         relative_path = os.path.join(str(user.id), filename)
 
-        File.create_model_object(user, file_hash, self.permanent_storage, relative_path, serializer.validated_data)
+        File.create_model_object(user, file_hash, self.permanent_storage, relative_path, request.data)
 
         return OkResponse({})
