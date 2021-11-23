@@ -8,6 +8,7 @@ from rest_framework.response import Response
 
 from src.accounts.authentication import login_required
 from src.accounts.models import User
+from src.basecore.custom_error_handler import BadRequestError
 from src.basecore.responses import OkResponse
 from src.fileservice.models import FileStorage, File
 from src.fileservice.models.file_storage import PERMANENT_STORAGE
@@ -37,6 +38,8 @@ class FileUploadView(generics.GenericAPIView):
                 file.write(row)
 
         file_hash = calculate_hash_md5(file_path)
+        if file_hash != request.data.get('hash'):
+            raise BadRequestError('File hash is not match. Try to upload file again')
 
         relative_path = os.path.join(str(user.id), filename)
 
