@@ -2,7 +2,6 @@ import os
 from typing import Any
 
 from rest_framework import generics
-from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -12,7 +11,6 @@ from src.basecore.custom_error_handler import BadRequestError
 from src.basecore.responses import OkResponse
 from src.fileservice.models import FileStorage, File
 from src.fileservice.models.file_storage import PERMANENT_STORAGE
-from src.fileservice.serializers.file_upload_parameters_serializer import FileUploadParametersSerializer
 from src.fileservice.utils import calculate_hash_md5
 
 
