@@ -23,6 +23,21 @@ def calculate_hash_md5(file: Union[UploadedFile, str]) -> str:
     return hash_md5.hexdigest()
 
 
+def calculate_hash_md5_for_over_100mb_file(file: Union[UploadedFile, str]) -> str:
+    hash_md5 = hashlib.md5()
+
+    if isinstance(file, UploadedFile):
+        hash_md5.update(file.read(102400))
+        hash_md5.update(file.read()[-2:])
+
+    elif isinstance(file, str) and os.path.isfile(file):
+        with open(file, 'rb') as f:
+            hash_md5.update(f.read(102400))
+            hash_md5.update(f.read()[-2:])
+
+    return hash_md5.hexdigest()
+
+
 def make_chunk_dir_path(temp_storage_path: str, user_id: str, data: Dict[str, Any]) -> str:
     user_dir_path = os.path.join(temp_storage_path, user_id)
     chunks_dir_path = os.path.join(user_dir_path, data.get('identifier'))
