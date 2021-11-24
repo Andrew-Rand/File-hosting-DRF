@@ -26,10 +26,9 @@ class FileUploadView(generics.GenericAPIView):
 
         # make directory
         user_dir_path = os.path.join(self.permanent_storage.destination, str(user.id))
-        file_dir_path = os.path.join(user_dir_path, filename)
-        os.makedirs(file_dir_path, 0o777, exist_ok=True)
+        os.makedirs(user_dir_path, 0o777, exist_ok=True)
 
-        file_path = os.path.join(file_dir_path, filename)
+        file_path = os.path.join(user_dir_path, filename)
 
         with open(file_path, "wb") as file:
             for row in file_data.chunks():

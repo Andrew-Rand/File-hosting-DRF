@@ -7,7 +7,7 @@ from django.core.files.uploadedfile import UploadedFile
 from django.core.mail import send_mail
 
 from src.config import settings
-from src.fileservice.constants import LARGE_FILE_LIMIT_SIZE
+from src.fileservice.constants import LARGE_FILE_LIMIT_SIZE, LARGE_HASH_PART_1, LARGE_HASH_PART_2
 from src.fileservice.filetype_constants import ALLOWED_FILETYPES
 
 
@@ -15,29 +15,30 @@ def calculate_hash_md5(file: Union[UploadedFile, str]) -> str:
     hash_md5 = hashlib.md5()
 
     if isinstance(file, UploadedFile):
-        for chunk in iter(lambda: file.read(4096), b''):
+        for chunk in iter(lambda: file.read(1024), b''):
             hash_md5.update(chunk)
     elif isinstance(file, str) and os.path.isfile(file):
-        with open(file, 'rb') as f:
-            for chunk in iter(lambda: f.read(4096), b''):
+        with open(file, 'rb') as file:
+            chunk = None
+            while chunk != b'':
+                chunk = file.read(1024)
                 hash_md5.update(chunk)
     return hash_md5.hexdigest()
 
 
 def calculate_hash_md5_for_large_files(file: Union[UploadedFile, str]) -> str:
 
-    hash_md5 = hashlib.md5()
+    big_md5 = hashlib.md5()
 
     if isinstance(file, UploadedFile):
-        hash_md5.update(file.read(LARGE_FILE_LIMIT_SIZE))
-        hash_md5.update(file.read()[-2:])
+        big_md5.update(file.read(LARGE_HASH_PART_1))
+        big_md5.update(file.read()[LARGE_HASH_PART_2])
 
     elif isinstance(file, str) and os.path.isfile(file):
         with open(file, 'rb') as f:
-            hash_md5.update(f.read(LARGE_FILE_LIMIT_SIZE))
-            hash_md5.update(f.read()[-2:])
-
-    return hash_md5.hexdigest()
+            big_md5.update(f.read(LARGE_HASH_PART_1))
+            big_md5.update(f.read()[LARGE_HASH_PART_2:])
+    return big_md5.hexdigest()
 
 
 def make_chunk_dir_path(temp_storage_path: str, user_id: str, data: Dict[str, Any]) -> str:

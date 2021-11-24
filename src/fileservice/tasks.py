@@ -42,12 +42,11 @@ def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: st
     save_file(target_file_path, chunk_paths)
     os.rmdir(chunks_dir_path)
 
-    if data.get('total_size') < str(LARGE_FILE_LIMIT_SIZE):
-        file_hash = calculate_hash_md5(target_file_path)
-    else:
+    if int(data.get('total_size')) > LARGE_FILE_LIMIT_SIZE:
         file_hash = calculate_hash_md5_for_large_files(target_file_path)
-
-    if file_hash != data.get('hash'):
+    else:
+        file_hash = calculate_hash_md5(target_file_path)
+    if file_hash != data.get('file_hash'):
         send_warning_email_to_user(user.email, f'The server cant build your file {data.get("filename")}, please try to upload again!')
         logger.warning('Hash of file %s incorrect, warning email send to user %s' % (data.get('filename'), user.email))
         raise FileExistsError
