@@ -15,3 +15,5 @@ FILE_DETAIL_URL_NAME = 'file_detail'
 PAGE_SIZE = 5
 MAX_PAGE_SIZE = 1000
 ORDERING_FILED = ('date_modified', 'name')
+
+LARGE_FILE_LIMIT_SIZE = 102400
