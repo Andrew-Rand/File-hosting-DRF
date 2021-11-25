@@ -12,5 +12,5 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 cd ..
 CWD="$(pwd)"
 
-ssh root@64.227.117.166 cd /home/andrew | docker-compose build
-ssh root@64.227.117.166 cd /home/andrew | docker-compose up
+ssh root@64.227.117.166 "cd /home/andrew && docker-compose build"
+ssh root@64.227.117.166 "cd /home/andrew && docker-compose up"
