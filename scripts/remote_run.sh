@@ -12,9 +12,5 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 cd ..
 CWD="$(pwd)"
 
-tar -zcf archive_to_deploy.tar.gz src/ srv/ static/ .env docker-compose.yml entrypoint.sh manage.py Pipfile Pipfile.lock
-scp archive_to_deploy.tar.gz root@64.227.117.166:/home/andrew
-
-ssh root@64.227.117.166 tar -xzf home/andrew/archive_to_deploy.tar.gz
 ssh root@64.227.117.166 cd /home/andrew | docker-compose build
 ssh root@64.227.117.166 cd /home/andrew | docker-compose up
