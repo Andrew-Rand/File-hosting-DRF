@@ -12,7 +12,12 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 cd ..
 CWD="$(pwd)"
 
+./scripts/linters.sh
+./scripts/tests.sh
+
 tar -zcf archive_to_deploy.tar.gz src/ srv/ static/ .env docker-compose.yml entrypoint.sh manage.py Pipfile Pipfile.lock
+
+
 scp archive_to_deploy.tar.gz root@64.227.117.166:/home/andrew
 
 ssh root@64.227.117.166 "cd /home/andrew && tar -xzf archive_to_deploy.tar.gz"
