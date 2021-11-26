@@ -27,6 +27,12 @@ class TestFileBuild:
         ],
         "resumableTotalSize": [
             "This field is required."
+        ],
+        'resumableDescription': [
+            "This field is required."
+        ],
+        'resumableHash': [
+            "This field is required."
         ]
     }
 

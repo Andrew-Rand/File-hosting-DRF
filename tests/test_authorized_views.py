@@ -194,7 +194,8 @@ class TestAuthorizedRequest:
         response = test_client.post(
             url + '?resumableChunkNumber=1&resumableChunkSize=52428800&resumableCurrentChunkSize=148&' \
                   'resumableTotalSize=148&resumableType=text%2Fplain&resumableIdentifier=148-test_chunktxt&' \
-                  'resumableFilename=test_chunk.txt&resumableRelativePath=test_chunk.txt&resumableTotalChunks=1'
+                  'resumableFilename=test_chunk.txt&resumableRelativePath=test_chunk.txt&resumableTotalChunks=1&'
+                  'resumableDescription=description&resumableHash=51111111111'
         )
 
         assert response.status_code == 200
