@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Any
 
 import pytest
 
@@ -20,8 +20,8 @@ class TestAuthorizedRequest:
     def test_authorized_user_detail(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_token: Callable
+            get_user: Callable[..., Any],
+            get_token: Callable[..., Any]
     ) -> None:
 
         url = reverse(ACCOUNTS_DETAIL_URL_NAME)
@@ -35,8 +35,8 @@ class TestAuthorizedRequest:
     def test_authorized_chunk_upload_get(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_token: Callable
+            get_user: Callable[..., Any],
+            get_token: Callable[..., Any]
     ) -> None:
 
         url = reverse(FILE_CHUNK_UPLOAD_URL_NAME)
@@ -50,8 +50,8 @@ class TestAuthorizedRequest:
     def test_authorized_chunk_upload_post(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_token: Callable
+            get_user: Callable[..., Any],
+            get_token: Callable[..., Any]
     ) -> None:
 
         url = reverse(FILE_CHUNK_UPLOAD_URL_NAME)
@@ -65,8 +65,8 @@ class TestAuthorizedRequest:
     def test_authorized_download_all_file_as_zip(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_token: Callable
+            get_user: Callable[..., Any],
+            get_token: Callable[..., Any]
     ) -> None:
 
         url = reverse(FILE_DOWNLOAD_ALL_URL_NAME)
@@ -80,8 +80,8 @@ class TestAuthorizedRequest:
     def test_authorized_all_user_files(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_token: Callable
+            get_user: Callable[..., Any],
+            get_token: Callable[..., Any]
     ) -> None:
 
         url = reverse(FILE_ALL_USER_FILES_URL_NAME)
@@ -95,9 +95,9 @@ class TestAuthorizedRequest:
     def test_authorized_file_detail_get(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_token: Callable,
-            get_file: Callable
+            get_user: Callable[..., Any],
+            get_token: Callable[..., Any],
+            get_file: Callable[..., Any]
     ) -> None:
 
         user = get_user()
@@ -113,9 +113,9 @@ class TestAuthorizedRequest:
     def test_authorized_file_detail_patch(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_token: Callable,
-            get_file: Callable
+            get_user: Callable[..., Any],
+            get_token: Callable[..., Any],
+            get_file: Callable[..., Any]
     ) -> None:
 
         user = get_user()
@@ -131,9 +131,9 @@ class TestAuthorizedRequest:
     def test_authorized_file_detail_delete(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_token: Callable,
-            get_file: Callable
+            get_user: Callable[..., Any],
+            get_token: Callable[..., Any],
+            get_file: Callable[..., Any]
     ) -> None:
 
         user = get_user()
@@ -149,9 +149,9 @@ class TestAuthorizedRequest:
     def test_authorized_file_download(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_token: Callable,
-            get_file: Callable
+            get_user: Callable[..., Any],
+            get_token: Callable[..., Any],
+            get_file: Callable[..., Any]
     ) -> None:
 
         user = get_user()
@@ -167,8 +167,8 @@ class TestAuthorizedRequest:
     def test_authorized_file_upload(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_token: Callable
+            get_user: Callable[..., Any],
+            get_token: Callable[..., Any]
     ) -> None:
 
         user = get_user()
@@ -183,8 +183,8 @@ class TestAuthorizedRequest:
     def test_authorized_file_build(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_token: Callable
+            get_user: Callable[..., Any],
+            get_token: Callable[..., Any]
     ) -> None:
 
         user = get_user()
@@ -192,8 +192,8 @@ class TestAuthorizedRequest:
         test_client.credentials(HTTP_Authorization=get_token(user))
 
         response = test_client.post(
-            url + '?resumableChunkNumber=1&resumableChunkSize=52428800&resumableCurrentChunkSize=148&' \
-                  'resumableTotalSize=148&resumableType=text%2Fplain&resumableIdentifier=148-test_chunktxt&' \
+            url + '?resumableChunkNumber=1&resumableChunkSize=52428800&resumableCurrentChunkSize=148&'
+                  'resumableTotalSize=148&resumableType=text%2Fplain&resumableIdentifier=148-test_chunktxt&'
                   'resumableFilename=test_chunk.txt&resumableRelativePath=test_chunk.txt&resumableTotalChunks=1&'
                   'resumableDescription=description&resumableHash=51111111111'
         )

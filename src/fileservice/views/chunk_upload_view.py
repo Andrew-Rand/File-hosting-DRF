@@ -43,9 +43,8 @@ class ChunkUploadView(generics.GenericAPIView):
 
         if os.path.isfile(chunk_file):
             return OkResponse({})
-        else:
-            # Let resumable.js know this chunk does not exists and needs to be uploaded
-            raise NotFoundError()
+        # Let resumable.js know this chunk does not exists and needs to be uploaded
+        raise NotFoundError()
 
     @login_required
     def post(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:

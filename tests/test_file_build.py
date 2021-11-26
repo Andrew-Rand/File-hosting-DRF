@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Any
 
 import pytest
 from django.urls import reverse
@@ -40,9 +40,9 @@ class TestFileBuild:
     def test_file_build_ok(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_token: Callable,
-            get_chunks: Callable
+            get_user: Callable[..., Any],
+            get_token: Callable[..., Any],
+            get_chunks: Callable[..., Any]
     ) -> None:
 
         user = get_user()
@@ -58,8 +58,8 @@ class TestFileBuild:
     def test_returns_400_if_query_params_missing(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_token: Callable
+            get_user: Callable[..., Any],
+            get_token: Callable[..., Any]
     ) -> None:
 
         user = get_user()

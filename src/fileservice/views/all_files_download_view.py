@@ -29,7 +29,12 @@ class AllFilesDownloadView(generics.GenericAPIView):
             raise NotFoundError('Dir of this user does not exist or empty')
 
         user_archive_path = os.path.join(self.temp_storage.destination, user_id)
-        shutil.make_archive(base_name=user_archive_path, format=ARCHIVE_TYPE, root_dir=self.permanent_storage.destination, base_dir=user_id)
+        shutil.make_archive(
+            base_name=user_archive_path,
+            format=ARCHIVE_TYPE,
+            root_dir=self.permanent_storage.destination,
+            base_dir=user_id
+        )
 
         archive_name = f'{user_id}.{ARCHIVE_TYPE}'
 

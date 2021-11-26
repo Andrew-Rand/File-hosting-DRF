@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Any
 
 import pytest
 from django.urls import reverse
@@ -13,8 +13,8 @@ class TestUserDetailGet:
     def test_user_detail_get(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_token: Callable
+            get_user: Callable[..., Any],
+            get_token: Callable[..., Any]
     ) -> None:
 
         user = get_user()
@@ -35,18 +35,18 @@ class TestUserDetailGet:
 class TestUserDetailPatch:
 
     TEST_NEW_USER_DATA = {
-            'email': 'new@mail.ru',
-            'age': 50,
-            'first_name': 'new_name',
-            'last_name': 'new_l_name'
-        }
+        'email': 'new@mail.ru',
+        'age': 50,
+        'first_name': 'new_name',
+        'last_name': 'new_l_name'
+    }
 
     @pytest.mark.django_db
     def test_user_detail_get_if_change_valid_all_fields(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_token: Callable
+            get_user: Callable[..., Any],
+            get_token: Callable[..., Any]
     ) -> None:
 
         user = get_user()
@@ -65,8 +65,8 @@ class TestUserDetailPatch:
     def test_user_detail_get_if_empty_data(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_token: Callable
+            get_user: Callable[..., Any],
+            get_token: Callable[..., Any]
     ) -> None:
 
         user = get_user()
@@ -83,8 +83,8 @@ class TestUserDetailPatch:
     def test_user_detail_get_if_change_valid_email(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_token: Callable
+            get_user: Callable[..., Any],
+            get_token: Callable[..., Any]
     ) -> None:
 
         user = get_user()
@@ -105,8 +105,8 @@ class TestUserDetailPatch:
     def test_user_detail_get_if_email_already_in_use(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_token: Callable
+            get_user: Callable[..., Any],
+            get_token: Callable[..., Any]
     ) -> None:
 
         user = get_user()
@@ -127,8 +127,8 @@ class TestUserDetailPatch:
     def test_user_detail_get_if_change_valid_age(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_token: Callable
+            get_user: Callable[..., Any],
+            get_token: Callable[..., Any]
     ) -> None:
 
         user = get_user()
@@ -149,8 +149,8 @@ class TestUserDetailPatch:
     def test_user_detail_get_if_change_valid_first_name(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_token: Callable
+            get_user: Callable[..., Any],
+            get_token: Callable[..., Any]
     ) -> None:
 
         user = get_user()
@@ -171,8 +171,8 @@ class TestUserDetailPatch:
     def test_user_detail_get_if_change_valid_last_name(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_token: Callable
+            get_user: Callable[..., Any],
+            get_token: Callable[..., Any]
     ) -> None:
 
         user = get_user()

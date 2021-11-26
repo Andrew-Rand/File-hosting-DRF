@@ -20,7 +20,7 @@ def test_client() -> APIClient:
 
 
 @pytest.fixture
-def get_user() -> Callable:
+def get_user() -> Callable[..., Any]:
     def create_user(**kwargs: Any) -> User:
 
         username = kwargs.get('username', 'test_username')
@@ -37,7 +37,7 @@ def get_user() -> Callable:
 
 
 @pytest.fixture
-def get_token() -> Callable:
+def get_token() -> Callable[..., Any]:
     def make_token(user: User) -> str:
         token = create_token(user_id=str(user.id), time_delta_seconds=ACCESS_TOKEN_LIFETIME)
         return token
@@ -45,7 +45,7 @@ def get_token() -> Callable:
 
 
 @pytest.fixture
-def get_file() -> Callable:
+def get_file() -> Callable[..., Any]:
     def make_file(user: User) -> File:
         permanent_storage = FileStorage.objects.get(type=PERMANENT_STORAGE)
         os.mkdir(f'storage/permanent/{user.id}')
@@ -71,7 +71,7 @@ def get_file() -> Callable:
 
 
 @pytest.fixture
-def get_chunks() -> Callable:
+def get_chunks() -> Callable[..., Any]:
     def make_chunks(user: User) -> str:
         user_chunks_path = f'storage/temp/{user.id}/148-test_chunktxt/'
         os.makedirs(user_chunks_path, 0o777, exist_ok=True)
