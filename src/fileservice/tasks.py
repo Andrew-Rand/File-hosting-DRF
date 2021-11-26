@@ -6,9 +6,11 @@ from typing import Dict, Any
 from src.accounts.models import User
 from src.basecore import logger_conf
 from src.etl import celery_app
+from src.fileservice.constants import LARGE_FILE_LIMIT_SIZE
 from src.fileservice.models import FileStorage, File
 from src.fileservice.models.file_storage import TEMP_STORAGE
-from src.fileservice.utils import is_all_chunk_uploaded, save_file, calculate_hash_md5, make_chunk_paths, send_warning_email_to_user, make_chunk_dir_path
+from src.fileservice.utils import is_all_chunk_uploaded, save_file, calculate_hash_md5, make_chunk_paths, \
+    send_warning_email_to_user, make_chunk_dir_path, calculate_hash_md5_for_large_files
 
 CHUNK_EXPIRATION_TIME = timedelta(days=7)
 
@@ -40,7 +42,14 @@ def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: st
     save_file(target_file_path, chunk_paths)
     os.rmdir(chunks_dir_path)
 
-    file_hash = calculate_hash_md5(target_file_path)
+    if int(data.get('total_size')) > LARGE_FILE_LIMIT_SIZE:
+        file_hash = calculate_hash_md5_for_large_files(target_file_path)
+    else:
+        file_hash = calculate_hash_md5(target_file_path)
+    if file_hash != data.get('file_hash'):
+        send_warning_email_to_user(user.email, f'The server cant build your file {data.get("filename")}, please try to upload again!')
+        logger.warning('Hash of file %s incorrect, warning email send to user %s' % (data.get('filename'), user.email))
+        raise FileExistsError
 
     relative_path = os.path.join(str(user.id), data.get('filename'))
 
