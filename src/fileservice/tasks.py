@@ -84,7 +84,7 @@ def task_delete_unbuilt_chunks() -> None:
 @celery_app.task
 def task_clean_up_deleted_files() -> None:
 
-    files_qs = File.objects.filter(is_alive=False)  # marked as deleted
+    files_qs = File.all_objects.filter(is_alive=False)  # marked as deleted
     if not files_qs:
         logger.info('Deleted files not found')
         return
@@ -100,7 +100,7 @@ def task_clean_up_deleted_files() -> None:
 def task_delete_file(file_id: str) -> None:
 
     try:
-        file_obj = File.objects.get(id=file_id)
+        file_obj = File.all_objects.get(id=file_id)
     except File.DoesNotExist:
         logger.info('File %s not found' % file_id)
         return
