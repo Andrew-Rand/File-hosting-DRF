@@ -7,7 +7,7 @@ from django.core.files.uploadedfile import UploadedFile
 from django.core.mail import send_mail
 
 from src.config import settings
-from src.fileservice.constants import LARGE_FILE_LIMIT_SIZE, LARGE_HASH_PART_1, LARGE_HASH_PART_2
+from src.fileservice.constants import LARGE_HASH_PART_1, LARGE_HASH_PART_2
 from src.fileservice.filetype_constants import ALLOWED_FILETYPES
 
 
