@@ -8,7 +8,7 @@ from PIL import Image
 from src.accounts.models import User
 from src.basecore import logger_conf
 from src.etl import celery_app
-from src.fileservice.constants import LARGE_FILE_LIMIT_SIZE
+from src.fileservice.constants import LARGE_FILE_LIMIT_SIZE, STD_TUMBS
 from src.fileservice.filetype_constants import ALLOWED_FILETYPES
 from src.fileservice.models import FileStorage, File
 from src.fileservice.models.file_storage import TEMP_STORAGE
@@ -69,6 +69,9 @@ def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: st
 
     logger.info('Celery task for filebuild %s сompleted successfully' % data.get('filename'))
 
+    task_create_tumbnail.delay(permanent_storage.destination + '/' + relative_path, data.get('type'))
+
+
 
 @celery_app.task
 def task_delete_unbuilt_chunks() -> None:
@@ -123,4 +126,8 @@ def task_create_tumbnail(filepath: str, file_type: str) -> None:
     if file_type in img_filetypes:
         image = Image.open(filepath)
         tumbnail = image.resize((TUMBNAIL_SIZE, TUMBNAIL_SIZE))
-        tumbnail.save(f'{filepath.split(".")[0]}_tumbnail.png')
+    else:
+        image = Image.open(STD_TUMBS.get(file_type))
+        tumbnail = image.resize((TUMBNAIL_SIZE, TUMBNAIL_SIZE))
+
+    tumbnail.save(f'{filepath.split(".")[0]}_tumbnail.png')

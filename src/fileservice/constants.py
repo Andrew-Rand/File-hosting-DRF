@@ -19,3 +19,10 @@ ORDERING_FILED = ('date_modified', 'name')
 LARGE_FILE_LIMIT_SIZE = 128 * 1024 * 1024
 LARGE_HASH_PART_1 = 100 * 1024 * 1024
 LARGE_HASH_PART_2 = -2 * 1024 * 1024
+
+STD_TUMBS = {
+    'application/pdf': 'src/fileservice/std_tumbs/doc.png',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'src/fileservice/std_tumbs/doc.png',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'src/fileservice/std_tumbs/exel.png',
+    'text/plain': 'src/fileservice/std_tumbs/txt.png'
+}

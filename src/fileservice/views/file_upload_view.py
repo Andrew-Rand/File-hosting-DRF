@@ -44,6 +44,6 @@ class FileUploadView(generics.GenericAPIView):
 
         relative_path = os.path.join(str(user.id), filename)
         File.create_model_object(user, file_hash, self.permanent_storage, relative_path, request.data)
-        task_create_tumbnail.delay(self.permanent_storage.destination + relative_path, request.data.get('type'))
+        task_create_tumbnail.delay(self.permanent_storage.destination + '/' + relative_path, request.data.get('type'))
 
         return OkResponse({})
