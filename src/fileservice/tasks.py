@@ -112,5 +112,5 @@ def task_create_tumbnail(filepath: str, file_type: str) -> None:
     img_filetypes = [i for i in ALLOWED_FILETYPES if i[:5] == 'image']
     if file_type in img_filetypes:
         image = Image.open(filepath)
-        tumbnail = image.resize((75, 75))
+        tumbnail = image.resize((250, 250))
         tumbnail.save(f'{filepath.split(".")[0]}_tumbnail.png')
