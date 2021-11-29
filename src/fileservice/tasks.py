@@ -3,6 +3,8 @@ import shutil
 from datetime import datetime, timedelta
 from typing import Dict, Any
 
+from PIL import Image
+
 from src.accounts.models import User
 from src.basecore import logger_conf
 from src.etl import celery_app
@@ -109,3 +111,11 @@ def task_delete_file(file_id: str) -> None:
         logger.info('File %s not found' % file_obj.name)
         return
     os.remove(file_path)
+
+
+@celery_app.task
+def task_create_tumbnail(filepath: str) -> None:
+
+    image = Image.open(filepath)
+    tumbnail = image.resize((75, 75))
+    tumbnail.save(f'{filepath.split(".")[0]}_tumbnail.png')
