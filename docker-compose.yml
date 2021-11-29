@@ -97,6 +97,7 @@ services:
     networks:
       - main
     depends_on:
+      - db
       - app_auth
       - broker
 
@@ -112,6 +113,7 @@ services:
     networks:
       - main
     depends_on:
+      - db
       - broker
 
 
