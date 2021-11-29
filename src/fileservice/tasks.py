@@ -72,7 +72,6 @@ def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: st
     task_create_tumbnail.delay(permanent_storage.destination + '/' + relative_path, data.get('type'))
 
 
-
 @celery_app.task
 def task_delete_unbuilt_chunks() -> None:
     temp_storage = FileStorage.objects.get(type=TEMP_STORAGE)
