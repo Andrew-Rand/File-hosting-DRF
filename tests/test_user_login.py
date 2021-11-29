@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Any
 
 import pytest
 from django.urls import reverse
@@ -13,7 +13,7 @@ class TestUserLogin:
     def test_login_view_ok(
             self,
             test_client: APIClient,
-            get_user: Callable,
+            get_user: Callable[..., Any],
     ) -> None:
 
         user = get_user()
@@ -29,7 +29,7 @@ class TestUserLogin:
     def test_login_view_if_bad_password(
             self,
             test_client: APIClient,
-            get_user: Callable,
+            get_user: Callable[..., Any],
     ) -> None:
 
         user = get_user()

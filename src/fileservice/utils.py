@@ -7,7 +7,7 @@ from django.core.files.uploadedfile import UploadedFile
 from django.core.mail import send_mail
 
 from src.config import settings
-from src.fileservice.constants import LARGE_FILE_LIMIT_SIZE, LARGE_HASH_PART_1, LARGE_HASH_PART_2
+from src.fileservice.constants import LARGE_HASH_PART_1, LARGE_HASH_PART_2
 from src.fileservice.filetype_constants import ALLOWED_FILETYPES
 
 
@@ -15,13 +15,13 @@ def calculate_hash_md5(file: Union[UploadedFile, str]) -> str:
     hash_md5 = hashlib.md5()
 
     if isinstance(file, UploadedFile):
-        for chunk in iter(lambda: file.read(1024), b''):
+        for chunk in iter(lambda: file.read(1024), b''):  # type: ignore
             hash_md5.update(chunk)
     elif isinstance(file, str) and os.path.isfile(file):
-        with open(file, 'rb') as file:
+        with open(file, 'rb') as f:
             chunk = None
             while chunk != b'':
-                chunk = file.read(1024)
+                chunk = f.read(1024)
                 hash_md5.update(chunk)
     return hash_md5.hexdigest()
 
@@ -70,10 +70,9 @@ def get_chunk_name(uploaded_filename: str, chunk_number: int) -> str:
 def save_file(target_file_path: str, chunk_paths: List[str]) -> None:
     with open(target_file_path, 'ab') as target_file:
         for stored_chunk_file_name in chunk_paths:
-            stored_chunk_file = open(stored_chunk_file_name, 'rb')
-            target_file.write(stored_chunk_file.read())
-            stored_chunk_file.close()
-            os.unlink(stored_chunk_file_name)
+            with open(stored_chunk_file_name, 'rb') as stored_chunk_file:
+                target_file.write(stored_chunk_file.read())
+                os.unlink(stored_chunk_file_name)
     target_file.close()
 
 

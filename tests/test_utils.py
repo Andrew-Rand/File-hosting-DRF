@@ -17,6 +17,8 @@ class TestChunksUtils:
         'tes_storage/test_file_part_5']
     NAME_RESULT = f'{TEST_CHUNK_DATA.get("filename")}_part_{TEST_CHUNK_DATA.get("total_chunk")}'
 
+    total_chunk = 5
+
     def test_make_chunk_dir_path(self) -> None:
         assert make_chunk_dir_path(
             temp_storage_path=self.TEST_CHUNK_TEMP_STORAGE_PATH,
@@ -30,5 +32,5 @@ class TestChunksUtils:
 
     def test_get_chunk_name(self) -> None:
         assert get_chunk_name(
-            uploaded_filename=self.TEST_CHUNK_DATA.get('filename'),
-            chunk_number=self.TEST_CHUNK_DATA.get('total_chunk')) == self.NAME_RESULT
+            uploaded_filename=str(self.TEST_CHUNK_DATA.get('filename')),
+            chunk_number=self.total_chunk) == self.NAME_RESULT

@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Any
 
 import pytest
 
@@ -56,8 +56,8 @@ class TestUnauthorizedRequest:
     def test_unauthorized_file_detail_get(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_file: Callable
+            get_user: Callable[..., Any],
+            get_file: Callable[..., Any]
     ) -> None:
 
         user = get_user()
@@ -72,8 +72,8 @@ class TestUnauthorizedRequest:
     def test_unauthorized_file_detail_patch(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_file: Callable
+            get_user: Callable[..., Any],
+            get_file: Callable[..., Any]
     ) -> None:
 
         user = get_user()
@@ -88,8 +88,8 @@ class TestUnauthorizedRequest:
     def test_unauthorized_file_detail_delete(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_file: Callable
+            get_user: Callable[..., Any],
+            get_file: Callable[..., Any]
     ) -> None:
 
         user = get_user()
@@ -104,8 +104,8 @@ class TestUnauthorizedRequest:
     def test_unauthorized_file_download(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_file: Callable
+            get_user: Callable[..., Any],
+            get_file: Callable[..., Any]
     ) -> None:
 
         user = get_user()
@@ -128,23 +128,8 @@ class TestUnauthorizedRequest:
     def test_unauthorized_file_detail(
             self,
             test_client: APIClient,
-            get_user: Callable,
-            get_file: Callable
-    ) -> None:
-
-        user = get_user()
-        file = get_file(user)
-
-        url = reverse(FILE_DETAIL_URL_NAME, kwargs={'pk': str(file.id)})
-        response = test_client.get(url)
-        assert response.status_code == 403
-
-    @pytest.mark.django_db
-    def test_unauthorized_file_detail(
-            self,
-            test_client: APIClient,
-            get_user: Callable,
-            get_file: Callable
+            get_user: Callable[..., Any],
+            get_file: Callable[..., Any]
     ) -> None:
 
         user = get_user()

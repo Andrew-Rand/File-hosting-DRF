@@ -19,6 +19,9 @@ class MyUserManager(BaseUserManager):
         user.set_password(password)  # change password to hash
         user.is_admin = False
         user.is_staff = False
+        user.first_name = extra_fields.get('first_name', '')
+        user.last_name = extra_fields.get('last_name', '')
+        user.age = extra_fields.get('age', 50)
         user.save()
         return user
 

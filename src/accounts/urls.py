@@ -1,6 +1,7 @@
 from django.urls import re_path
 
-from .constants import ACCOUNTS_REGISTER_URL_NAME, ACCOUNTS_LOGIN_URL_NAME, ACCOUNTS_REFRESH_URL_NAME, ACCOUNTS_DETAIL_URL_NAME, ACCOUNTS_CHANGE_PASSWORD_URL_NAME
+from .constants import ACCOUNTS_REGISTER_URL_NAME, ACCOUNTS_LOGIN_URL_NAME, ACCOUNTS_REFRESH_URL_NAME, \
+    ACCOUNTS_DETAIL_URL_NAME, ACCOUNTS_CHANGE_PASSWORD_URL_NAME
 from .views.change_password_view import ChangePasswordView
 from .views.login_view import LoginView
 from .views.refresh_view import RefreshView

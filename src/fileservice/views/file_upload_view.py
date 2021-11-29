@@ -21,6 +21,9 @@ class FileUploadView(generics.GenericAPIView):
     @login_required
     def post(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
 
+        if not request.FILES.get('file'):
+            raise BadRequestError('File was not added')
+
         file_data = request.FILES.get('file')
         filename = request.data.get('filename')
 
