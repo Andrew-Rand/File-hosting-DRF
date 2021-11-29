@@ -16,6 +16,7 @@ from src.fileservice.utils import is_all_chunk_uploaded, save_file, calculate_ha
     send_warning_email_to_user, make_chunk_dir_path, calculate_hash_md5_for_large_files
 
 CHUNK_EXPIRATION_TIME = timedelta(days=7)
+TUMBNAIL_SIZE = 250
 
 logger = logger_conf.get_logger(__name__)
 
@@ -110,7 +111,8 @@ def task_delete_file(file_id: str) -> None:
 def task_create_tumbnail(filepath: str, file_type: str) -> None:
 
     img_filetypes = [i for i in ALLOWED_FILETYPES if i[:5] == 'image']
+
     if file_type in img_filetypes:
         image = Image.open(filepath)
-        tumbnail = image.resize((250, 250))
+        tumbnail = image.resize((TUMBNAIL_SIZE, TUMBNAIL_SIZE))
         tumbnail.save(f'{filepath.split(".")[0]}_tumbnail.png')
