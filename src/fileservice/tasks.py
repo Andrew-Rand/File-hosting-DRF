@@ -87,7 +87,6 @@ def task_clean_up_deleted_files() -> None:
     files_qs = File.all_objects.filter(is_alive=False)  # marked as deleted
     if not files_qs:
         logger.info('Deleted files not found')
-        return
     for file in files_qs:
         file_path = file.absolute_path
         if not os.path.exists(file_path):
@@ -103,9 +102,7 @@ def task_delete_file(file_id: str) -> None:
         file_obj = File.all_objects.get(id=file_id)
     except File.DoesNotExist:
         logger.info('File %s not found' % file_id)
-        return
     file_path = file_obj.absolute_path
     if not os.path.isfile(file_path):
         logger.info('File %s not found' % file_obj.name)
-        return
     os.remove(file_path)
