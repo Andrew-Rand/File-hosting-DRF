@@ -8,7 +8,7 @@ from PIL import Image
 from src.accounts.models import User
 from src.basecore import logger_conf
 from src.etl import celery_app
-from src.fileservice.constants import LARGE_FILE_LIMIT_SIZE
+from src.fileservice.constants import LARGE_FILE_LIMIT_SIZE, STD_TUMBS
 from src.fileservice.filetype_constants import ALLOWED_FILETYPES
 from src.fileservice.models import FileStorage, File
 from src.fileservice.models.file_storage import TEMP_STORAGE
@@ -35,7 +35,11 @@ def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: st
     # check if the upload is complete
     chunk_paths = make_chunk_paths(chunks_dir_path, data)
     if not is_all_chunk_uploaded(chunk_paths):
-        send_warning_email_to_user(user.email, f'The server cant build your file {data.get("filename")}, please try to upload again!')
+        send_warning_email_to_user(
+            user.email,
+            f'The server cant build your file {data.get("filename")}, please try to upload again!'
+        )
+
         logger.warning('File %s was not build, warning email send to user %s' % (data.get('filename'), user.email))
         raise FileExistsError
 
@@ -51,7 +55,11 @@ def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: st
     else:
         file_hash = calculate_hash_md5(target_file_path)
     if file_hash != data.get('file_hash'):
-        send_warning_email_to_user(user.email, f'The server cant build your file {data.get("filename")}, please try to upload again!')
+        send_warning_email_to_user(
+            user.email,
+            f'The server cant build your file {data.get("filename")}, please try to upload again!'
+        )
+
         logger.warning('Hash of file %s incorrect, warning email send to user %s' % (data.get('filename'), user.email))
         raise FileExistsError
 
@@ -60,6 +68,8 @@ def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: st
     File.create_model_object(user, file_hash, permanent_storage, relative_path, data)
 
     logger.info('Celery task for filebuild %s сompleted successfully' % data.get('filename'))
+
+    task_create_tumbnail.delay(permanent_storage.destination + '/' + relative_path, data.get('type'))
 
 
 @celery_app.task
@@ -80,10 +90,10 @@ def task_delete_unbuilt_chunks() -> None:
 @celery_app.task
 def task_clean_up_deleted_files() -> None:
 
-    files_qs = File.objects.filter(is_alive=False)  # marked as deleted
+    files_qs = File.all_objects.filter(is_alive=False)  # marked as deleted
     if not files_qs:
         logger.info('Deleted files not found')
-        return None
+        return
     for file in files_qs:
         file_path = file.absolute_path
         if not os.path.exists(file_path):
@@ -96,14 +106,14 @@ def task_clean_up_deleted_files() -> None:
 def task_delete_file(file_id: str) -> None:
 
     try:
-        file_obj = File.objects.get(id=file_id)
+        file_obj = File.all_objects.get(id=file_id)
     except File.DoesNotExist:
         logger.info('File %s not found' % file_id)
-        return None
+        return
     file_path = file_obj.absolute_path
     if not os.path.isfile(file_path):
         logger.info('File %s not found' % file_obj.name)
-        return None
+        return
     os.remove(file_path)
 
 
@@ -115,4 +125,8 @@ def task_create_tumbnail(filepath: str, file_type: str) -> None:
     if file_type in img_filetypes:
         image = Image.open(filepath)
         tumbnail = image.resize((TUMBNAIL_SIZE, TUMBNAIL_SIZE))
-        tumbnail.save(f'{filepath.split(".")[0]}_tumbnail.png')
+    else:
+        image = Image.open(STD_TUMBS.get(file_type))
+        tumbnail = image.resize((TUMBNAIL_SIZE, TUMBNAIL_SIZE))
+
+    tumbnail.save(f'{filepath.split(".")[0]}_tumbnail.png')

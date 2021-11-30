@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Any
 
 import pytest
 
@@ -17,7 +17,7 @@ class TestSettings:
 class TestUserModel:
 
     @pytest.mark.django_db
-    def test_file_create(self, get_user: Callable, get_file: Callable) -> None:
+    def test_file_create(self, get_user: Callable[..., Any], get_file: Callable[..., Any]) -> None:
 
         user = get_user()
         get_file(user)
@@ -25,7 +25,7 @@ class TestUserModel:
         assert File.objects.count() == 1
 
     @pytest.mark.django_db
-    def test_user_owner_file(self, get_user: Callable, get_file: Callable) -> None:
+    def test_user_owner_file(self, get_user: Callable[..., Any], get_file: Callable[..., Any]) -> None:
 
         user = get_user()
         file = get_file(user)
@@ -35,7 +35,7 @@ class TestUserModel:
         assert file_obj.user == user
 
     @pytest.mark.django_db
-    def test_get_absolute_path(self, get_user: Callable, get_file: Callable) -> None:
+    def test_get_absolute_path(self, get_user: Callable[..., Any], get_file: Callable[..., Any]) -> None:
 
         user = get_user()
         file = get_file(user)
@@ -46,7 +46,7 @@ class TestUserModel:
         assert file_obj.absolute_path == f'{permanent_storage.destination}/{user.id}/test_file.txt'
 
     @pytest.mark.django_db
-    def test_file_default_description(self, get_user: Callable, get_file: Callable) -> None:
+    def test_file_default_description(self, get_user: Callable[..., Any], get_file: Callable[..., Any]) -> None:
 
         user = get_user()
         file = get_file(user)

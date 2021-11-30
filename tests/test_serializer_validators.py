@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Any
 
 import pytest
 
@@ -9,7 +9,7 @@ from src.accounts.serializers.user_login_serializer import UserLoginSerializer
 class TestChangePasswordSerializer:
 
     @pytest.mark.django_db
-    def test_change_password_serializer_if_valid(self, get_user: Callable) -> None:
+    def test_change_password_serializer_if_valid(self, get_user: Callable[..., Any]) -> None:
 
         user = get_user()
 
@@ -36,29 +36,29 @@ class TestChangePasswordSerializer:
         assert serializer.is_valid() is False
 
     @pytest.mark.django_db
-    def test_change_password_serializer_if_incorrect_password(self, get_user: Callable) -> None:
+    def test_change_password_serializer_if_incorrect_password(self, get_user: Callable[..., Any]) -> None:
 
         user = get_user()
 
         serializer = ChangePasswordSerializer(data={
-                'password': '1234Abc%%1',
-                'new_password': '1234Abc%%%',
-                'new_password_repeated': '1234Abc%%%',
-            },
+            'password': '1234Abc%%1',
+            'new_password': '1234Abc%%%',
+            'new_password_repeated': '1234Abc%%%',
+        },
             context={'user': user})
 
         assert serializer.is_valid() is False
 
     @pytest.mark.django_db
-    def test_change_password_serializer_if_if_new_passwords_not_match(self, get_user: Callable) -> None:
+    def test_change_password_serializer_if_if_new_passwords_not_match(self, get_user: Callable[..., Any]) -> None:
 
         user = get_user()
 
         serializer = ChangePasswordSerializer(data={
-                'password': '1234Abc%%%',
-                'new_password': '0Dc%0Dc%00',
-                'new_password_repeated': '0Dc%0Dc%01',
-            },
+            'password': '1234Abc%%%',
+            'new_password': '0Dc%0Dc%00',
+            'new_password_repeated': '0Dc%0Dc%01',
+        },
             context={'user': user})
 
         assert serializer.is_valid() is False
@@ -67,7 +67,7 @@ class TestChangePasswordSerializer:
 class TestUserLoginSerializer:
 
     @pytest.mark.django_db
-    def test_user_login_serializer_if_valid(self, get_user: Callable) -> None:
+    def test_user_login_serializer_if_valid(self, get_user: Callable[..., Any]) -> None:
 
         user = get_user()
 
@@ -85,7 +85,7 @@ class TestUserLoginSerializer:
         assert serializer.is_valid() is False
 
     @pytest.mark.django_db
-    def test_user_login_serializer_if_bad_password(self, get_user: Callable) -> None:
+    def test_user_login_serializer_if_bad_password(self, get_user: Callable[..., Any]) -> None:
 
         user = get_user()
 
