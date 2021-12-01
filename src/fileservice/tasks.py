@@ -11,7 +11,7 @@ from src.etl import celery_app
 from src.fileservice.constants import LARGE_FILE_LIMIT_SIZE, STD_TUMBS
 from src.fileservice.filetype_constants import ALLOWED_FILETYPES
 from src.fileservice.models import FileStorage, File
-from src.fileservice.models.file_storage import TEMP_STORAGE
+from src.fileservice.models.file_storage import TEMP_STORAGE, PERMANENT_STORAGE
 from src.fileservice.utils import is_all_chunk_uploaded, save_file, calculate_hash_md5, make_chunk_paths, \
     send_warning_email_to_user, make_chunk_dir_path, calculate_hash_md5_for_large_files
 
@@ -118,7 +118,7 @@ def task_delete_file(file_id: str) -> None:
 
 
 @celery_app.task
-def task_create_tumbnail(filepath: str, file_type: str) -> None:
+def task_create_tumbnail(filepath: str, file_type: str, user_id: str, storage: str) -> None:
 
     img_filetypes = [i for i in ALLOWED_FILETYPES if i[:5] == 'image']
 
@@ -129,4 +129,11 @@ def task_create_tumbnail(filepath: str, file_type: str) -> None:
         image = Image.open(STD_TUMBS.get(file_type))
         tumbnail = image.resize((TUMBNAIL_SIZE, TUMBNAIL_SIZE))
 
-    tumbnail.save(f'{filepath.split(".")[0]}_tumbnail.png')
+    tumbs_path = os.path.join(storage, 'tumbs')
+    user_tumbs_path = os.path.join(tumbs_path, user_id)
+
+    os.makedirs(user_tumbs_path, 0o777, exist_ok=True)
+
+    file_name = os.path.split(filepath)[1]
+
+    tumbnail.save(f'{user_tumbs_path}/{file_name.split(".")[0]}_tumbnail.png')

@@ -23,6 +23,6 @@ LARGE_HASH_PART_2 = -2 * 1024 * 1024
 STD_TUMBS = {
     'application/pdf': 'src/fileservice/std_tumbs/pdf.png',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'src/fileservice/std_tumbs/doc.png',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'src/fileservice/std_tumbs/exel.png',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'src/fileservice/std_tumbs/excel.png',
     'text/plain': 'src/fileservice/std_tumbs/txt.png'
 }
