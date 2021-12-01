@@ -69,7 +69,12 @@ def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: st
 
     logger.info('Celery task for filebuild %s сompleted successfully' % data.get('filename'))
 
-    task_create_tumbnail.delay(permanent_storage.destination + '/' + relative_path, data.get('type'))
+    task_create_tumbnail.delay(
+        permanent_storage.destination + '/' + relative_path,
+        data.get('type'),
+        user_id,
+        permanent_storage.destination
+    )
 
 
 @celery_app.task
