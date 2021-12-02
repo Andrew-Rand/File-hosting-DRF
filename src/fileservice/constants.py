@@ -26,3 +26,4 @@ STD_TUMBS = {
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'src/fileservice/std_tumbs/excel.png',
     'text/plain': 'src/fileservice/std_tumbs/txt.png'
 }
+ERROR_THUMB = 'src/fileservice/std_tumbs/error.png'

@@ -8,7 +8,7 @@ from PIL import Image
 from src.accounts.models import User
 from src.basecore import logger_conf
 from src.etl import celery_app
-from src.fileservice.constants import LARGE_FILE_LIMIT_SIZE, STD_TUMBS
+from src.fileservice.constants import LARGE_FILE_LIMIT_SIZE, STD_TUMBS, ERROR_THUMB
 from src.fileservice.filetype_constants import ALLOWED_FILETYPES
 from src.fileservice.models import FileStorage, File
 from src.fileservice.models.file_storage import TEMP_STORAGE
@@ -127,11 +127,16 @@ def task_create_tumbnail(filepath: str, file_type: str, user_id: str, storage: s
 
     img_filetypes = [i for i in ALLOWED_FILETYPES if i[:5] == 'image']
 
-    if file_type in img_filetypes:
-        image = Image.open(filepath)
-        tumbnail = image.resize((TUMBNAIL_SIZE, TUMBNAIL_SIZE))
-    else:
-        image = Image.open(STD_TUMBS.get(file_type))
+    try:
+        if file_type in img_filetypes:
+            image = Image.open(filepath)
+            tumbnail = image.resize((TUMBNAIL_SIZE, TUMBNAIL_SIZE))
+        else:
+            image = Image.open(STD_TUMBS.get(file_type))
+            tumbnail = image.resize((TUMBNAIL_SIZE, TUMBNAIL_SIZE))
+
+    except Exception:
+        image = Image.open(ERROR_THUMB)
         tumbnail = image.resize((TUMBNAIL_SIZE, TUMBNAIL_SIZE))
 
     tumbs_path = os.path.join(storage, 'tumbs')
