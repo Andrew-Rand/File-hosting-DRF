@@ -27,3 +27,5 @@ STD_TUMBS = {
     'text/plain': 'src/fileservice/std_tumbs/txt.png'
 }
 ERROR_THUMB = 'src/fileservice/std_tumbs/error.png'
+
+IMG_FILETYPES = {'image/jpeg', 'image/png', 'image/gif', 'image/tiff', 'image/svg+xml'}
