@@ -138,7 +138,7 @@ def task_create_tumbnail(filepath: str, file_type: str, user_id: str, storage: s
             image = Image.open(STD_TUMBS.get(file_type))
             tumbnail = image.resize((TUMBNAIL_SIZE, TUMBNAIL_SIZE))
 
-    except Exception:
+    except IOError:
         image = Image.open(ERROR_THUMB)
         tumbnail = image.resize((TUMBNAIL_SIZE, TUMBNAIL_SIZE))
 
