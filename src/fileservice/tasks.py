@@ -120,9 +120,12 @@ def task_delete_file(file_id: str) -> None:
         return
     os.remove(file_path)
 
-    thumb_path = f'{file.storage.destination}/tumbs/{file.destination}'
+    thumb_dir_path = f'{file_obj.storage.destination}/tumbs/{os.path.split(file_obj.destination)[0]}'
+    thumb_name = f'{file_obj.name.split(".")[0]}_tumbnail.png'
+    thumb_path = os.path.join(thumb_dir_path, thumb_name)
 
     os.remove(thumb_path)
+
 
 @celery_app.task
 def task_create_tumbnail(filepath: str, file_type: str, user_id: str, storage: str) -> None:
