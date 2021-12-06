@@ -3,16 +3,19 @@ import shutil
 from datetime import datetime, timedelta
 from typing import Dict, Any
 
+from PIL import Image
+
 from src.accounts.models import User
 from src.basecore import logger_conf
 from src.etl import celery_app
-from src.fileservice.constants import LARGE_FILE_LIMIT_SIZE
+from src.fileservice.constants import LARGE_FILE_LIMIT_SIZE, STD_TUMBS, ERROR_THUMB, IMG_FILETYPES
 from src.fileservice.models import FileStorage, File
 from src.fileservice.models.file_storage import TEMP_STORAGE
 from src.fileservice.utils import is_all_chunk_uploaded, save_file, calculate_hash_md5, make_chunk_paths, \
     send_warning_email_to_user, make_chunk_dir_path, calculate_hash_md5_for_large_files
 
 CHUNK_EXPIRATION_TIME = timedelta(days=7)
+TUMBNAIL_SIZE = 250
 
 logger = logger_conf.get_logger(__name__)
 
@@ -65,6 +68,13 @@ def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: st
 
     logger.info('Celery task for filebuild %s сompleted successfully' % data.get('filename'))
 
+    task_create_tumbnail.delay(
+        permanent_storage.destination + '/' + relative_path,
+        data.get('type'),
+        user_id,
+        permanent_storage.destination
+    )
+
 
 @celery_app.task
 def task_delete_unbuilt_chunks() -> None:
@@ -109,3 +119,34 @@ def task_delete_file(file_id: str) -> None:
         logger.info('File %s not found' % file_obj.name)
         return
     os.remove(file_path)
+
+    thumb_dir_path = f'{file_obj.storage.destination}/tumbs/{os.path.split(file_obj.destination)[0]}'
+    thumb_name = f'{file_obj.name.split(".")[0]}_tumbnail.png'
+    thumb_path = os.path.join(thumb_dir_path, thumb_name)
+
+    os.remove(thumb_path)
+
+
+@celery_app.task
+def task_create_tumbnail(filepath: str, file_type: str, user_id: str, storage: str) -> None:
+
+    try:
+        if file_type in IMG_FILETYPES:
+            image = Image.open(filepath)
+            tumbnail = image.resize((TUMBNAIL_SIZE, TUMBNAIL_SIZE))
+        else:
+            image = Image.open(STD_TUMBS.get(file_type))
+            tumbnail = image.resize((TUMBNAIL_SIZE, TUMBNAIL_SIZE))
+
+    except IOError:
+        image = Image.open(ERROR_THUMB)
+        tumbnail = image.resize((TUMBNAIL_SIZE, TUMBNAIL_SIZE))
+
+    tumbs_path = os.path.join(storage, 'tumbs')
+    user_tumbs_path = os.path.join(tumbs_path, user_id)
+
+    os.makedirs(user_tumbs_path, 0o777, exist_ok=True)
+
+    file_name = os.path.split(filepath)[1]
+
+    tumbnail.save(f'{user_tumbs_path}/{file_name.split(".")[0]}_tumbnail.png')

@@ -23,7 +23,7 @@ class FileListView(generics.GenericAPIView):
     @login_required
     def get(self, request: Request, user: User, *args: Any, **kwargs: Any) -> Response:
         user = User.objects.get(id=user.id)
-        queryset = File.objects.filter(user=user)
+        queryset = self.filter_queryset(queryset=File.objects.filter(user=user))
         serializer = FileSerializer(instance=queryset, many=True)
 
-        return OkResponse(self.paginate_queryset(self.filter_queryset(serializer.data)))
+        return OkResponse(self.paginate_queryset(serializer.data))

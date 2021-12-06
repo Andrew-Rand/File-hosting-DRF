@@ -11,6 +11,7 @@ from src.basecore.custom_error_handler import BadRequestError
 from src.basecore.responses import OkResponse
 from src.fileservice.models import FileStorage, File
 from src.fileservice.models.file_storage import PERMANENT_STORAGE
+from src.fileservice.tasks import task_create_tumbnail
 from src.fileservice.utils import calculate_hash_md5
 
 
@@ -42,7 +43,12 @@ class FileUploadView(generics.GenericAPIView):
             raise BadRequestError('File hash is not match. Try to upload file again')
 
         relative_path = os.path.join(str(user.id), filename)
-
         File.create_model_object(user, file_hash, self.permanent_storage, relative_path, request.data)
+        task_create_tumbnail.delay(
+            self.permanent_storage.destination + '/' + relative_path,
+            request.data.get('type'),
+            str(user.id),
+            self.permanent_storage.destination
+        )
 
         return OkResponse({})
