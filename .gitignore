@@ -1,4 +1,6 @@
 __pycache__/
 .idea
 .env
-files/
+storage/
+celerybeat-schedule
+logfile.log

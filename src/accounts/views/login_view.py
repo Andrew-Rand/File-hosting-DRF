@@ -1,44 +1,28 @@
-import datetime
+from typing import Any
 
-from rest_framework.permissions import AllowAny
+from rest_framework.exceptions import ValidationError
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import generics
-import jwt
 
-from src.accounts.serializers import UserLoginSerializer
-from src.config.settings import SECRET_KEY
+from src.accounts.authentication import create_token
+from src.accounts.serializers.user_login_serializer import UserLoginSerializer
+from src.basecore.responses import OkResponse
+from src.accounts.constants import ACCESS_TOKEN_LIFETIME, REFRESH_TOKEN_LIFETIME
 
 
 class LoginView(generics.GenericAPIView):
 
-    permission_classes = [AllowAny, ]
-
-    def post(self, request):
+    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = UserLoginSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            raise ValidationError(serializer.errors)
+        user_id = serializer.data.get('id')
+        access_token = create_token(user_id, time_delta_seconds=ACCESS_TOKEN_LIFETIME)
+        refresh_token = create_token(user_id, time_delta_seconds=REFRESH_TOKEN_LIFETIME)
 
-        # create access token
-        access_token_payload = {
-            'id': serializer.data.get('id'),
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=120),
-            'iat': datetime.datetime.utcnow()
+        response_data = {
+            'access_token': access_token,
+            'refresh_token': refresh_token
         }
-        access_token = jwt.encode(access_token_payload, SECRET_KEY, algorithm='HS256')
-
-        # create refresh token
-        refresh_token_payload = {
-            'id': serializer.data.get('id'),
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7),
-            'iat': datetime.datetime.utcnow()
-        }
-        refresh_token = jwt.encode(refresh_token_payload, SECRET_KEY, algorithm='HS256')
-
-        #  add tokens to response
-        response = Response()
-        response.set_cookie(key='refresh-token', value=refresh_token, httponly=True)
-        response.data = {
-            'access-token': access_token,
-            'user_id': serializer.data.get('id'),
-            'user_email': serializer.data.get('email')
-        }
-        return response
+        return OkResponse(data=response_data)

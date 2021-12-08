@@ -1,6 +1,6 @@
-from django.core.exceptions import ValidationError
 from re import match
 
+from django.core.exceptions import ValidationError
 
 MIN_AGE = 5
 MAX_AGE = 110
@@ -20,7 +20,7 @@ def validate_name(value: str) -> None:
 
 
 def validate_password(value: str) -> None:
-    reg_ex = r'/(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}/g'
+    reg_ex = r'(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{10,}'
     """ (?=.*[0-9]) - contains at least one number;
         (?=.*[!@#$%^&*]) - contains at least one spec char;
         (?=.*[a-z]) - contains at least one lowercase Latin letter;

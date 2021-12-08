@@ -20,11 +20,11 @@ PY_FILES=$(find . -type f -name "*.py" ! -path './.*' -not -path "**/migrations/
 
 echo "startesting"
 
-# TRY TO USE LINTERS WITH PATH VARIABLE
 # ===================================================
 
 echo "-----------start mypy-------------------"
-mypy $PY_FILES
+mypy $PY_FILES  --exclude migrations
+
 
 echo "-----------start pycodestyle------------"
 pycodestyle $PY_FILES
@@ -34,4 +34,4 @@ flake8 $PY_FILES
 
 
 echo "-----------start pylint_django-----------------"
-pylint --load-plugins pylint_django --errors-only $PY_FILES src
+pylint src

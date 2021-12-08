@@ -4,7 +4,7 @@ import os
 from decouple import config
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 SECRET_KEY = config('SECRET_KEY')
@@ -25,6 +25,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'django_celery_beat',
+    'corsheaders',
 
     'src.accounts',
     'src.fileservice',
@@ -38,6 +40,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'src.config.urls'
@@ -105,19 +108,30 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 AUTH_USER_MODEL = 'accounts.User'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'src.accounts.authentication.CustomJWTAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    )
+    'EXCEPTION_HANDLER': 'src.basecore.custom_error_handler.error_handler',
 
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 5
 }
 
-AUTHENTICATION_BACKENDS = ['src.accounts.backends.EmailBackend']
+
+#  to sending message from Django
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = config('ADMIN_EMAIL')
+
+APP_TYPE = os.environ.get('APP_TYPE')
+APP_TYPE_AUTH = config('AUTH_ENVIRONMENT')
+APP_TYPE_FILE = config('FILE_ENVIRONMENT')
+APP_TYPE_TEST = config('TEST_ENVIRONMENT')
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = [
+    'Authorization',
+    'Content-Type',
+]

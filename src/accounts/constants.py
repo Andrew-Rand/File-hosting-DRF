@@ -1,0 +1,8 @@
+ACCESS_TOKEN_LIFETIME = 1200  # 20 minutes for access token
+REFRESH_TOKEN_LIFETIME = 432000  # 5 days for refresh token
+
+ACCOUNTS_REGISTER_URL_NAME = 'register'
+ACCOUNTS_LOGIN_URL_NAME = 'login'
+ACCOUNTS_REFRESH_URL_NAME = 'refresh'
+ACCOUNTS_DETAIL_URL_NAME = 'user_detail'
+ACCOUNTS_CHANGE_PASSWORD_URL_NAME = 'change_password'

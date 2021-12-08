@@ -7,11 +7,14 @@ networks:
 
 
 services:
+
   app_auth:
+    environment:
+      APP_TYPE: "${AUTH_ENVIRONMENT}"
     restart: always
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./srv/app/Dockerfile
     volumes:
       - ./:/usr/src/app
       - ./static/:/static
@@ -24,7 +27,25 @@ services:
     networks:
       - main
 
-
+  app_file:
+    environment:
+      APP_TYPE: "${FILE_ENVIRONMENT}"
+    restart: always
+    build:
+      context: .
+      dockerfile: ./srv/app/Dockerfile
+    volumes:
+      - ./:/usr/src/app
+      - ./static/:/static
+      - ./storage/:/storage
+    ports:
+      - 8135:8000
+    expose:
+      - 8135
+    depends_on:
+      - db
+    networks:
+      - main
 
   db:
     image: postgres:12.8
@@ -43,16 +64,58 @@ services:
 
 
   webserver:
-    build: ./nginx
+    build: ./srv/webserver
     ports:
-      - 1337:80
+      - 1337:1337  # auth
+      - 1338:1338  # file
     depends_on:
       - app_auth
       - db
     volumes:
+      - ./srv/webserver/nginx.conf:/etc/nginx/nginx.conf
+      - ./srv/webserver/conf.d/:/etc/nginx/conf.d
       - ./static/:/static
+      - ./storage/:/usr/src/app/storage
     networks:
       - main
+
+  broker:
+    image: redis:6.2.5
+    ports:
+      - 6379:6379
+    networks:
+      - main
+
+  celery_beat:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./srv/celery/Dockerfile
+    volumes:
+      - ./:/usr/src/app
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && celery -A src.etl beat"
+    networks:
+      - main
+    depends_on:
+      - db
+      - app_auth
+      - broker
+
+
+  celery_worker:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./srv/celery/Dockerfile
+    volumes:
+      - ./:/usr/src/app
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && celery -A src.etl worker -l INFO"
+    networks:
+      - main
+    depends_on:
+      - db
+      - broker
+
 
 volumes:
   data_ps:

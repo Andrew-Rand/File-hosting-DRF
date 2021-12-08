@@ -1,0 +1,49 @@
+#C0114 - Missing module docstring
+#C0115 - Missing class docstring
+#C0116 - Missing function docstring
+#R0903 - Too few public methods
+#W0105 - Pointless string statement
+#W0201 - Attribute defined outside init
+#W0237 - Arguments-renamed
+#W0613 - Unused argument
+#W0707 - Consider explicitly re-raising using the 'from' keyword (raise-missing-from)
+#R0801 - Similar lines in 2 files
+#W0223 - Ignore error in not model serializer
+#E5110 - Configurated Django
+#C0103 - ignore apper case in celery_config (need snake in documentation)
+#R1729 - recommendation of using generator
+#W1201
+#C0209 - formating recommendations(I already use lazy formating and f strings)
+#E5142 - use this import because roll import(
+
+[MASTER]
+
+load-plugins=pylint_django
+ignore= migrations
+
+
+[FORMAT]
+
+max-line-length=120
+
+[MESSAGES CONTROL]
+
+disable =
+    C0114,
+    C0115,
+    C0116,
+    R0903,
+    W0105,
+    W0201,
+    W0237,
+    W0613,
+    W0707,
+    R0801,
+    W0223,
+    W0622,
+    E5110,
+    C0103,
+    R1729,
+    W1201,
+    C0209,
+    E5142

@@ -1,29 +1,54 @@
-from rest_framework import generics, status
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.permissions import AllowAny
+from typing import Any
+from uuid import UUID
+
+from django.core.exceptions import ValidationError
+from rest_framework import generics
+from rest_framework.request import Request
 from rest_framework.response import Response
 
-# from src.fileservice.models.File import File
-from src.fileservice.models.File import File
-from src.fileservice.serializers import FileSerializer
+from src.accounts.authentication import login_required
+from src.accounts.models import User
+from src.basecore.responses import OkResponse
+from src.fileservice.serializers.file_serializer import FileSerializer
+from src.basecore.custom_error_handler import NotFoundError
+from src.fileservice.models import File
+from src.fileservice.tasks import task_delete_file
 
 
 class FileView(generics.GenericAPIView):
 
-    parser_classes = (MultiPartParser, FormParser)
-    permission_classes = [AllowAny, ]
+    serializer_class = FileSerializer
 
-    def post(self, request, *args, **kwargs):
-        file_serializer = FileSerializer(data=request.data)
-        if file_serializer.is_valid():
-            file_serializer.save()
-            return Response(file_serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    @login_required
+    def get(self, request: Request, pk: UUID, *args: Any, user: User, **kwargs: Any) -> Response:
 
-    def get(self, request):
-        # queryset = File.objects.filter(title="some_file_4")
-        queryset = File.objects.filter(title=request.data.get("title"))
-        # serialize this data
-        serialized_queryset = FileSerializer(instance=queryset, many=True)
-        return Response(serialized_queryset.data)
+        file = File.objects.filter(id=pk, user=user).first()
+        if not file:
+            raise NotFoundError('File not found')
+
+        serializer = self.get_serializer(instance=file)
+        return Response(serializer.data)
+
+    @login_required
+    def patch(self, request: Request, pk: UUID, *args: Any, user: User, **kwargs: Any) -> Response:
+
+        serializer = self.get_serializer(data=request.data, partial=True)
+        if not serializer.is_valid():
+            raise ValidationError(serializer.errors)
+
+        file = File.objects.filter(id=pk, user=user).first()
+        if not file:
+            raise NotFoundError('File not found')
+
+        serializer.update(instance=file, validated_data=serializer.validated_data)
+        return OkResponse({})
+
+    @login_required
+    def delete(self, request: Request, pk: UUID, *args: Any, user: User, **kwargs: Any) -> Response:
+
+        file = File.objects.filter(id=pk, user=user).first()
+        if not file:
+            raise NotFoundError('File not found')
+        file.delete()
+        task_delete_file.delay(file_id=file.id)
+        return OkResponse({})
