@@ -7,6 +7,7 @@ from PIL import Image
 
 from src.accounts.models import User
 from src.basecore import logger_conf
+from src.basecore.custom_error_handler import BadRequestError
 from src.etl import celery_app
 from src.fileservice.constants import LARGE_FILE_LIMIT_SIZE, STD_TUMBS, ERROR_THUMB, IMG_FILETYPES
 from src.fileservice.models import FileStorage, File
@@ -63,6 +64,9 @@ def task_build_file(user_id: str, temp_storage_id: str, permanent_storage_id: st
         raise FileExistsError
 
     relative_path = os.path.join(str(user.id), data.get('filename'))
+
+    if File.objects.filter(user=user, name=data.get('filename')).first():
+        raise BadRequestError('File already exists')
 
     File.create_model_object(user, file_hash, permanent_storage, relative_path, data)
 

@@ -43,6 +43,10 @@ class FileUploadView(generics.GenericAPIView):
             raise BadRequestError('File hash is not match. Try to upload file again')
 
         relative_path = os.path.join(str(user.id), filename)
+
+        if File.objects.filter(user=user, name=filename).first():
+            raise BadRequestError('File already exists')
+
         File.create_model_object(user, file_hash, self.permanent_storage, relative_path, request.data)
         task_create_tumbnail.delay(
             self.permanent_storage.destination + '/' + relative_path,

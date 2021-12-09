@@ -8,6 +8,7 @@ from rest_framework.response import Response
 
 from src.accounts.authentication import login_required
 from src.accounts.models import User
+from src.basecore import logger_conf
 from src.basecore.custom_error_handler import NotFoundError
 from src.basecore.responses import OkResponse
 from src.fileservice.models import FileStorage
@@ -29,16 +30,14 @@ class ChunkUploadView(generics.GenericAPIView):
     @login_required
     def get(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
 
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data=request.query_params)
 
         if not serializer.is_valid():
             raise ValidationError(serializer.errors)
 
         filename = serializer.validated_data.get('filename')
         chunk_number = serializer.validated_data.get('chunk_number')
-
         chunks_dir_path = make_chunk_dir_path(self.temp_storage.destination, str(user.id), serializer.validated_data)
-
         chunk_file = os.path.join(chunks_dir_path, get_chunk_name(filename, chunk_number))
 
         if os.path.isfile(chunk_file):
