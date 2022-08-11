@@ -1,4 +1,4 @@
-# File-hosting-trainee
+# File-hosting
 File hosting with Authentication service, File service, App service.
 
 
